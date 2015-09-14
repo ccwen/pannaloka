@@ -9,6 +9,7 @@ var readFile=function(opts,cb) {
 readFile.async=true;
 
 var writeFile=function(opts,cb) {
+	console.log("writing",opts.data.length,"bytes",opts.opts)
 	fs.writeFile(opts.filename,opts.data,opts.opts,cb);
 }
 writeFile.async=true;
