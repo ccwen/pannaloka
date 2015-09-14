@@ -1,4 +1,4 @@
 import React from 'react';
-import { App } from './App';
+import { Main } from './main';
 
-React.render(<App />, document.getElementById('root'));
+React.render(React.createElement(Main), document.getElementById('root'));
