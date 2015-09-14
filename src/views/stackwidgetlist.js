@@ -21,13 +21,13 @@ export class StackWidgetList extends Component {
 	}
 
 	onData (widgets) {
-		var widgetheight=(this.props.maxHeight / widgets.length)-2 ;
+		var widgetheight=(this.props.height / widgets.length)-2 ;
 		if (widgetheight<MINWIDGETHEIGHT) widgetheight=MINWIDGETHEIGHT;
 		this.setState({widgets,widgetheight});
 	}
 
 	renderItem (item,idx) {
-		return <StackWidget height={this.state.widgetheight} key={idx} wid={item.wid}>{item}</StackWidget>
+		return <StackWidget height={this.state.widgetheight} key={idx} wid={item.wid}>{item.text}</StackWidget>
 	}
 
   render () {

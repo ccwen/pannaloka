@@ -3,8 +3,10 @@ import {StackWidgetList} from '../views/stackwidgetlist';
 
 export class RightPanel extends Component {
   render () {
+  	if (this.props.height<100) return <div>invalid height</div>
+
   	return <div>
-  		<StackWidgetList maxHeight={this.props.maxHeight}/>
+  		<StackWidgetList height={this.props.height}/>
   	</div>
   }
 }

@@ -13,11 +13,12 @@ var styles={
 export class Main extends Component {
 	constructor (props) {
 		super(props);
-		this.state={maxHeight:1000};
+		this.state={height:0};
 	}
+
 	componentDidMount() {
-		var maxHeight=this.refs.rightpanel.getDOMNode().clientHeight;
-		this.setState({maxHeight});
+		var height=this.refs.rightpanel.getDOMNode().clientHeight;
+		this.setState({height});
 	}
 
   render () {
@@ -29,7 +30,7 @@ export class Main extends Component {
   				<LeftPanel/>
   			</div>
   			<div ref="rightpanel" style={styles.RightPanel}>
-  				<RightPanel maxHeight={this.state.maxHeight} />
+  				<RightPanel height={this.state.height} />
   			</div>
   		</div>
   	</div>
