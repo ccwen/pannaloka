@@ -17,12 +17,12 @@ module.exports = {
     new webpack.NoErrorsPlugin()
   ],
   node:{
-    fs:"empty"
+    fs:"empty"  //require("fs") return empty object
   },
   module: {
     loaders: [{
       test: /\.js$/,
-      loaders: ['babel'],
+      loaders: ['babel?stage=0&compact=false'], //for es7
       include: path.join(__dirname, 'src')
     }]
   }
