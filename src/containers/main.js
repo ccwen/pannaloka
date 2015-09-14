@@ -7,10 +7,19 @@ import {StatusPanel} from './statuspanel';
 var styles={
 	Body:{fontSize:"150%"}
 	,Main:{display:"flex"}
-	,LeftPanel:{flex:3,height:"90%",overflowY:"auto"}
-	,RightPanel:{flex:5,height:"90%",overflowY:"auto",background:"lightyellow"}
+	,LeftPanel:{flex:2,height:"90%",overflowY:"auto"}
+	,RightPanel:{flex:6,height:"90%",overflowY:"auto",background:"lightyellow"}
 }
 export class Main extends Component {
+	constructor (props) {
+		super(props);
+		this.state={maxHeight:1000};
+	}
+	componentDidMount() {
+		var maxHeight=this.refs.rightpanel.getDOMNode().clientHeight;
+		this.setState({maxHeight});
+	}
+
   render () {
   	return <div style={styles.Body}>
   		<MainMenu/>
@@ -19,8 +28,8 @@ export class Main extends Component {
   			<div style={styles.LeftPanel}>
   				<LeftPanel/>
   			</div>
-  			<div style={styles.RightPanel}>
-  				<RightPanel/>
+  			<div ref="rightpanel" style={styles.RightPanel}>
+  				<RightPanel maxHeight={this.state.maxHeight} />
   			</div>
   		</div>
   	</div>

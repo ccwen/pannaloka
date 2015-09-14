@@ -1,0 +1,1 @@
+module.exports=require("reflux").createActions(["newWidget","closeWidget"]);
