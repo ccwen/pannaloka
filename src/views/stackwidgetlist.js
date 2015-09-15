@@ -27,7 +27,8 @@ export class StackWidgetList extends Component {
 	}
 
 	renderItem (item,idx) {
-		return <StackWidget height={this.state.widgetheight} key={idx} wid={item.wid} text={item.text} />
+		return <StackWidget height={this.state.widgetheight} key={item.wid} 
+		wid={item.wid} widgetClass={item.widgetClass} trait={item.trait} />
 	}
 
   render () {

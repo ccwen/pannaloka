@@ -1,6 +1,6 @@
 {"textsize":"0x0000000e","generations":0,"author":"yapcheahshen@gmail.com","title":"my second testing ktx"}
 hello,world!!!{"markups":{
-"q1":{"from":[6,0],"to":12,"className":"mymark"}
+"q1":{"from":[6,0],"to":8,"className":"mymark"}
 }
 ,"history":[
 {"ranges":[{"anchor":{"line":0,"ch":0},"head":{"line":0,"ch":0}}],"primIndex":0},

@@ -23,7 +23,7 @@ var readdirmeta=function(path,cb){
 			var meta=JSON.parse(s.substr(0,idx));
 			fs.closeSync(f);
 
-			meta.name=file;
+			meta.filename=file;
 			meta.stat=stat;
 			return meta;
 		} catch(e) {

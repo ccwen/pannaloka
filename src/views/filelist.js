@@ -4,6 +4,8 @@ import Reflux from 'reflux';
 import ktxfilestore from '../stores/ktxfile';
 import {FileItem} from '../components/fileitem';
 
+import stackwidgetaction from '../actions/stackwidget';
+
 export class FileList extends Component {
 	constructor (props) {
 		super(props);
@@ -22,9 +24,14 @@ export class FileList extends Component {
 		this.unsubscribe();
 	}
 
+	openfile (e) {
+		var file=this.state.files[this.state.selectedIndex];
+		stackwidgetaction.openWidget(file,"TextWidget");
+	}
+
 	renderItem (item,idx) {
 		return <div key={idx} data-idx={idx}>
-			<FileItem  selected={this.state.selectedIndex==idx} {...item}/></div>
+			<FileItem onClick={this.openfile.bind(this)} selected={this.state.selectedIndex==idx} {...item}/></div>
 	}
 
 	selectItem (e) {

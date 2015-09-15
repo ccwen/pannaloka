@@ -8,7 +8,7 @@ var styles={
 	Body:{fontSize:"150%"}
 	,Main:{display:"flex"}
 	,LeftPanel:{flex:2,overflowY:"hidden"}
-	,RightPanel:{flex:6,overflowY:"auto",background:"lightyellow"}
+	,RightPanel:{flex:6,overflowY:"auto",background:"silver"}
 }
 export class Main extends Component {
 	constructor (props) {

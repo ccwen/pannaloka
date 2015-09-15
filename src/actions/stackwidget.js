@@ -1,1 +1,1 @@
-module.exports=require("reflux").createActions(["newWidget","closeWidget"]);
+export default require("reflux").createActions(["newWidget","closeWidget","openWidget"]);
