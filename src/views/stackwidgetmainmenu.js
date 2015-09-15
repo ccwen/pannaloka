@@ -4,7 +4,7 @@ import stackwidgetaction from '../actions/stackwidget';
 
 export class StackWidgetMainMenu extends Component {
 	newWidget () {
-		stackwidgetaction.newWidget({text:"widget", wid:'w'+Math.random().toString().substr(2,5)});
+		stackwidgetaction.newWidget({text:"widget"});
 	}
 
   render () {

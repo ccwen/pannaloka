@@ -2,7 +2,9 @@ var Reflux=require("reflux");
 var StackWidgetStore=Reflux.createStore({
 	listenables:[require("../actions/stackwidget")]
 	,widgets:[]
+	,wseq:0
 	,onNewWidget:function(w) {
+		w.wid='w'+this.wseq++;
 		this.widgets=[w].concat(this.widgets);
 		this.trigger(this.widgets);
 	}

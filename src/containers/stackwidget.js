@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import {StackWidgetMenu} from "../views/stackwidgetmenu"
+import PureComponent from 'react-pure-render/component';
+
+import { SimpleWidget } from "../components/simplewidget";
 var style={border:"1px solid gray"};
 
-export class StackWidget extends Component {
+export class StackWidget extends PureComponent {
 
 	constructor (props) {
 		super(props);
@@ -14,10 +16,16 @@ export class StackWidget extends Component {
 		if (nextProps.height!==this.props.height) style.height=nextProps.height;
 	}
 
+	renderWidget() {
+		if (!this.props.widgetclass) {
+			return <SimpleWidget {...this.props}/>
+		} else {
+			return React.createElement(this.props.widgetClass,this.props);
+		}
+	}
 	render () {
 		return <div style={style}>
-			<StackWidgetMenu wid={this.props.wid}/>
-			{this.props.children}
+			{this.renderWidget()}
 		</div>
 	}
 }
