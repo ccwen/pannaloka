@@ -7,8 +7,8 @@ import {StatusPanel} from './statuspanel';
 var styles={
 	Body:{fontSize:"150%"}
 	,Main:{display:"flex"}
-	,LeftPanel:{flex:2,height:"90%",overflowY:"auto"}
-	,RightPanel:{flex:6,height:"90%",overflowY:"auto",background:"lightyellow"}
+	,LeftPanel:{flex:2,overflowY:"hidden"}
+	,RightPanel:{flex:6,overflowY:"auto",background:"lightyellow"}
 }
 export class Main extends Component {
 	constructor (props) {
@@ -17,22 +17,24 @@ export class Main extends Component {
 	}
 
 	componentDidMount() {
-		var height=this.refs.rightpanel.getDOMNode().clientHeight;
+		var offsetheight=React.findDOMNode(this).offsetHeight-20;
+		var height=window.innerHeight-offsetheight;
+		styles.LeftPanel.height=height;
+		styles.RightPanel.height=height;
 		this.setState({height});
 	}
-
   render () {
   	return <div style={styles.Body}>
   		<MainMenu/>
   		<StatusPanel/>
-  		<div style={styles.Main}>
+  		<div ref="scrollstart" style={styles.Main}>
   			<div style={styles.LeftPanel}>
-  				<LeftPanel/>
+  				<LeftPanel height={this.state.height}/>
   			</div>
   			<div ref="rightpanel" style={styles.RightPanel}>
   				<RightPanel height={this.state.height} />
   			</div>
-  		</div>
+  	</div>
   	</div>
   }
 }

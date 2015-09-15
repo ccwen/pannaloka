@@ -1,88 +1,13 @@
-{"textstart":"0x000003f1","generations":0,"author":"yapcheahshen@gmail.com"}
-{
- "markups": {
-  "q1": {
-   "from": [
-    6,
-    0
-   ],
-   "to": 12,
-   "className": "mymark"
-  },
-  "m08532": {
-   "from": [
-    2,
-    0
-   ],
-   "to": 4,
-   "className": "mymark"
-  }
- },
- "history": [
-  {
-   "ranges": [
-    {
-     "anchor": {
-      "line": 0,
-      "ch": 0
-     },
-     "head": {
-      "line": 0,
-      "ch": 0
-     }
-    }
-   ],
-   "primIndex": 0
-  },
-  {
-   "changes": [
-    {
-     "from": {
-      "line": 0,
-      "ch": 0
-     },
-     "to": {
-      "line": 0,
-      "ch": 14
-     },
-     "text": [
-      ""
-     ]
-    }
-   ]
-  },
-  {
-   "ranges": [
-    {
-     "anchor": {
-      "line": 0,
-      "ch": 0
-     },
-     "head": {
-      "line": 0,
-      "ch": 0
-     }
-    }
-   ],
-   "primIndex": 0
-  },
-  {
-   "ranges": [
-    {
-     "anchor": {
-      "line": 0,
-      "ch": 2,
-      "xRel": -1
-     },
-     "head": {
-      "line": 0,
-      "ch": 4,
-      "xRel": 1
-     }
-    }
-   ],
-   "primIndex": 0
-  }
- ]
+{"textsize":"0x0000000e","generations":0,"author":"yapcheahshen@gmail.com"}
+hello,world!!!{"markups":{
+"q1":{"from":[6,0],"to":12,"className":"mymark"}
 }
-hello,world!!!
+,"history":[
+{"ranges":[{"anchor":{"line":0,"ch":0},"head":{"line":0,"ch":0}}],"primIndex":0},
+{"changes":[{"from":{"line":0,"ch":0},"to":{"line":1,"ch":0},"text":[""]}]},
+{"ranges":[{"anchor":{"line":0,"ch":0},"head":{"line":0,"ch":0}}],"primIndex":0},
+{"ranges":[{"anchor":{"line":1,"ch":0,"xRel":1},"head":{"line":1,"ch":0,"xRel":1}}],"primIndex":0},
+{"changes":[{"from":{"line":0,"ch":14},"to":{"line":0,"ch":14},"text":["",""]}]},
+{"ranges":[{"anchor":{"line":0,"ch":14},"head":{"line":0,"ch":14}}],"primIndex":0}
+]
+}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PureComponent from 'react-pure-render/component';
 
 import { SimpleWidget } from "../components/simplewidget";
-var style={border:"1px solid gray"};
+var style={borderBottom:"1px solid silver"};
 
 export class StackWidget extends PureComponent {
 

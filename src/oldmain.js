@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 //import { NICE, SUPER_NICE } from './colors';
 import {CodeMirror,deserialize,serialize} from "ksana-codemirror";
-import fs from './socketfs';
+import socketfs from './socketfs';
 
 
 export class Main extends Component {
@@ -26,7 +26,7 @@ export class Main extends Component {
       cb=null;
     }
     fn=fn||"ktx/test.ktx";
-    fs.readFile(fn,"utf8",function(err,filecontent){
+    socketfs.readFile(fn,"utf8",function(err,filecontent){
       if (err) {
         console.log(err);
       } else {
@@ -47,7 +47,7 @@ export class Main extends Component {
     if (typeof fn!=="string") fn=null;
     fn=fn||"ktx/test2.ktx";
     var data=serialize(this.state.meta,this.refs.cm.getCodeMirror());
-    fs.writeFile(fn, data,"utf8",function(err,newmeta){
+    socketfs.writeFile(fn, data,"utf8",function(err,newmeta){
       if (err) console.log(err);
       else     console.log("saved");
     }.bind(this));
@@ -57,13 +57,20 @@ export class Main extends Component {
     this.refs.cm.markText({className:"mymark"});
   }
 
+  readmeta() {
+    socketfs.readdirmeta("ktx/",function(err,data){
+      console.log(data)
+    });
+  }
   render() {
     return (
-      <div>
+      <div style={{fontSize:"180%"}}>
         <button onClick={this.readfile.bind(this)}>Read</button>
         <button onClick={this.readfile.bind(this,"ktx/test2.ktx")}>Read 2</button>
         <button onClick={this.writefile.bind(this)}>Write 2</button>
         <button onClick={this.marktext.bind(this)}>Marktext</button>
+
+        <button onClick={this.readmeta.bind(this)}>readmeta</button>
 
         <CodeMirror ref="cm" value={this.state.value} history={this.state.history} markups={this.state.markups}/>
 
