@@ -21,6 +21,7 @@ export class LeftPanel extends Component {
   	return <Tabs
         onSelect={this.handleSelected}
         selectedIndex={0}
+        forceRenderTabPanel={true}
       >
       <TabList>
 					<Tab>File</Tab>
@@ -32,8 +33,8 @@ export class LeftPanel extends Component {
 	      <div style={this.panelstyle}>
           <FileList/>
 	  		</div>
-
       </TabPanel>
+
       <TabPanel>
 	      <div style={this.panelstyle}>
         <h2>OUTLINE PANEL</h2>
