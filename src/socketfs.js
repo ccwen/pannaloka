@@ -1,6 +1,7 @@
 var fs=(typeof process!=="undefined")?require("fs"):{}; // webpack.config.js node:{    fs:"empty" }
 if (typeof fs.readFile=="undefined") {
 	var rpcfs=require("./rpc/rpc_fs");	
+	var rpcutil=require("./rpc/rpc_util");	
 }
 
 var readFile=function(fn,opts,cb) {
@@ -47,9 +48,19 @@ var mkdir=function(path,mode,cb) {
 	}
 }
 var readdir=function(path,cb) {
-	if (fs.readdir) fs.readdir(fn,cb);
+	if (fs.readdir) fs.readdir(path,cb);
 	else {
 		rpcfs.readdir({path:path},cb);
 	}
 }
-module.exports={readFile:readFile,writeFile:writeFile,exists:exists,unlink:unlink,mkdir:mkdir,readdir:readdir};
+
+var readdirmeta=function(path,cb) {//read all meta in given path
+	if (fs.readdir) {
+		require("./node/readdirmeta")(path,cb);
+	} else {
+		rpcutil.readdirmeta({path:path},cb);
+	}
+
+}
+module.exports={readFile:readFile,writeFile:writeFile,exists:exists,
+	unlink:unlink,mkdir:mkdir,readdir:readdir,readdirmeta:readdirmeta};

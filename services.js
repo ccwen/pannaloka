@@ -1,16 +1,19 @@
 /* edit this file to include new services */
 var path=require("path");
 var fs=require("fs");
-var indexerentry="rpc_fs.js";
-var abspath=path.resolve(process.cwd(),indexerentry);
-if (!fs.existsSync(abspath)) {
-	indexerentry="../"+indexerentry;
-	abspath=path.resolve(process.cwd(),indexerentry);
+
+var resolvepath=function(entry){
+	var abspath=path.resolve(process.cwd(),entry);
+	if (!fs.existsSync(abspath)) {
+		entry="../"+entry;
+		abspath=path.resolve(process.cwd(),entry);
+	}
+	return abspath;
 }
-var rpc_api=require(abspath);
 
 var install_services=function( service_holder) {
-	rpc_api(service_holder); 
+	require(resolvepath("rpc_fs.js"))(service_holder); 
+	require(resolvepath("rpc_util.js"))(service_holder); 
 }
 
 module.exports=install_services;
