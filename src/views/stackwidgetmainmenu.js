@@ -9,14 +9,9 @@ export class StackWidgetMainMenu extends Component {
 		stackwidgetaction.newWidget({text:"widget"});
 	}
 
-	newMarkup () {
-		//selectionaction.newWidget({text:"widget"});	
-	}
-
   render () {
   	return <span>
   		<button onClick={this.newWidget.bind(this)}>New widget</button>
-  		<button onClick={this.newMarkup.bind(this)}>New Link</button>
   	</span>
   }
 }

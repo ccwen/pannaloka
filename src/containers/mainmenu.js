@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { StackWidgetMainMenu } from '../views/stackwidgetmainmenu';
-import { MarkupType } from '../views/markuptype';
+import { MarkupEditor } from '../views/markupeditor';
 export class MainMenu extends Component {
   render () {
   	return <div>
-  		|<StackWidgetMainMenu/><MarkupType/>
+  		|<StackWidgetMainMenu/><MarkupEditor/>
   	</div>
   }
 }
