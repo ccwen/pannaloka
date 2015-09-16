@@ -2,8 +2,9 @@ import React , {Component} from 'react';
 import {CodeMirror} from 'ksana-codemirror';
 import cmfileio from '../cmfileio';
 
-import {TextWidgetMenu} from './textwidgetmenu';
-console.log(cmfileio)
+import {TextViewMenu} from '../components/textviewmenu';
+import stackwidgetaction from '../actions/stackwidget';
+
 export class DefaultTextView extends Component {
 	constructor (props) {
 		super(props);
@@ -19,11 +20,14 @@ export class DefaultTextView extends Component {
 		var menu=React.findDOMNode(this.refs.menu);
 		cm.setSize("100%",this.props.height-menu.offsetHeight); 
 	}
+	onClose () {
+		stackwidgetaction.closeWidget(this.props.wid);
+	}
 	render () {
 		if (!this.state.value) return <div>loading</div>
 
 		return <div>
-			<TextWidgetMenu ref="menu" {...this.props}/>
+			<TextViewMenu ref="menu" {...this.props} onClose={this.onClose.bind(this)}/>
 			<CodeMirror ref="cm" value={this.state.value} history={this.state.history} 
 				markups={this.state.markups}/>
 		</div>
