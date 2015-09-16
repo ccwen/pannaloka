@@ -1,9 +1,10 @@
 import React , {Component} from 'react';
-import {CodeMirror} from 'ksana-codemirror';
+import {CodeMirror, getSelections, getCharAtCursor} from 'ksana-codemirror';
 import cmfileio from '../cmfileio';
 
 import {TextViewMenu} from '../components/textviewmenu';
 import stackwidgetaction from '../actions/stackwidget';
+import selectionaction from '../actions/selection';
 
 export class DefaultTextView extends Component {
 	constructor (props) {
@@ -29,6 +30,7 @@ export class DefaultTextView extends Component {
 
 	onClose () {
 		stackwidgetaction.closeWidget(this.props.wid);
+		selectionaction.clearSelectionOf(this.props.wid);
 	}
 
 	onChange () {
@@ -49,8 +51,12 @@ export class DefaultTextView extends Component {
 	onSave () {
 		this.writefile(this.props.filename);
 	}
+
+
 	onCursorActivity () {
-		console.log("cursor")
+		var cursorch=getCharAtCursor(this.doc);
+		var selections=getSelections(this.doc);
+		selectionaction.setSelection(this.props.wid,selections,cursorch);
 	}
 	render () {
 		if (!this.state.value) return <div>loading</div>
