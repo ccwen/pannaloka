@@ -27,11 +27,11 @@ var readFile=function(fn,cb) {
 
 var writeFile=function (meta,cm,fn,cb) {
   var data=serialize(meta,cm);
-  socketfs.writeFile(fn, data,"utf8",function(err,newmeta){
+  socketfs.writeFile(fn, data,"utf8",function(err){
     if (err) {
       cb(err);
     } else {
-      cb(0,newmeta);
+      cb(0,meta);
     }
   }.bind(this));
 }
