@@ -4,13 +4,15 @@ var intertext2=require("./intertext2"); //two view, one range per view
 var two=require("./two");
 var twomore=require("./twomore");
 var types={
-	"重點":{typedef:simple}
-	,"詞性":{typedef:simple}
-	,"互文":{typedef:intertext}
-	,"出處":{typedef:intertext2}
-  ,"能指":{typedef:two}
-  ,"因果":{typedef:two}
-  ,"同義":{typedef:twomore}
+	"important":{typedef:simple,label:"重點"}
+	,"title":{typedef:simple,label:"標題"}
+	,"dictionary":{typedef:simple,label:"字典"}
+	,"partofspeech":{typedef:simple,label:"詞性"}
+	,"intertext":{typedef:intertext,label:"互文"}
+	,"quote":{typedef:intertext2,label:"出處"}
+  ,"signifer":{typedef:two,label:"能指"}
+  ,"causeeffect":{typedef:two,label:"因果"}
+  ,"synonym":{typedef:twomore,label:"同義"}
 }
 
 var getAvailableType=function(selections) {

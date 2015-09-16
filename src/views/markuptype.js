@@ -60,7 +60,7 @@ export class MarkupType extends PureComponent {
 	renderType (item,idx) {
 		return <label key={idx} data-idx={idx}><input checked={idx==this.state.selectedIndex} 
 				onChange={this.selecttype.bind(this)} 
-				type="radio" name="markuptype"></input>{item}</label>
+				type="radio" name="markuptype"></input>{types[item].label}</label>
 	}
 	render () {
 		return <span>
