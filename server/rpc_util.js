@@ -4,7 +4,7 @@
 var fs=require("fs");
 
 var readdirmeta=function(opts,cb) {
-	require("./src/node/readdirmeta")(opts.path,cb);
+	require("../src/node/readdirmeta")(opts.path,cb);
 }
 readdirmeta.async=true;
 var rpc=function(service_holder) {

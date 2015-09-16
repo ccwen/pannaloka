@@ -11,7 +11,7 @@ app.use(require('webpack-dev-middleware')(compiler, {
 
 app.use(require('webpack-hot-middleware')(compiler));
 
-require("./rpc_node")(server)
+require("./server/rpc_node")(server)
 
 var port = 2557;
 server.listen(port);

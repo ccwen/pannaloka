@@ -12,8 +12,8 @@ var resolvepath=function(entry){
 }
 
 var install_services=function( service_holder) {
-	require(resolvepath("rpc_fs.js"))(service_holder); 
-	require(resolvepath("rpc_util.js"))(service_holder); 
+	require(resolvepath("server/rpc_fs.js"))(service_holder); 
+	require(resolvepath("server/rpc_util.js"))(service_holder); 
 }
 
 module.exports=install_services;
