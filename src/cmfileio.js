@@ -25,12 +25,14 @@ var readFile=function(fn,cb) {
 }
 
 
-var writeFile=function (fn,cb) {
-  if (typeof fn!=="string") fn=null;
-  fn=fn||"ktx/dummy.ktx";
-  var data=serialize(this.state.meta,this.refs.cm.getCodeMirror());
+var writeFile=function (meta,cm,fn,cb) {
+  var data=serialize(meta,cm);
   socketfs.writeFile(fn, data,"utf8",function(err,newmeta){
-    cb(err);
+    if (err) {
+      cb(err);
+    } else {
+      cb(0,newmeta);
+    }
   }.bind(this));
 }
 
