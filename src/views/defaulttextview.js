@@ -3,8 +3,7 @@ import {CodeMirror} from 'ksana-codemirror';
 import cmfileio from '../cmfileio';
 
 import {TextWidgetMenu} from './textwidgetmenu';
-
-
+console.log(cmfileio)
 export class DefaultTextView extends Component {
 	constructor (props) {
 		super(props);

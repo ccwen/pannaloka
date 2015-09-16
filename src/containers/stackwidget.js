@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import PureComponent from 'react-pure-render/component';
 
-import { SimpleWidget } from "../components/simplewidget";
-import { TextWidget } from "../components/textwidget"
-import WidgetClasses from '../components/widgetclasses';
+import WidgetClasses from '../views/widgetclasses';
 
 var style={borderBottom:"1px solid silver"};
 
