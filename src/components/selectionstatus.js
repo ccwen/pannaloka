@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import PureComponent from 'react-pure-render/component';
+var styles={
+	unicode:{fontFamily:"courier"}
+}
 export class SelectionStatus extends PureComponent {
 
 	renderSelection (sels) {
 		return sels.map(function(sel,idx){
-			return <span key={idx}>{"["+sel[1]+":"+sel[0]+"]"}</span>
+			return <span key={idx}>{"["+sel[0]+(sel[1]?":"+sel[1]:"")+"]"}</span>
 		});
 	}
 
 	renderCh (ch) {
 		if (!ch) return ;
-		return <span key="ch" title={ch}>U+{ch.charCodeAt(0).toString(16).toUpperCase()}</span>
+		return <span style={styles.unicode} key="ch" title={ch}>U+{ch.charCodeAt(0).toString(16).toUpperCase()}</span>
 	}
 	render () {
 		
@@ -21,7 +24,7 @@ export class SelectionStatus extends PureComponent {
 			out.push(<span key={c++}>{this.renderSelection(this.props.selections[i])}</span>);
 		}
 
-		if (out.length) out.unshift(<span key="name">,selections:</span>);
+		if (out.length) out.unshift(<span key="name">, sels:</span>);
 	
 		return <span>|{this.renderCh(this.props.cursorch)}{out}</span>
 	}	

@@ -9,7 +9,7 @@ export class StatusView extends PureComponent {
 		this.state={selections:{},cursorch:""};
 	}
 
-	onData (selections,cursorch) {
+	onData (selections,selectionsByView,cursorch) {
 		this.setState({selections,cursorch});
 	}
 

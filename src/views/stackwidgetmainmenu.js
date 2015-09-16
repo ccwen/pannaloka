@@ -14,9 +14,9 @@ export class StackWidgetMainMenu extends Component {
 	}
 
   render () {
-  	return <div>
+  	return <span>
   		<button onClick={this.newWidget.bind(this)}>New widget</button>
   		<button onClick={this.newMarkup.bind(this)}>New Link</button>
-  	</div>
+  	</span>
   }
 }

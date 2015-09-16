@@ -30,7 +30,7 @@ export class DefaultTextView extends Component {
 
 	onClose () {
 		stackwidgetaction.closeWidget(this.props.wid);
-		selectionaction.clearSelectionOf(this.props.wid);
+		selectionaction.clearSelectionOf(this.props.wid,this.props.filename);
 	}
 
 	onChange () {
@@ -56,7 +56,7 @@ export class DefaultTextView extends Component {
 	onCursorActivity () {
 		var cursorch=getCharAtCursor(this.doc);
 		var selections=getSelections(this.doc);
-		selectionaction.setSelection(this.props.wid,selections,cursorch);
+		selectionaction.setSelection(this.props.wid,this.props.filename,selections,cursorch);
 	}
 	render () {
 		if (!this.state.value) return <div>loading</div>

@@ -2,27 +2,42 @@ var Reflux=require("reflux");
 
 var SelectionStore=Reflux.createStore({
 	listenables:[require("../actions/selection")]
-	,selections:{}
+	,selectionsByView:{}
+	,fileOfView:{}
 	,init:function() {
 	}
-	,onSetSelection:function(docid,selections,cursorchar) {
+	,selectionFromView : function() {
+		var out={};
+		for (var wid in this.selectionsByView) {
+			var file=this.fileOfView[wid];
+			if (out[file]) out[file]=out[file].concat(this.selectionsByView[wid]);
+			else out[file]=this.selectionsByView[wid];
+		}
+		//todo sort range.
+		return out;
+	}	
+	,onSetSelection:function(wid,filename,selections,cursorchar) {
 		var sels={};
-		Object.assign(sels,this.selections);
-		sels[docid]=selections;
+		Object.assign(sels,this.selectionsByView);
+		sels[wid]=selections;
 		this.cursorchar=cursorchar;
-		this.selections=sels;
-		this.trigger(this.selections,cursorchar);
+		this.selectionsByView=sels;
+		this.fileOfView[wid]=filename;
+
+		this.trigger(this.selectionFromView(),this.selectionsByView,cursorchar);
 	}
 	,onClearAllSelection:function() {
 		this.selections={};
-		this.trigger(this.selections,this.cursorchar);
+		this.trigger(this.selectionFromView(),this.selectionsByView,this.cursorchar);
 	}
-	,onClearSelectionOf:function(docid) {
+	,onClearSelectionOf:function(wid,filename) {
 		var sels={};
 		Object.assign(sels,this.selections);
-		delete sels[docid];
-		this.selections=sels;
-		this.trigger(this.selections,this.cursorchar);
+		delete sels[wid];
+		this.fileOfView[wid]=filename;
+
+		this.selectionsByView=sels;
+		this.trigger(this.selectionFromView(),this.selectionsByView,this.cursorchar);
 	}
 })
 module.exports=SelectionStore;
