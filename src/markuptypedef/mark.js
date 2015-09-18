@@ -4,7 +4,7 @@ var singleone=function(trait, docOf, cb) {
 
 	var range=trait.selections[files[0]][0];
 	var from={ch:range[0][0],line:range[0][1]};
-	var to={ch:range[1][0],line:range[0][1]};
+	var to={ch:range[1][0],line:range[1][1]};
 	var key=uuid();
 
 	var mrk={className:trait.typename, key:key};
@@ -20,12 +20,12 @@ var dualone=function(trait,docOf, cb) {
 	var files=Object.keys(trait.selections);
 	var range1=trait.selections[files[0]][0];
 	var from1={ch:range1[0][0],line:range1[0][1]};
-	var to1={ch:range1[1][0],line:range1[0][1]};
+	var to1={ch:range1[1][0],line:range1[1][1]};
 	var key1=uuid();
 
 	var range2=trait.selections[files[1]][0];
 	var from2={ch:range2[0][0],line:range2[0][1]};
-	var to2={ch:range2[1][0],line:range2[0][1]};
+	var to2={ch:range2[1][0],line:range2[1][1]};
 	var key2=uuid();
 
 	var mrk1={className:"quote"  , key:key1 , from:key2};

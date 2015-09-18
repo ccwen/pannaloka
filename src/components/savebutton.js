@@ -9,10 +9,10 @@ export class SaveButton extends Component {
 		this.state={saved:false};
 	}
 	componentWillReceiveProps (nextProps) {
-		if (!nextProps.dirty && this.props.dirty) {
+		if (!nextProps.dirty && this.props.dirty && nextProps.generation !==this.state.generation) {
 			this.setState({saved:true});
 			setTimeout(function(){
-				this.setState({saved:false});
+				this.setState({saved:false,generation:nextProps.generation});
 			}.bind(this),1000);
 		}
 	}

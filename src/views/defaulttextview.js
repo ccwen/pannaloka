@@ -49,7 +49,7 @@ export class DefaultTextView extends Component {
 
 	onMarkup (markupsUnderCursor,action) {
 		if (action.newly) {
-			this.onChange();
+			this.setState({dirty:true});
 			selectionaction.clearAllSelection();
 		}
 	}
@@ -83,8 +83,8 @@ export class DefaultTextView extends Component {
   	cmfileio.writeFile(this.state.meta,this.cm,fn,function(err,newmeta){
       if (err) console.log(err);
       else  {
-				this.setState({dirty:false,meta:newmeta});
 				this.generation=this.cm.changeGeneration(true);
+				this.setState({dirty:false,meta:newmeta,generation:this.generation});
       }
     }.bind(this));
   }
@@ -107,7 +107,7 @@ export class DefaultTextView extends Component {
 		if (!this.state.value) return <div>loading</div>
 
 		return <div>
-			<TextViewMenu ref="menu" {...this.props}  dirty={this.state.dirty}
+			<TextViewMenu ref="menu" {...this.props}  dirty={this.state.dirty}  generation={this.state.generation}
 				onClose={this.onClose.bind(this)} onSave={this.onSave.bind(this)}/>
 			<CodeMirror ref="cm" value={this.state.value} history={this.state.history} 
 				markups={this.state.markups} 
