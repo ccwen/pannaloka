@@ -2,3 +2,6 @@ body {margin:0px;height:100%;overflow-y:hidden;}
 .CodeMirror { line-height: 1.6;}
 .mymark {background:yellow;}
 .important {border-bottom :2px dotted red }
+
+.quote   {border-bottom:1px solid gray;}
+.quoteby {border-bottom:1px dotted gray;}
