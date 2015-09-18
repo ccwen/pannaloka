@@ -4,18 +4,33 @@
 
 var Reflux=require("reflux");
 
-var MarkupStore=Reflux.createStore({
-	listenables:[require("../actions/stackwidget")]
-	,markups:[]
+var docfilestore=require("./docfile");
+
+var markupStore=Reflux.createStore({
+	listenables:[require("../actions/markup")]
+	,markupsUnderCursor:[]
+	
 	,editing:null
 	,onEdit:function(markup) {
 		this.editing=markup;
-		this.trigger(this.editing,this.markups);
+		this.trigger(this.markupsUnderCursor);
 	}
-	,onSetMarkups:function(markups,editing) {
+	,onSetMarkups:function(markupsUnderCursor) {
 		this.editing=editing||this.editing;
-		this.markups=markups;
-		this.trigger(this.editing,this.markups);
+		this.markupsUnderCursor=markupsUnderCursor;
+		this.trigger(this.markupsUnderCursor);
+	}
+	
+	,onCreateMarkup:function(obj) {
+		if (!obj.typedef || !obj.typedef.write) {
+			console.log(obj);
+			throw "cannot write markup, missing write handler"
+		}
+
+		obj.typedef.write(obj, docfilestore.docOf ,function(err,newmarkup){
+			this.markupsUnderCursor=newmarkup;
+			this.trigger( this.markupsUnderCursor,{newly:true});
+		}.bind(this));
 	}
 })
-module.exports=MarkupStore;
+module.exports=markupStore;

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PureComponent from 'react-pure-render/component';
 import selectionstore from '../stores/selection';
+import markupaction from '../actions/markup';
 import {getAvailableType, types} from '../markuptypedef';
 import DefaultMarkupAttrEditor from '../markuptypedef/defmarkupattr';
 class UserPreference {
@@ -12,7 +13,7 @@ class UserPreference {
 			return (others.indexOf(pref)===-1);
 		});
 		this.preferences.push(type);
-	}
+	} 
 
 	getPrefer (types) { //return first matching perference
 		for (var i=0;i<types.length;i++) {
@@ -33,8 +34,6 @@ export class CreateMarkup extends PureComponent {
 
 	onData (selections) {
 		var types=getAvailableType(selections);
-		if (types.join("\n")==this.state.types.join("\n"))return;
-
 		var selectedIndex=this.user.getPrefer(types);
 		this.setState({types,selectedIndex,selections});
 	}
@@ -62,12 +61,22 @@ export class CreateMarkup extends PureComponent {
 				onChange={this.selecttype.bind(this)} 
 				type="radio" name="markuptype"></input>{types[item].label}</label>
 	}
+
+	onCreateMarkup (payload) {
+		var selections=this.state.selections;
+		var typename=this.state.types[this.state.selectedIndex];
+		var typedef=types[typename];
+		markupaction.createMarkup({selections,payload,typename,typedef});
+	}
+
 	renderAttributeEditor () {
 		if (this.state.types.length===0 || this.state.selectedIndex===-1) return;
 
 		var activetype=this.state.types[this.state.selectedIndex];
 		var attributeEditor=types[activetype].editor || DefaultMarkupAttrEditor;
-		return React.createElement( attributeEditor,{selections:this.state.selections} );
+		return React.createElement( attributeEditor,
+			{selections:this.state.selections,onCreateMarkup:this.onCreateMarkup.bind(this)} );
+
 	}
 	render () {
 		return <span>

@@ -1,43 +1,36 @@
 var Reflux=require("reflux");
 
-var SelectionStore=Reflux.createStore({
+var selectionStore=Reflux.createStore({
 	listenables:[require("../actions/selection")]
-	,selectionsByView:{}
-	,fileOfView:{}
+	,selections:{}
 	,init:function() {
 	}
-	,selectionFromView : function() {
-		var out={};
-		for (var wid in this.selectionsByView) {
-			var file=this.fileOfView[wid];
-			if (out[file]) out[file]=out[file].concat(this.selectionsByView[wid]);
-			else out[file]=this.selectionsByView[wid];
-		}
-		//todo sort range.
-		return out;
-	}	
-	,onSetSelection:function(wid,filename,selections,cursorchar) {
-		var sels={};
-		Object.assign(sels,this.selectionsByView);
-		sels[wid]=selections;
-		this.cursorchar=cursorchar;
-		this.selectionsByView=sels;
-		this.fileOfView[wid]=filename;
-
-		this.trigger(this.selectionFromView(),this.selectionsByView,cursorchar);
-	}
-	,onClearAllSelection:function() {
-		this.selections={};
-		this.trigger(this.selectionFromView(),this.selectionsByView,this.cursorchar);
-	}
-	,onClearSelectionOf:function(wid,filename) {
+	,onSetSelection:function(filename,selections,cursorchar) {
 		var sels={};
 		Object.assign(sels,this.selections);
-		delete sels[wid];
-		this.fileOfView[wid]=filename;
+		sels[filename]=selections;
+		this.cursorchar=cursorchar;
+		this.selections=sels;
 
-		this.selectionsByView=sels;
-		this.trigger(this.selectionFromView(),this.selectionsByView,this.cursorchar);
+		this.trigger(this.selections,cursorchar);
+	}
+	,onClearAllSelection:function() {
+		var sels={};
+		Object.assign(sels,this.selections);
+		for (var i in sels) {
+			sels[i]=[];
+		}
+		this.selections=sels;
+
+		this.trigger(this.selections,this.cursorchar);
+	}
+	,onClearSelectionOf:function(filename) {
+		var sels={};
+		Object.assign(sels,this.selections);
+		sels[filename]=[];
+
+		this.selections=sels;
+		this.trigger(this.selections,this.cursorchar);
 	}
 })
-module.exports=SelectionStore;
+module.exports=selectionStore;

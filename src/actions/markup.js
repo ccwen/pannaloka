@@ -1,1 +1,1 @@
-export default require("reflux").createActions(["edit","setMarkup"]);
+module.exports=require("reflux").createActions(["edit","setMarkup","createMarkup"]);

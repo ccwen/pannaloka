@@ -13,8 +13,8 @@ export class MarkupEditor extends PureComponent {
 		stackwidgetaction.closeWidget(this.props.wid)
 	}
 
-	onData (editing,markups) {
-		this.setState({editing});
+	onData (action,markups) {
+		if (action.editing) this.setState({editing:action.editing});
 	}
 
 	componentDidMount () {

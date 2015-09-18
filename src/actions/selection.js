@@ -1,1 +1,1 @@
-export default require("reflux").createActions(["setSelection","clearSelectionOf"]);
+module.exports=require("reflux").createActions(["setSelection","clearSelectionOf","clearAllSelection"]);

@@ -1,7 +1,9 @@
 var vs=require("./validateselection");
+var wm=require("./writemarkup");
 
 var types={
-	"important":{validate:vs.singleone,label:"重點",editor:require("./simple")}
+	"important":{validate:vs.singleone,label:"重點",
+							editor:require("./simple"), write:wm.singleone}
 	,"title":{validate:vs.singleone,label:"標題"}
 	,"dictionary":{validate:vs.singleone,label:"字典"}
 	,"partofspeech":{validate:vs.singleone,label:"詞性"}

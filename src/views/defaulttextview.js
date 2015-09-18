@@ -5,6 +5,10 @@ import cmfileio from '../cmfileio';
 import {TextViewMenu} from '../components/textviewmenu';
 import stackwidgetaction from '../actions/stackwidget';
 import selectionaction from '../actions/selection';
+import selectionstore from '../stores/selection';
+import docfileaction from '../actions/docfile';
+import markupstore from '../stores/markup';
+
 
 export class DefaultTextView extends Component {
 	constructor (props) {
@@ -12,25 +16,62 @@ export class DefaultTextView extends Component {
 		this.state={value:"",dirty:false};
 	}
 	componentDidMount() {
+
 		cmfileio.readFile(this.props.filename,function(err,data){
 			this.setState(data);
 			this.setState({dirty:false});
-			this.generation=this.cm.changeGeneration(true);
-		}.bind(this));
-	}
-	componentDidUpdate() {
-		if (!this.cm) {
 			this.cm=this.refs.cm.getCodeMirror();
-			this.doc=this.cm.getDoc();			
-		}
+			this.generation=this.cm.changeGeneration(true);
+			this.doc=this.cm.getDoc();
 
+			//link three together
+			docfileaction.openFile(this.doc,this.props.filename);
+
+			this.setsize();
+
+			//link
+		}.bind(this));
+
+		this.unsubscribeMarkup = markupstore.listen(this.onMarkup.bind(this));
+		this.unsubscribeSelection = selectionstore.listen(this.onSelection.bind(this));
+
+	}
+
+	onSelection (fileselections) {
+		var selections=fileselections[this.props.filename];
+		if (!selections) return;
+		if (selections.length==0) {
+			var cursor=this.doc.getCursor();
+			this.doc.setSelections([{anchor:cursor,head:cursor}]);
+			this.cm.focus();
+		}
+	}
+
+	onMarkup (markupsUnderCursor,action) {
+		if (action.newly) {
+			this.onChange();
+			selectionaction.clearAllSelection();
+		}
+	}
+
+	componentWillUnmount () {
+		this.unsubscribeMarkup();
+		this.unsubscribeSelection();
+	}
+
+	setsize () {
 		var menu=React.findDOMNode(this.refs.menu);
-		this.cm.setSize("100%",this.props.height-menu.offsetHeight); 
+		if (this.cm) this.cm.setSize("100%",this.props.height-menu.offsetHeight); 
+	}
+
+	componentDidUpdate() {
+		this.setsize();
 	}
 
 	onClose () {
 		stackwidgetaction.closeWidget(this.props.wid);
 		selectionaction.clearSelectionOf(this.props.wid,this.props.filename);
+		docfileaction.closeFile(this.doc);
 	}
 
 	onChange () {
@@ -54,9 +95,13 @@ export class DefaultTextView extends Component {
 
 
 	onCursorActivity () {
-		var cursorch=getCharAtCursor(this.doc);
-		var selections=getSelections(this.doc);
-		selectionaction.setSelection(this.props.wid,this.props.filename,selections,cursorch);
+		clearTimeout(this.timer1);
+		this.timer1=setTimeout(function(){
+			var cursorch=getCharAtCursor(this.doc);
+			var selections=getSelections(this.doc);
+			selectionaction.setSelection(this.props.filename,selections,cursorch);
+		}.bind(this),300);
+		
 	}
 	render () {
 		if (!this.state.value) return <div>loading</div>
