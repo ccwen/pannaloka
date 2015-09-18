@@ -22,12 +22,12 @@ var markupStore=Reflux.createStore({
 	}
 	
 	,onCreateMarkup:function(obj) {
-		if (!obj.typedef || !obj.typedef.write) {
+		if (!obj.typedef || !obj.typedef.mark) {
 			console.log(obj);
-			throw "cannot write markup, missing write handler"
+			throw "cannot create markup"
 		}
 
-		obj.typedef.write(obj, docfilestore.docOf ,function(err,newmarkup){
+		obj.typedef.mark(obj, docfilestore.docOf ,function(err,newmarkup){
 			this.markupsUnderCursor=newmarkup;
 			this.trigger( this.markupsUnderCursor,{newly:true});
 		}.bind(this));
