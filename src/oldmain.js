@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
-//import { NICE, SUPER_NICE } from './colors';
-import {CodeMirror,deserialize,serialize} from "ksana-codemirror";
-import socketfs from './socketfs';
+var React=require("react");
+var Component=React.Component;
+var cm=require("ksana-codemirror");
+var CodeMirror=cm.CodeMirror, deserialize=cm.deserialize, serialize=cm.serialize;
+var socketfs=require('./socketfs');
 
 
-export class Main extends Component {
+module.exports=class Main extends Component {
   constructor(props) {
     super(props);
     this.state = { filecontent:"xyz", value:"" , markups:null, history:null};

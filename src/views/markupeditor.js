@@ -1,10 +1,12 @@
-import React, {Component} from 'react';
-import PureComponent from 'react-pure-render/component';
-import markupstore from '../stores/markup';
-import {CreateMarkup} from './createmarkup';
-import {MarkupSelector} from '../components/markupselector';
+var React=require("react");
+var Component=React.Component;
+var PureComponent=require('react-pure-render').PureComponent;
 
-export class MarkupEditor extends PureComponent {
+var markupstore=require("../stores/markup");
+var CreateMarkup=require("./createmarkup");
+var MarkupSelector=require("../components/markupselector");
+
+module.exports = class MarkupEditor extends PureComponent {
 	constructor (props) {
 		super(props);
 		this.state={editing:null,markups:[]};
@@ -29,6 +31,6 @@ export class MarkupEditor extends PureComponent {
 		var editor=this.state.editing?<MarkupSelector markups={this.state.markups} editing={this.state.editing}/>
 															   :<CreateMarkup/> ;
 
-		return <span>{editor}</span>
+		return <div>{editor}</div>
 	}
 }

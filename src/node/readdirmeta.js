@@ -3,14 +3,15 @@
 */
 var fs=require("fs");
 var readdirmeta=function(dataroot,path,cb){
+
 	var files=fs.readdirSync(dataroot+path);
 	if (!files) {
 		cb("cannot readdir");
 		return ;
 	}
 
-	cb(0,files.map(function(file){
-		try {
+	try {
+		var out=files.map(function(file){
 			var fullname=dataroot+path+'/'+file;
 			var stat=fs.statSync(fullname);
 			var f=fs.openSync(fullname,"r");
@@ -28,9 +29,10 @@ var readdirmeta=function(dataroot,path,cb){
 			meta.filename=path+'/'+file;
 			meta.stat=stat;
 			return meta;
-		} catch(e) {
+		});
+	} catch(e) {
 			console.log(e);
-		}
-	}));
+	}
+	cb(0,out);
 }
 module.exports=readdirmeta;

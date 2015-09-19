@@ -1,6 +1,7 @@
-import {DefaultTextView} from './defaulttextview';
-import {SimpleView} from './simpleview';
-export default {
+var DefaultTextView=require("./defaulttextview");
+var SimpleView=require("./simpleview");
+
+module.exports = {
 	TextWidget:DefaultTextView
 	,SimpleWidget:SimpleView
 }

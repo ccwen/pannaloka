@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
-import {StatusView} from '../views/statusview';
+var React=require("react");
+var Component=React.Component;
+var StatusView=require("../views/statusview");
 
-export class StatusPanel extends Component {
+module.exports = class StatusPanel extends Component {
   render () {
   	return <div><StatusView/></div>
   }

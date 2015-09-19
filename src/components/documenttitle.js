@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
-import PureComponent from 'react-pure-render/component';
+var React=require("react");
+var Component=React.Component;
+var PureComponent=require('react-pure-render').PureComponent;
+
 var styles={
 	title:{fontSize:"100%"}
 }
-export class DocumentTitle extends PureComponent {
+module.exports = class DocumentTitle extends PureComponent {
 	constructor (props) {
 		super(props);
 		this.state={editing:false,title:props.title};

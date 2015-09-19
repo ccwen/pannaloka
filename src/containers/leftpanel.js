@@ -1,21 +1,16 @@
-import React, { Component } from 'react';
-import {Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import {FileList} from '../views/filelist';
+var React=require("react");
+var Component=React.Component;
+var reactTab=require("react-tabs");
+var Tab=reactTab.Tab , Tabs=reactTab.Tabs, TabList=reactTab.TabList, TabPanel=reactTab.TabPanel;
+var FileList=require('../views/filelist');
 
-
-export class LeftPanel extends Component {
-
-	handleSelected () {
-
-	}
-
-	componentWillReceiveProps (nextProps) {
+var LeftPanel =React.createClass({
+	componentWillReceiveProps:function (nextProps) {
 		this.panelheight=nextProps.height-45;
 		this.panelstyle={height:this.panelheight,overflowY:"auto"};		
 	}
 
-
-  render () {
+  ,render : function () {
   	if (this.props.height<100) return <div>error height</div>
 
   	return <Tabs
@@ -49,4 +44,5 @@ export class LeftPanel extends Component {
 
   	</Tabs>
   }
-}
+});
+module.exports = LeftPanel;

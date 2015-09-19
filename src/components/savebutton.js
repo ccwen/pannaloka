@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+var React=require("react");
+var Component=React.Component;
+
 var styles={
 	saved:{background:"green",color:"yellow"}
 }
-export class SaveButton extends Component {
+module.exports = class SaveButton extends Component {
 
 	constructor (props)	 {
 		super(props);

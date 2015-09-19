@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+var React=require("react");
+var Component=React.Component;
 
-import stackwidgetaction from '../actions/stackwidget';
+var stackwidgetaction=require("../actions/stackwidget");
+var selectionaction=require("../actions/selection");
 
-import selectionaction from '../actions/selection';
-
-export class StackWidgetMainMenu extends Component {
+module.exports = class StackWidgetMainMenu extends Component {
 	newWidget () {
 		stackwidgetaction.newWidget({text:"widget"});
 	}

@@ -1,8 +1,10 @@
-import React, {Component} from 'react';
-import PureComponent from 'react-pure-render/component';
-import stackwidgetaction from '../actions/stackwidget';
-import { StackWidgetMenu } from "../components/stackwidgetmenu";
-export class SimpleView extends PureComponent {
+var React=require("react");
+var Component=React.Component;
+var PureComponent=require('react-pure-render').PureComponent;
+
+var stackwidgetaction=require("../actions/stackwidget");
+var StackWidgetMenu=require("../components/stackwidgetmenu");
+module.exports = class SimpleView extends PureComponent {
 	onClose () {
 		stackwidgetaction.closeWidget(this.props.wid)
 	}

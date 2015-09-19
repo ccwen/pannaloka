@@ -1,16 +1,21 @@
-import React , {Component} from 'react';
-import {CodeMirror, getSelections, getCharAtCursor} from 'ksana-codemirror';
-import cmfileio from '../cmfileio';
+var React=require("react");
+var Component=React.Component;
+var PureComponent=require('react-pure-render').PureComponent;
 
-import {TextViewMenu} from '../components/textviewmenu';
-import stackwidgetaction from '../actions/stackwidget';
-import selectionaction from '../actions/selection';
-import selectionstore from '../stores/selection';
-import docfileaction from '../actions/docfile';
-import markupstore from '../stores/markup';
+var kcm=require("ksana-codemirror");
+var CodeMirror=kcm.CodeMirror, getSelections=kcm.getSelections, getCharAtCursor=kcm.getCharAtCursor;
+
+var cmfileio=require("../cmfileio");
+
+var TextViewMenu=require("../components/textviewmenu");
+var stackwidgetaction=require("../actions/stackwidget");
+var selectionaction=require("../actions/selection");
+var selectionstore=require("../stores/selection");
+var docfileaction=require("../actions/docfile");
+var markupstore=require("../stores/markup");
 
 
-export class DefaultTextView extends Component {
+module.exports = class DefaultTextView extends Component {
 	constructor (props) {
 		super(props);
 		this.state={value:"",dirty:false};
@@ -47,6 +52,12 @@ export class DefaultTextView extends Component {
 		}
 	}
 
+	copyMarkup (M) {
+		var out={};
+		for (var i in M) out[i]=M[i];
+		return out;
+	}
+
 	onMarkup (M,action) {
 		if (action.newly) {
 			var markups=null;
@@ -54,7 +65,7 @@ export class DefaultTextView extends Component {
 			for (var i in M) {
 				var m=M[i];
 				if (m.doc===this.doc) {
-					if (!markups) markups=Object.assign({},this.state.markups);			
+					if (!markups) markups=this.copyMarkup(this.state.markups);			
 					markups[m.key]=m.markup;
 				}
 			}

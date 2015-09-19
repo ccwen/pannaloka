@@ -1,9 +1,11 @@
-import React, {Component} from 'react';
-import PureComponent from 'react-pure-render/component';
-import selectionstore from '../stores/selection';
-import {SelectionStatus} from '../components/selectionstatus';
+var React=require("react");
+var Component=React.Component;
+var PureComponent=require('react-pure-render').PureComponent;
 
-export class StatusView extends PureComponent {
+var selectionstore=require("../stores/selection");
+var SelectionStatus=require("../components/selectionstatus");
+
+module.exports = class StatusView extends PureComponent {
 	constructor (props) {
 		super(props);
 		this.state={selections:{},cursorch:""};

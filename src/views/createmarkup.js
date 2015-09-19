@@ -1,9 +1,13 @@
-import React, {Component} from 'react';
-import PureComponent from 'react-pure-render/component';
-import selectionstore from '../stores/selection';
-import markupaction from '../actions/markup';
-import {getAvailableType, types} from '../markuptypedef';
-import DefaultMarkupAttrEditor from '../markuptypedef/defmarkupattr';
+var React=require("react");
+var Component=React.Component;
+var PureComponent=require('react-pure-render').PureComponent;
+var selectionstore=require("../stores/selection");
+var markupactiore=require("../actions/markup");
+var markuptypedef=require("../markuptypedef");
+var getAvailableType=markuptypedef.getAvailableType;
+var types=markuptypedef.types;
+var DefaultMarkupAttrEditor=require("../markuptypedef/defmarkupattr");
+
 class UserPreference {
 	constructor () {
 		this.preferences=[];
@@ -25,7 +29,7 @@ class UserPreference {
 	}
 }
 
-export class CreateMarkup extends PureComponent {
+module.exports = class CreateMarkup extends PureComponent {
 	constructor (props) {
 		super(props);
 		this.state={types:[],userselect:"",selectedIndex:0,selections:{}};

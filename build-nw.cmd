@@ -1,0 +1,1 @@
+browserify --bare -x react -x react/addons  -t [reactify --es6 ] src/index.js > dist\bundle.js

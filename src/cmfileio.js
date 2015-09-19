@@ -1,5 +1,5 @@
-import socketfs from "./socketfs";
-import {deserialize,serialize} from 'ksana-codemirror';
+var socketfs=require("./socketfs");
+var kcm=require("ksana-codemirror");
 
 var readFile=function(fn,cb) {
   if (typeof fn==="function") {
@@ -14,7 +14,7 @@ var readFile=function(fn,cb) {
     if (err) {
       cb(err);
     } else {
-      var obj=deserialize(filecontent,fn);
+      var obj=kcm.deserialize(filecontent,fn);
       if (!obj) {
         cb("error loading file "+fn);
       } else {
@@ -26,7 +26,7 @@ var readFile=function(fn,cb) {
 
 
 var writeFile=function (meta,cm,fn,cb) {
-  var data=serialize(meta,cm);
+  var data=kcm.serialize(meta,cm);
   socketfs.writeFile(fn, data,"utf8",function(err){
     if (err) {
       cb(err);
@@ -37,4 +37,4 @@ var writeFile=function (meta,cm,fn,cb) {
 }
 
 
-export default  {writeFile:writeFile, readFile:readFile}
+module.exports = {writeFile:writeFile, readFile:readFile};

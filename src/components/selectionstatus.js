@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import PureComponent from 'react-pure-render/component';
+var React=require("react");
+var PureComponent=require('react-pure-render').PureComponent;
+
 var styles={
 	unicode:{fontFamily:"courier"}
 }
-export class SelectionStatus extends PureComponent {
+module.exports = class SelectionStatus extends PureComponent {
 
 	renderSelection (sels) {
 		return sels.map(function(sel,idx){

@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+var React=require("react");
+var Component=React.Component;
 
-export class StackWidgetMenu extends Component {
+module.exports = class StackWidgetMenu extends Component {
   render () {
   	return <div>
   		<button onClick={this.props.onClose}>Close</button>

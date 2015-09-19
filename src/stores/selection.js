@@ -5,9 +5,13 @@ var selectionStore=Reflux.createStore({
 	,selections:{}
 	,init:function() {
 	}
-	,onSetSelection:function(filename,selections,cursorchar) {
+	,copySel:function(selections) {
 		var sels={};
-		Object.assign(sels,this.selections);
+		for (var i in this.selections) sels[i]=this.selections[i];
+		return sels;		
+	}
+	,onSetSelection:function(filename,selections,cursorchar) {
+		var sels=this.copySel(selections);
 		sels[filename]=selections;
 		this.cursorchar=cursorchar;
 		this.selections=sels;
@@ -15,8 +19,7 @@ var selectionStore=Reflux.createStore({
 		this.trigger(this.selections,cursorchar);
 	}
 	,onClearAllSelection:function() {
-		var sels={};
-		Object.assign(sels,this.selections);
+		var sels=this.copySel(selections);
 		for (var i in sels) {
 			sels[i]=[];
 		}
@@ -25,8 +28,7 @@ var selectionStore=Reflux.createStore({
 		this.trigger(this.selections,this.cursorchar);
 	}
 	,onClearSelectionOf:function(filename) {
-		var sels={};
-		Object.assign(sels,this.selections);
+		var sels=this.copySel(selections);
 		sels[filename]=[];
 
 		this.selections=sels;

@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import Reflux from 'reflux';
+var React=require("react");
+var Component=React.Component;
 
-import stackwidgetstore from '../stores/stackwidget';
-import {StackWidget} from '../containers/stackwidget';
+var stackwidgetstore=require("../stores/stackwidget");
+var StackWidget=require("../containers/stackwidget");
 
-let MINWIDGETHEIGHT = 150;
+var MINWIDGETHEIGHT = 150;
 
-export class StackWidgetList extends Component {
+module.exports = class StackWidgetList extends Component {
 	 constructor(props) {
     super(props);
     this.state = { widgets:[], widgetheight:100};

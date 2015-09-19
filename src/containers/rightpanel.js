@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
-import {StackWidgetList} from '../views/stackwidgetlist';
+var React=require("react");
+var Component=React.Component;
+var StackWidgetList=require('../views/stackwidgetlist')
 
-export class RightPanel extends Component {
+
+module.exports = class RightPanel extends Component {
   render () {
   	if (this.props.height<100) return <div>invalid height</div>
 

@@ -1,18 +1,20 @@
-import React, { Component } from 'react';
-import Reflux from 'reflux';
+var React=require("react");
+var Component=React.Component;
+var PureComponent=require('react-pure-render').PureComponent;
 
-import ktxfilestore from '../stores/ktxfile';
-import {FileItem} from '../components/fileitem';
+var ktxfilestore=require("../stores/ktxfile");
+var FileItem=require("../components/fileitem");
 
-import stackwidgetaction from '../actions/stackwidget';
+var stackwidgetaction=require("../actions/stackwidget");
 
-export class FileList extends Component {
+module.exports = class FileList extends Component {
 	constructor (props) {
 		super(props);
 		this.state={files:[],selectedIndex:0};
 	}
 
 	onData (files) {
+		console.log(files)
 		this.setState({files});
 	}
 

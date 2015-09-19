@@ -4,6 +4,12 @@
 	for each call to server, create a unique id
 	when server return, get the slot by unique id, and invoke callbacks.
 */
+(function(){
+
+if (typeof io=="undefined") {
+	module.exports=window.host={exec:function(){}}; 
+	return;
+}
 function GUID () {
   var S4 = function ()    {    return Math.floor(        Math.random() * 0x10000  ).toString(16);  };
   return (   S4() + S4() + "-" + S4() + "-" +  S4() + "-" + S4() + "-" +S4() + S4() + S4()    );
@@ -42,3 +48,5 @@ var pchost={
 socket.on( 'rpc', returnfromserver );	 
 window.host=pchost;
 module.exports=pchost;
+
+})();

@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import PureComponent from 'react-pure-render/component';
-
-import WidgetClasses from '../views/widgetclasses';
+var React=require("react");
+var Component=React.Component;
+var PureComponent=require("react-pure-render/component");
+var WidgetClasses=require("../views/widgetclasses");
 
 var style={borderBottom:"1px solid silver"};
 
-export class StackWidget extends PureComponent {
+module.exports = class StackWidget extends PureComponent {
 
 	constructor (props) {
 		super(props);
-		Object.assign(style,props.style);
+		for (var i in props.style) style[i]=props.style[i];
 		style.height=props.height;
 	}
 

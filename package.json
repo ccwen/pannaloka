@@ -2,6 +2,7 @@
   "name": "react-transform-boilerplate",
   "version": "0.1.0",
   "description": "A new Webpack boilerplate with hot reloading React components, and error handling on module and component level.",
+  "main": "indexnw.html",  
   "scripts": {
     "start": "node server.js",
     "lint": "eslint src"
