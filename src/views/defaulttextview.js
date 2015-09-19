@@ -47,10 +47,18 @@ export class DefaultTextView extends Component {
 		}
 	}
 
-	onMarkup (markupsUnderCursor,action) {
+	onMarkup (M,action) {
 		if (action.newly) {
-			this.setState({dirty:true});
+			var markups=Object.assign({},this.state.markups);
+			
+			for (var i in M) {
+				var m=M[i];
+				if (m.doc===this.doc) {
+					markups[i]=m.markup;
+				}
+			}
 			selectionaction.clearAllSelection();
+			this.setState({dirty:true,markups});
 		}
 	}
 
