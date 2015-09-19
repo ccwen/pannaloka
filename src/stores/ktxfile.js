@@ -1,7 +1,7 @@
 var Reflux=require("reflux");
 var socketfs=require("../socketfs");
 var KTXFileStore=Reflux.createStore({
-	listenables:[require("../actions/stackwidget")]
+	listenables:[require("../actions/ktxfile")]
 	,files:[]
 	,loaddir:function(){
 		socketfs.readdirmeta("ktx",function(err,data){
@@ -16,6 +16,9 @@ var KTXFileStore=Reflux.createStore({
 	}
 	,onReload:function() {
 		this.loaddir();
+	}
+	,newfilename:function() {
+		return "ktx/"+Math.random().toString().substr(2,8)+".ktx";
 	}
 })
 module.exports=KTXFileStore;

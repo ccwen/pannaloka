@@ -6,7 +6,16 @@ var ktxfilestore=require("../stores/ktxfile");
 var FileItem=require("../components/fileitem");
 
 var stackwidgetaction=require("../actions/stackwidget");
+class NewFileButton extends Component {
+	newfile () {
+		var emptyfile={filename:ktxfilestore.newfilename() , title:"Untitled" , newfile:true};
+		stackwidgetaction.openWidget(emptyfile,"TextWidget");
+	}
 
+	render () {
+		return <button onClick={this.newfile.bind(this)}>Create New File</button>
+	}
+}
 module.exports = class FileList extends Component {
 	constructor (props) {
 		super(props);
@@ -14,7 +23,6 @@ module.exports = class FileList extends Component {
 	}
 
 	onData (files) {
-		console.log(files)
 		this.setState({files});
 	}
 
@@ -46,6 +54,9 @@ module.exports = class FileList extends Component {
 	}
 
 	render () {
-		return <div onClick={this.selectItem.bind(this)}>{this.state.files.map(this.renderItem.bind(this))}</div>
+		return <div>
+				<NewFileButton/>
+				<div onClick={this.selectItem.bind(this)}>{this.state.files.map(this.renderItem.bind(this))}</div>
+		</div>
 	}
 }

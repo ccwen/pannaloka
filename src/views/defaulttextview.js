@@ -9,6 +9,7 @@ var cmfileio=require("../cmfileio");
 
 var TextViewMenu=require("../components/textviewmenu");
 var stackwidgetaction=require("../actions/stackwidget");
+var ktxfileaction=require("../actions/ktxfile");
 var selectionaction=require("../actions/selection");
 var selectionstore=require("../stores/selection");
 var docfileaction=require("../actions/docfile");
@@ -18,28 +19,33 @@ var markupstore=require("../stores/markup");
 module.exports = class DefaultTextView extends Component {
 	constructor (props) {
 		super(props);
-		this.state={value:"",dirty:false};
+		this.state={value:"",dirty:false,markups:{},value:"",history:[]};
 	}
 	componentDidMount() {
+		if (this.props.newfile) {
+			this.setState({dirty:true,titlechanged:true,
+										value:"new file",meta:{title:this.props.title}},function(){
+				this.cm=this.refs.cm.getCodeMirror();
+				this.generation=this.cm.changeGeneration(true);
+				this.doc=this.cm.getDoc();			
+				docfileaction.openFile(this.doc,this.props.filename);			
+				this.setsize();
+			}.bind(this));
+		} else {
+			cmfileio.readFile(this.props.filename,function(err,data){
 
-		cmfileio.readFile(this.props.filename,function(err,data){
-			this.setState(data);
-			this.setState({dirty:false});
-			this.cm=this.refs.cm.getCodeMirror();
-			this.generation=this.cm.changeGeneration(true);
-			this.doc=this.cm.getDoc();
-
-			//link three together
-			docfileaction.openFile(this.doc,this.props.filename);
-
-			this.setsize();
-
-			//link
-		}.bind(this));
-
+				this.setState(data,function(){
+					this.cm=this.refs.cm.getCodeMirror();
+					this.generation=this.cm.changeGeneration(true);
+					this.doc=this.cm.getDoc();
+					//link three together
+					docfileaction.openFile(this.doc,this.props.filename);
+					this.setsize();
+				}.bind(this));
+			}.bind(this));
+		}
 		this.unsubscribeMarkup = markupstore.listen(this.onMarkup.bind(this));
 		this.unsubscribeSelection = selectionstore.listen(this.onSelection.bind(this));
-
 	}
 
 	onSelection (fileselections) {
@@ -109,7 +115,7 @@ module.exports = class DefaultTextView extends Component {
       if (err) console.log(err);
       else  {
       	if (this.state.titlechanged) {
-      		stackwidgetaction.reload();
+      		ktxfileaction.reload();
       	}
 				this.generation=this.cm.changeGeneration(true);
 				this.setState({dirty:false,titlechange:false,meta:newmeta,generation:this.generation});

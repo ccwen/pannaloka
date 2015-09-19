@@ -19,7 +19,7 @@ var selectionStore=Reflux.createStore({
 		this.trigger(this.selections,cursorchar);
 	}
 	,onClearAllSelection:function() {
-		var sels=this.copySel(selections);
+		var sels=this.copySel(this.selections);
 		for (var i in sels) {
 			sels[i]=[];
 		}
@@ -28,7 +28,7 @@ var selectionStore=Reflux.createStore({
 		this.trigger(this.selections,this.cursorchar);
 	}
 	,onClearSelectionOf:function(filename) {
-		var sels=this.copySel(selections);
+		var sels=this.copySel(this.selections);
 		sels[filename]=[];
 
 		this.selections=sels;
