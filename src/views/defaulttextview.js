@@ -55,7 +55,7 @@ export class DefaultTextView extends Component {
 				var m=M[i];
 				if (m.doc===this.doc) {
 					if (!markups) markups=Object.assign({},this.state.markups);			
-					markups[i]=m.markup;
+					markups[m.key]=m.markup;
 				}
 			}
 			selectionaction.clearAllSelection();
