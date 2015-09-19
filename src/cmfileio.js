@@ -14,7 +14,7 @@ var readFile=function(fn,cb) {
     if (err) {
       cb(err);
     } else {
-      var obj=deserialize(filecontent);
+      var obj=deserialize(filecontent,fn);
       if (!obj) {
         cb("error loading file "+fn);
       } else {

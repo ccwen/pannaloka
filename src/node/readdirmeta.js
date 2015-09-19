@@ -19,8 +19,11 @@ var readdirmeta=function(dataroot,path,cb){
 			fs.readSync(f,buffer,0,16*1024,0);
 			var s=buffer.toString("utf8");
 			var idx=s.indexOf("\n");
-
-			var meta=JSON.parse(s.substr(0,idx));
+			try {
+				var meta=JSON.parse(s.substr(0,idx));				
+			} catch (e) {
+				meta={title:file.substr(0,file.lastIndexOf("."))};
+			}
 			fs.closeSync(f);
 			meta.filename=path+'/'+file;
 			meta.stat=stat;
