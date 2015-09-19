@@ -88,13 +88,20 @@ export class DefaultTextView extends Component {
 		this.setState({dirty:!this.doc.isClean(this.generation)});
 	}
 
+	onSetTitle(title) {
+		this.state.meta.title=title;
+		this.setState({dirty:true,titlechanged:true});
+	}
 
   writefile (fn) {
   	cmfileio.writeFile(this.state.meta,this.cm,fn,function(err,newmeta){
       if (err) console.log(err);
       else  {
+      	if (this.state.titlechanged) {
+      		stackwidgetaction.reload();
+      	}
 				this.generation=this.cm.changeGeneration(true);
-				this.setState({dirty:false,meta:newmeta,generation:this.generation});
+				this.setState({dirty:false,titlechange:false,meta:newmeta,generation:this.generation});
       }
     }.bind(this));
   }
@@ -118,7 +125,9 @@ export class DefaultTextView extends Component {
 
 		return <div>
 			<TextViewMenu ref="menu" {...this.props}  dirty={this.state.dirty}  generation={this.state.generation}
-				onClose={this.onClose.bind(this)} onSave={this.onSave.bind(this)}/>
+				title={this.state.meta.title}
+				onClose={this.onClose.bind(this)} onSave={this.onSave.bind(this)}
+				onSetTitle={this.onSetTitle.bind(this)}/>
 			<CodeMirror ref="cm" value={this.state.value} history={this.state.history} 
 				markups={this.state.markups} 
 				onCursorActivity={this.onCursorActivity.bind(this)}
