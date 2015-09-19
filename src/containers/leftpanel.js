@@ -4,13 +4,13 @@ var reactTab=require("react-tabs");
 var Tab=reactTab.Tab , Tabs=reactTab.Tabs, TabList=reactTab.TabList, TabPanel=reactTab.TabPanel;
 var FileList=require('../views/filelist');
 
-var LeftPanel =React.createClass({
-	componentWillReceiveProps:function (nextProps) {
+module.exports = class LeftPanel extends Component {
+	componentWillReceiveProps (nextProps) {
 		this.panelheight=nextProps.height-45;
 		this.panelstyle={height:this.panelheight,overflowY:"auto"};		
 	}
 
-  ,render : function () {
+  render  () {
   	if (this.props.height<100) return <div>error height</div>
 
   	return <Tabs
@@ -44,5 +44,4 @@ var LeftPanel =React.createClass({
 
   	</Tabs>
   }
-});
-module.exports = LeftPanel;
+};

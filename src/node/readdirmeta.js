@@ -33,6 +33,8 @@ var readdirmeta=function(dataroot,path,cb){
 	} catch(e) {
 			console.log(e);
 	}
-	cb(0,out);
+	setTimeout(function(){
+		cb(0,out);
+	},10);//wait for nw 
 }
 module.exports=readdirmeta;
