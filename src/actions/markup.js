@@ -1,1 +1,1 @@
-module.exports=require("reflux").createActions(["edit","setMarkup","createMarkup"]);
+module.exports=require("reflux").createActions(["edit","markupsUnderCursor","createMarkup"]);

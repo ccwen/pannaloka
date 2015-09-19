@@ -3,24 +3,27 @@ var Component=React.Component;
 var PureComponent=require('react-pure-render').PureComponent;
 
 var markupstore=require("../stores/markup");
+var selectionstore=require("../stores/selection");
 var CreateMarkup=require("./createmarkup");
 var MarkupSelector=require("../components/markupselector");
 
 module.exports = class MarkupEditor extends PureComponent {
 	constructor (props) {
 		super(props);
-		this.state={editing:null,markups:[]};
+		this.state={editing:null,markups:[],hasSelection:false};
 	}
 	onClose () {
 		stackwidgetaction.closeWidget(this.props.wid)
 	}
 
-	onData (action,markups) {
-		if (action.editing) this.setState({editing:action.editing});
+	onMarkup (markups,action) {
+		if (action.cursor) {
+			this.setState({markups});
+		}
 	}
 
 	componentDidMount () {
-		this.unsubscribe = markupstore.listen(this.onData.bind(this));
+		this.unsubscribe = markupstore.listen(this.onMarkup.bind(this));
 	}
 
 	componentWillUnmount () {
@@ -28,8 +31,9 @@ module.exports = class MarkupEditor extends PureComponent {
 	}
 
 	render () {
-		var editor=this.state.editing?<MarkupSelector markups={this.state.markups} editing={this.state.editing}/>
-															   :<CreateMarkup/> ;
+		var editor=(selectionstore.hasRange()||!this.state.markups.length)?<CreateMarkup/>
+			:<MarkupSelector markups={this.state.markups} editing={this.state.editing}/>;
+															   
 
 		return <div>{editor}</div>
 	}

@@ -2,7 +2,7 @@ var React=require("react");
 var Component=React.Component;
 var PureComponent=require('react-pure-render').PureComponent;
 var selectionstore=require("../stores/selection");
-var markupactiore=require("../actions/markup");
+var markupaction=require("../actions/markup");
 var markuptypedef=require("../markuptypedef");
 var getAvailableType=markuptypedef.getAvailableType;
 var types=markuptypedef.types;
@@ -83,7 +83,7 @@ module.exports = class CreateMarkup extends PureComponent {
 
 	}
 	render () {
-		return <span>
+		return <span>|
 			{this.state.types.map(this.renderType.bind(this))}
 			{this.renderAttributeEditor()}
 		</span>

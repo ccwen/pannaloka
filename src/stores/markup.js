@@ -15,10 +15,10 @@ var markupStore=Reflux.createStore({
 		this.editing=markup;
 		this.trigger(this.markupsUnderCursor);
 	}
-	,onSetMarkups:function(markupsUnderCursor) {
-		this.editing=editing||this.editing;
+	,onMarkupsUnderCursor:function(markupsUnderCursor) {
+		if (!markupsUnderCursor.length&& !this.markupsUnderCursor.length) return ;//nothing happen
 		this.markupsUnderCursor=markupsUnderCursor;
-		this.trigger(this.markupsUnderCursor);
+		this.trigger(this.markupsUnderCursor,{cursor:true});
 	}
 	
 	,onCreateMarkup:function(obj) {

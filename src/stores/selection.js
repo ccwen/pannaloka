@@ -34,5 +34,13 @@ var selectionStore=Reflux.createStore({
 		this.selections=sels;
 		this.trigger(this.selections,this.cursorchar);
 	}
+	,hasRange:function () {
+		for (var i in this.selections) {
+			for (var j in this.selections[i]) {
+				if (this.selections[i][j].length>1) return true;
+			}
+		}
+		return false;
+	}
 })
 module.exports=selectionStore;
