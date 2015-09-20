@@ -4,6 +4,7 @@ var selectionstore=require("../stores/selection");
 var docfilestore=require("../stores/docfile");
 var uuid=require("../uuid");
 var transclusion = require("../components/transclusion");
+var stackwidgetaction=require("../actions/stackwidget");
 
 var bookmarkfromrange=function(doc) { //simulate bookmark format in file
 	var bookmark={}; 
@@ -26,15 +27,28 @@ var bookmarkfromrange=function(doc) { //simulate bookmark format in file
 var removeBookmarkAtCursor = function(doc) {
 	var cursor=doc.getCursor();
 	var removed=0;
+	var react=doc.getEditor().react;
 	var bookmarks=doc.findMarksAt(cursor);
 	bookmarks.forEach(function(bookmark){
 		if (bookmark.type==="bookmark") {
+			react.removeMarkup(bookmark.key);
 			bookmark.clear();
 			removed++;
 		}
 	});
 	return removed;
 }
+
+var transclude_onclick=function(e) {
+	var key=e.target.dataset.mid;
+	var m=this.getMarkup(key);
+	console.log(this,m);
+
+	var targetfile={filename:m.target.file, highlight: [m.target.from,m.target.to] };
+	stackwidgetaction.openWidget(targetfile,"TextWidget",{below:this.props.wid});
+}
+
+
 var transclude=function(bm) {
 	var doc=this.doc;
 	var removed=removeBookmarkAtCursor.call(this,doc);
@@ -49,7 +63,9 @@ var transclude=function(bm) {
 
 	var cursor=doc.getCursor();
   var marker = document.createElement('span');
-  React.render(  React.createElement(transclusion,{text:bm.text}),marker);
+  React.render(  React.createElement(transclusion,
+  	{mid:bm.key,text:bm.text,onClick:transclude_onclick.bind(this)})
+  ,marker);
   var textmarker=doc.markText(cursor,cursor,{
   	replacedWith:marker,target:{from:bm.target.from,to:bm.target.to,file:bm.target.file}
   		,className:bm.className, text:bm.text,clearWhenEmpty: false,key:bm.key
@@ -60,7 +76,8 @@ var transclude=function(bm) {
       return markText(this, clipPos(this, from), clipPos(this, to), options, type||"range");
     */
   );
-  return textmarker;
+  bm.handle=textmarker;
+  return bm;
 }
 
 module.exports=transclude;

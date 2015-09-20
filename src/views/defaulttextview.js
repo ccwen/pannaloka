@@ -20,11 +20,26 @@ module.exports = class DefaultTextView extends Component {
 	keymap(){
 		this.cm.setOption("extraKeys", {
 	  	"Ctrl-Q": function(cm) {
-	  		cm.react.bookmark_transclusion();
+	  		var bookmark=cm.react.bookmark_transclusion();
+	  		if (bookmark) {
+	  			cm.react.addMarkup(bookmark);
+	  			console.log(bookmark.key);	
+	  		}
 	  	}
 		});
 	}
 
+	//just for lookup , not trigger redraw as markup.handle already exists.
+	addMarkup (markup) {
+		if (!markup  || !markup.key) return;
+		this.state.markups[markup.key]=markup;
+	}
+	getMarkup (key) {
+		return this.state.markups[key];
+	}
+	removeMarkup (key) {
+		delete this.state.markups[key];
+	}
 	loadfile () {
 		this.cm=this.refs.cm.getCodeMirror();
 		this.cm.react=this;
@@ -81,7 +96,7 @@ module.exports = class DefaultTextView extends Component {
 	}
 
 	bookmark_transclusion () {
-		require("./transclude").apply(this,arguments);
+		return require("./transclude").apply(this,arguments);
 	}
 
 	componentWillUnmount () {
@@ -135,7 +150,11 @@ module.exports = class DefaultTextView extends Component {
 			var selections=getSelections(this.doc);
 			selectionaction.setSelection(this.props.filename,selections,cursorch);
 			var marks=this.doc.findMarksAt(this.doc.getCursor());
-			var markups=marks.map(function(m){return {markup:m,key:m.key,doc:this.doc}}.bind(this));
+			var markups=[];
+			var doc=this.doc;
+			marks.forEach(function(m){
+				if (m.type!=="bookmark") markups.push({markup:m,key:m.key,doc:doc})
+			});
 			markupaction.markupsUnderCursor(markups);
 		}.bind(this),300);//cursor throttle
 	}

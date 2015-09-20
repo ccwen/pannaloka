@@ -24,6 +24,13 @@ module.exports = class Main extends Component {
 		styles.LeftPanel.height=height;
 		styles.RightPanel.height=height;
 		this.setState({height});
+		/*
+		window.onbeforeunload = function (e) {
+			return true;
+    e = e || window.event;
+    return 'Do you want to quit program?';
+		};
+		*/
 	}
   render () {
   	return <div style={styles.Body}>
