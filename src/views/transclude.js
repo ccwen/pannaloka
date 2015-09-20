@@ -42,8 +42,6 @@ var removeBookmarkAtCursor = function(doc) {
 var transclude_onclick=function(e) {
 	var key=e.target.dataset.mid;
 	var m=this.getMarkup(key);
-	console.log(this,m);
-
 	var targetfile={filename:m.target.file, highlight: [m.target.from,m.target.to] };
 	stackwidgetaction.openWidget(targetfile,"TextWidget",{below:this.props.wid});
 }

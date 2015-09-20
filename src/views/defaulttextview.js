@@ -40,6 +40,18 @@ module.exports = class DefaultTextView extends Component {
 	removeMarkup (key) {
 		delete this.state.markups[key];
 	}
+
+	jumpToHighlight () {
+		if (!this.props.highlight) return;
+		var hl=this.props.highlight;
+		var marker = document.createElement('span');
+		var from={line:hl[0][1],ch:hl[0][0]},to={line:hl[1][1],ch:hl[1][0]};
+		setTimeout(function(){
+			var highlight=this.doc.markText(from,to,{className:"highlight",clearOnEnter:true});
+			this.cm.scrollIntoView(to);
+		}.bind(this),100)
+	}
+
 	loadfile () {
 		this.cm=this.refs.cm.getCodeMirror();
 		this.cm.react=this;
@@ -48,6 +60,7 @@ module.exports = class DefaultTextView extends Component {
 		docfileaction.openFile(this.doc,this.props.filename);
 		this.setsize();
 		this.keymap();
+		this.jumpToHighlight(this.props.highlight);
 	}
 
 	componentDidMount() {
