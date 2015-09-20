@@ -6,4 +6,4 @@ body {margin:0px;height:100%;overflow-y:hidden;}
 .quote   {border-bottom:1px solid gray;}
 .quoteby {border-bottom:1px dotted gray;}
 .transclusion {color:green;cursor:pointer;}
-.highlight {background:yellow;}
+.highlight {background:lightgreen;}

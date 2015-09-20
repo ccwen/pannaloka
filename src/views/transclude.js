@@ -1,3 +1,5 @@
+var MAX_TRANSCLUSION_LENGTH = 30;
+
 var React=require("react");
 
 var selectionstore=require("../stores/selection");
@@ -5,7 +7,7 @@ var docfilestore=require("../stores/docfile");
 var uuid=require("../uuid");
 var transclusion = require("../components/transclusion");
 var stackwidgetaction=require("../actions/stackwidget");
-
+var visualhelper=require("./visualhelper");
 var bookmarkfromrange=function(doc) { //simulate bookmark format in file
 	var bookmark={}; 
 	var ranges=selectionstore.getRanges();
@@ -14,7 +16,7 @@ var bookmarkfromrange=function(doc) { //simulate bookmark format in file
 	if (!thisfile || thisfile==ranges[0][1])return ;//cannot tranclude in same file
 
   var text=selectionstore.getRangeText(0);
-  if (text.length>5) text=text.substr(0,5)+"...";
+  if (text.length>MAX_TRANSCLUSION_LENGTH) text=text.substr(0,MAX_TRANSCLUSION_LENGTH)+"...";
 
   bookmark.text=text;
   bookmark.target={from:ranges[0][0][0] ,to:ranges[0][0][1],file:ranges[0][1]};
@@ -42,10 +44,16 @@ var removeBookmarkAtCursor = function(doc) {
 var transclude_onclick=function(e) {
 	var key=e.target.dataset.mid;
 	var m=this.getMarkup(key);
-	var targetfile={filename:m.target.file, highlight: [m.target.from,m.target.to] };
-	stackwidgetaction.openWidget(targetfile,"TextWidget",{below:this.props.wid});
-}
+	var highlight= [m.target.from,m.target.to];
+	var targetfile={filename:m.target.file, highlight:highlight };
 
+	var targetdoc=docfilestore.docOf(m.target.file);
+	if (targetdoc) {
+		visualhelper.scrollToHighlight(targetdoc,highlight);
+	} else {
+		stackwidgetaction.openWidget(targetfile,"TextWidget",{below:this.props.wid});	
+	}
+}
 
 var transclude=function(bm) {
 	var doc=this.doc;

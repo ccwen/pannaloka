@@ -10,11 +10,33 @@ var ktxfileaction=require("../actions/ktxfile");
 var docfileaction=require("../actions/docfile");
 var markupstore=require("../stores/markup"),markupaction=require("../actions/markup");
 var selectionaction=require("../actions/selection"), selectionstore=require("../stores/selection");
+var visualhelper=require("./visualhelper");
+var transclude=require("./transclude");
 
 module.exports = class DefaultTextView extends Component {
 	constructor (props) {
 		super(props);
-		this.state={value:"",dirty:false,markups:{},value:"",history:[]};
+		this.state={dirty:false,markups:{},value:"",history:[]};
+	}
+
+	componentDidMount() {
+		if (this.props.newfile) {
+			this.setState({dirty:true,titlechanged:true,value:"new file",meta:{title:this.props.title}}
+										,this.loadfile.bind(this));
+		} else {
+			cmfileio.readFile(this.props.filename,function(err,data){
+				this.setState(data,this.loadfile.bind(this));
+			}.bind(this));
+		}
+		this.unsubscribeMarkup = markupstore.listen(this.onMarkup.bind(this));
+		this.unsubscribeSelection = selectionstore.listen(this.onSelection.bind(this));
+	}
+	componentWillUnmount () {
+		this.unsubscribeMarkup();
+		this.unsubscribeSelection();
+	}
+	componentDidUpdate() {
+		this.setsize();
 	}
 
 	keymap(){
@@ -33,23 +55,14 @@ module.exports = class DefaultTextView extends Component {
 	addMarkup (markup) {
 		if (!markup  || !markup.key) return;
 		this.state.markups[markup.key]=markup;
+		this.setState({dirty:true});
 	}
 	getMarkup (key) {
 		return this.state.markups[key];
 	}
 	removeMarkup (key) {
 		delete this.state.markups[key];
-	}
-
-	jumpToHighlight () {
-		if (!this.props.highlight) return;
-		var hl=this.props.highlight;
-		var marker = document.createElement('span');
-		var from={line:hl[0][1],ch:hl[0][0]},to={line:hl[1][1],ch:hl[1][0]};
-		setTimeout(function(){
-			var highlight=this.doc.markText(from,to,{className:"highlight",clearOnEnter:true});
-			this.cm.scrollIntoView(to);
-		}.bind(this),100)
+		this.setState({dirty:true});
 	}
 
 	loadfile () {
@@ -60,20 +73,7 @@ module.exports = class DefaultTextView extends Component {
 		docfileaction.openFile(this.doc,this.props.filename);
 		this.setsize();
 		this.keymap();
-		this.jumpToHighlight(this.props.highlight);
-	}
-
-	componentDidMount() {
-		if (this.props.newfile) {
-			this.setState({dirty:true,titlechanged:true,value:"new file",meta:{title:this.props.title}}
-										,this.loadfile.bind(this));
-		} else {
-			cmfileio.readFile(this.props.filename,function(err,data){
-				this.setState(data,this.loadfile.bind(this));
-			}.bind(this));
-		}
-		this.unsubscribeMarkup = markupstore.listen(this.onMarkup.bind(this));
-		this.unsubscribeSelection = selectionstore.listen(this.onSelection.bind(this));
+		visualhelper.scrollToHighlight(this.doc,this.props.highlight);
 	}
 
 	onSelection (fileselections) {
@@ -86,19 +86,19 @@ module.exports = class DefaultTextView extends Component {
 		}
 	}
 
-	copyMarkup (M) {
-		var out={};
-		for (var i in M) out[i]=M[i];
-		return out;
-	}
 
-	onMarkup (M,action) {
+	onMarkup (M,action) {		
+		var shallowCopyMarkups = function(M) { //use Object.assign in future
+			var out={};
+			for (var i in M) out[i]=M[i];
+			return out;
+		}
 		if (action && action.newly) {
 			var markups=null;
 			for (var i in M) {
 				var m=M[i];
 				if (m.doc===this.doc) {
-					if (!markups) markups=this.copyMarkup(this.state.markups);			
+					if (!markups) markups=shallowCopyMarkups(this.state.markups);
 					markups[m.key]=m.markup;
 				}
 			}
@@ -108,22 +108,13 @@ module.exports = class DefaultTextView extends Component {
 		}
 	}
 
-	bookmark_transclusion () {
-		return require("./transclude").apply(this,arguments);
-	}
-
-	componentWillUnmount () {
-		this.unsubscribeMarkup();
-		this.unsubscribeSelection();
+	bookmark_transclusion () { // bookmark.className="transclusion"
+		return transclude.apply(this,arguments);
 	}
 
 	setsize () {
 		var menu=React.findDOMNode(this.refs.menu);
 		if (this.cm) this.cm.setSize("100%",this.props.height-menu.offsetHeight); 
-	}
-
-	componentDidUpdate() {
-		this.setsize();
 	}
 
 	onClose () {
