@@ -1,0 +1,66 @@
+var React=require("react");
+
+var selectionstore=require("../stores/selection");
+var docfilestore=require("../stores/docfile");
+var uuid=require("../uuid");
+var transclusion = require("../components/transclusion");
+
+var bookmarkfromrange=function(doc) { //simulate bookmark format in file
+	var bookmark={}; 
+	var ranges=selectionstore.getRanges();
+	if (ranges.length!==1)return;
+	var thisfile=docfilestore.fileOf(doc);
+	if (!thisfile || thisfile==ranges[0][1])return ;//cannot tranclude in same file
+
+  var text=selectionstore.getRangeText(0);
+  if (text.length>5) text=text.substr(0,5)+"...";
+
+  bookmark.text=text;
+  bookmark.target={from:ranges[0][0][0] ,to:ranges[0][0][1],file:ranges[0][1]};
+  bookmark.key=uuid();
+  bookmark.className="transclusion";
+  //TODO save target file generation 
+  return bookmark;
+}
+
+var removeBookmarkAtCursor = function(doc) {
+	var cursor=doc.getCursor();
+	var removed=0;
+	var bookmarks=doc.findMarksAt(cursor);
+	bookmarks.forEach(function(bookmark){
+		if (bookmark.type==="bookmark") {
+			bookmark.clear();
+			removed++;
+		}
+	});
+	return removed;
+}
+var transclude=function(bm) {
+	var doc=this.doc;
+	var removed=removeBookmarkAtCursor.call(this,doc);
+	if (removed) return;
+	if (!bm) {
+		bm=bookmarkfromrange(doc);
+		if (!bm) {
+			return;
+		};
+		this.setState({dirty:true});
+	}
+
+	var cursor=doc.getCursor();
+  var marker = document.createElement('span');
+  React.render(  React.createElement(transclusion,{text:bm.text}),marker);
+  var textmarker=doc.markText(cursor,cursor,{
+  	replacedWith:marker,target:{from:bm.target.from,to:bm.target.to,file:bm.target.file}
+  		,className:bm.className, text:bm.text,clearWhenEmpty: false,key:bm.key
+  	}
+  	,"bookmark" //require patch in codemirror.js to allow passing textmarker type
+  	/*
+  	  markText: function(from, to, options, type) {
+      return markText(this, clipPos(this, from), clipPos(this, to), options, type||"range");
+    */
+  );
+  return textmarker;
+}
+
+module.exports=transclude;

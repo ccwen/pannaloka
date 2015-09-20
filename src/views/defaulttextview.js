@@ -17,12 +17,22 @@ module.exports = class DefaultTextView extends Component {
 		this.state={value:"",dirty:false,markups:{},value:"",history:[]};
 	}
 
+	keymap(){
+		this.cm.setOption("extraKeys", {
+	  	"Ctrl-Q": function(cm) {
+	  		cm.react.bookmark_transclusion();
+	  	}
+		});
+	}
+
 	loadfile () {
 		this.cm=this.refs.cm.getCodeMirror();
+		this.cm.react=this;
 		this.generation=this.cm.changeGeneration(true);
 		this.doc=this.cm.getDoc();			
-		docfileaction.openFile(this.doc,this.props.filename);			
+		docfileaction.openFile(this.doc,this.props.filename);
 		this.setsize();
+		this.keymap();
 	}
 
 	componentDidMount() {
@@ -68,6 +78,10 @@ module.exports = class DefaultTextView extends Component {
 			this.setState({dirty:true});
 			if (markups) this.setState({markups});
 		}
+	}
+
+	bookmark_transclusion () {
+		require("./transclude").apply(this,arguments);
 	}
 
 	componentWillUnmount () {
