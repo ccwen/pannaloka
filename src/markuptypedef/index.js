@@ -8,7 +8,7 @@ var types={
 	,"dictionary":{validate:vs.singleone,label:"字典"}
 	,"partofspeech":{validate:vs.singleone,label:"詞性"}
 	,"intertext":{validate:vs.multi,label:"互文", mark:mark.dualone}
-	,"quote":{validate:vs.dualone,label:"出處", mark:mark.dualone}
+	,"quote":{validate:vs.dualone,label:"出處", mark:mark.dualone, editor:require("./quote")}
   ,"signifer":{validate:vs.singletwo,label:"能指"}
   ,"causeeffect":{validate:vs.singletwo,label:"因果"}
   ,"synonym":{validate:vs.singletwomore,label:"同義"}

@@ -157,8 +157,8 @@ module.exports = class DefaultTextView extends Component {
 			var markups=[];
 			var doc=this.doc;
 			marks.forEach(function(m){
-				if (m.type!=="bookmark") markups.push({markup:m,key:m.key,doc:doc})
-			});
+				if (m.type!=="bookmark") markups.push({markup:this.state.markups[m.key],key:m.key,doc:doc})
+			}.bind(this));
 			markupaction.markupsUnderCursor(markups);
 		}.bind(this),300);//cursor throttle
 	}

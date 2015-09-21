@@ -7,3 +7,4 @@ body {margin:0px;height:100%;overflow-y:hidden;}
 .quoteby {border-bottom:1px dotted gray;}
 .transclusion {color:green;cursor:pointer;}
 .highlight {background:lightgreen;}
+.editingMarker  {background:pink;}

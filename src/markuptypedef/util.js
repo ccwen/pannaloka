@@ -12,4 +12,9 @@ var filterEmptyRange=function(selections) {
 	}
 	return out;
 }
-module.exports={filterEmptyRange:filterEmptyRange};
+
+var getRangeText=function(doc,r) {
+	var from={line:r[0][1],ch:r[0][0]},to={line:r[1][1],ch:r[1][0]};
+	return doc.getRange(from,to);
+}
+module.exports={filterEmptyRange:filterEmptyRange,getRangeText};

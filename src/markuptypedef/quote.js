@@ -1,15 +1,15 @@
 var React=require("react");
 var E=React.createElement;
 var styles={input:{fontSize:"100%"}};
-var SimpleAttributeEditor=React.createClass({
+var QuoteAttributeEditor=React.createClass({
 	getInitialState:function() {
-		return {attr1:this.props.markup.note,dirty:false};
+		return {note:this.props.markup.note,dirty:false};
 	}
 	,onCreateMarkup:function() {
-		this.props.onCreateMarkup({attr1:this.state.attr1});
+		this.props.onCreateMarkup({note:this.state.note});
 	}
 	,onUpdateMarkup:function() {
-		this.props.onUpdateMarkup({attr1:this.state.attr1});
+		this.props.onUpdateMarkup({note:this.state.note});
 	}
 	,renderButton:function () {
 		var buttontext=this.props.editing?(this.state.dirty?"Update":null):"Create";
@@ -18,14 +18,15 @@ var SimpleAttributeEditor=React.createClass({
 	,handler:function() {
 		return this.props.editing?this.onUpdateMarkup:onCreateMarkup;
 	}
-	,oAttr1Change(e) {
-		this.setState({attr1:e.target.value,dirty:true});
+	,onNoteChange(e) {
+		var dirty=e.target.value!==this.props.markup.note;
+		this.setState({note:e.target.value,dirty:dirty});
 	}
 	,render:function() {
 		return E("span",null
-			,E("input",{ref:"attr1",style:styles.input,value:this.state.attr1,onChange:this.oAttr1Change})
+			,E("input",{ref:"note",style:styles.input,value:this.state.note,onChange:this.onNoteChange})
 			,this.renderButton()
 			);
 	}
 })
-module.exports=SimpleAttributeEditor;
+module.exports=QuoteAttributeEditor;

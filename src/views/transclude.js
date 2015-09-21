@@ -6,8 +6,7 @@ var selectionstore=require("../stores/selection");
 var docfilestore=require("../stores/docfile");
 var uuid=require("../uuid");
 var transclusion = require("../components/transclusion");
-var stackwidgetaction=require("../actions/stackwidget");
-var visualhelper=require("./visualhelper");
+var util=require("./util");
 var bookmarkfromrange=function(doc) { //simulate bookmark format in file
 	var bookmark={}; 
 	var ranges=selectionstore.getRanges();
@@ -45,14 +44,8 @@ var transclude_onclick=function(e) {
 	var key=e.target.dataset.mid;
 	var m=this.getMarkup(key);
 	var highlight= [m.target.from,m.target.to];
-	var targetfile={filename:m.target.file, highlight:highlight };
 
-	var targetdoc=docfilestore.docOf(m.target.file);
-	if (targetdoc) {
-		visualhelper.scrollToHighlight(targetdoc,highlight);
-	} else {
-		stackwidgetaction.openWidget(targetfile,"TextWidget",{below:this.props.wid});	
-	}
+	util.gotoRange(m.target.file,highlight,this.props.wid);
 }
 
 var transclude=function(bm) {
@@ -82,6 +75,8 @@ var transclude=function(bm) {
       return markText(this, clipPos(this, from), clipPos(this, to), options, type||"range");
     */
   );
+
+  //textmarker.type="bookmark"; //load from file will cause transclusion class apply till end-of-line
   bm.handle=textmarker;
   return bm;
 }

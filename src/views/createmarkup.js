@@ -73,13 +73,26 @@ module.exports = class CreateMarkup extends PureComponent {
 		markupaction.createMarkup({selections,payload,typename,typedef});
 	}
 
+	onUpdateMarkup (payload) {
+		throw "not implement yet"
+		/*
+		var selections=this.state.selections;
+		var typename=this.state.types[this.state.selectedIndex];
+		var typedef=types[typename];
+		markupaction.createMarkup({selections,payload,typename,typedef});
+		*/
+	}
+
+
 	renderAttributeEditor () {
 		if (this.state.types.length===0 || this.state.selectedIndex===-1) return;
 
 		var activetype=this.state.types[this.state.selectedIndex];
 		var attributeEditor=types[activetype].editor || DefaultMarkupAttrEditor;
 		return React.createElement( attributeEditor,
-			{selections:this.state.selections,onCreateMarkup:this.onCreateMarkup.bind(this)} );
+			{selections:this.state.selections
+				,onCreateMarkup:this.onCreateMarkup.bind(this)
+				,onUpdateMarkup:this.onUpdateMarkup.bind(this)} );
 
 	}
 	render () {
