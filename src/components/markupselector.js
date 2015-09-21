@@ -3,24 +3,24 @@ var E=React.createElement;
 var PureComponent=require("react-pure-render").PureComponent;
 var RangeHyperlink=require("./rangehyperlink");
 var markuptypedef=require("../markuptypedef/");
-var styles={select:{fontSize:"100%"}}
+var styles={picker:{border:"2px solid silver",borderRadius:"25%",cursor:"pointer"}}
 module.exports = class MarkupSelector extends PureComponent {
 	constructor (props) {
 		super(props);
 		this.state=this.getEditor(props.markups,0);
 	}
 
-	getEditor (markups,i) {
+	getEditor (markups,idx) {
 		var markupeditor=null,trait=null;
 		if (markups.length) {
-			trait=(markups[i]).markup;
-			this.setMarker(markups[i].doc,trait.handle);
+			trait=(markups[idx]).markup;
+			this.setMarker(markups[idx].doc,trait.handle);
 			var typedef=markuptypedef.types[trait.className];
 			if (typedef) markupeditor=typedef.editor;
 		} else {
-			clearMarker
+			clearMarker();
 		}
-		return {markupeditor,trait};
+		return {markupeditor,trait,idx};
 	}
 	clearMarker () {
 		if (this.editingMarker) {
@@ -39,25 +39,25 @@ module.exports = class MarkupSelector extends PureComponent {
 		this.setState(this.getEditor(nextProps.markups,0));
 	}
 
-	renderMarkupItem (item,idx) {
-		if (!item.key) {
-			throw "no item key"
-		}
-		return <option key={idx}>{item.key.substr(0,5)}</option>
+	renderMarkupItem () {
+		var idx=this.state.idx;
+		var item=this.props.markups[idx];
+		return <span key={idx}>{(idx+1)+"/"+this.props.markups.length}</span>
 	}
 
-	onSelectMarkup (e) {
-		var i=e.target.selectedIndex;
+	onNextMarkup (e) {
+		var i=this.state.idx+1;
+		if (i&& i===this.props.markups.length) i=0;
 		this.setState(this.getEditor(this.props.markups,i));
 	}
 
 	renderMarkupPicker () {
 		if (this.props.markups.length>1) {
-			return <select style={styles.select} onChange={this.onSelectMarkup.bind(this)}>
-				{this.props.markups.map(this.renderMarkupItem.bind(this))}
-				</select>
+			return <span style={styles.picker} onClick={this.onNextMarkup.bind(this)}>{this.renderMarkupItem()}</span>
 		}
 	}
+	//<select style={styles.select} onChange={this.onSelectMarkup.bind(this)}>
+	//?s
 
 	renderOtherRange () {
 		if (!this.state.trait.source)return;
