@@ -19,7 +19,10 @@ module.exports = class MarkupEditor extends PureComponent {
 
 	onMarkup (markups,action) {
 		if (action.cursor) {
-			this.setState({markups});
+			var keys=Object.keys(markups);
+			var wid=null;
+			if (keys.length) wid=markups[keys[0]].doc.getEditor().react.getWid();
+			this.setState({markups,wid});
 		}
 	}
 
@@ -32,7 +35,7 @@ module.exports = class MarkupEditor extends PureComponent {
 	}
 
 	onHyperlinkClick (file,mid) {
-		util.gotoMarkup(file,mid);
+		util.gotoRangeOrMarkupID(file,mid,this.state.wid);
 	}
 
 	render () {

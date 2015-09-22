@@ -10,9 +10,8 @@ var ktxfileaction=require("../actions/ktxfile");
 var docfileaction=require("../actions/docfile");
 var markupstore=require("../stores/markup"),markupaction=require("../actions/markup");
 var selectionaction=require("../actions/selection"), selectionstore=require("../stores/selection");
-var visualhelper=require("./visualhelper");
 var transclude=require("./transclude");
-
+var util=require("./util");
 module.exports = class DefaultTextView extends Component {
 	constructor (props) {
 		super(props);
@@ -73,7 +72,9 @@ module.exports = class DefaultTextView extends Component {
 		docfileaction.openFile(this.doc,this.props.filename);
 		this.setsize();
 		this.keymap();
-		visualhelper.scrollToHighlight(this.doc,this.props.highlight);
+		if (this.props.scrollTo) {
+			util.scrollAndHighlight(this.doc,this.props.scrollTo);	
+		}
 	}
 
 	onSelection (fileselections) {
@@ -117,6 +118,9 @@ module.exports = class DefaultTextView extends Component {
 		if (this.cm) this.cm.setSize("100%",this.props.height-menu.offsetHeight); 
 	}
 
+	getWid() {
+		return this.props.wid;
+	}
 	onClose () {
 		stackwidgetaction.closeWidget(this.props.wid);
 		selectionaction.clearSelectionOf(this.props.wid,this.props.filename);

@@ -3,7 +3,7 @@ var E=React.createElement;
 var styles={input:{fontSize:"100%"}};
 var SimpleAttributeEditor=React.createClass({
 	getInitialState:function() {
-		return {attr1:this.props.markup.note,dirty:false};
+		return {attr1:"",dirty:false};
 	}
 	,onCreateMarkup:function() {
 		this.props.onCreateMarkup({attr1:this.state.attr1});
@@ -16,7 +16,7 @@ var SimpleAttributeEditor=React.createClass({
 		if (buttontext) return E("button",{onClick:this.handler()},buttontext);
 	}
 	,handler:function() {
-		return this.props.editing?this.onUpdateMarkup:onCreateMarkup;
+		return this.props.editing?this.onUpdateMarkup:this.onCreateMarkup;
 	}
 	,oAttr1Change(e) {
 		this.setState({attr1:e.target.value,dirty:true});

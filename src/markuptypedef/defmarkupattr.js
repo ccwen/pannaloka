@@ -15,7 +15,7 @@ var DefaultMarkupAttributeEditor=React.createClass({
 		if (buttontext) return E("button",{onClick:this.handler()},buttontext);
 	}
 	,handler:function() {
-		return this.props.editing?this.onUpdateMarkup:onCreateMarkup;
+		return this.props.editing?this.onUpdateMarkup:this.onCreateMarkup;
 	}
 	,render:function() {
 		return E("span",null,

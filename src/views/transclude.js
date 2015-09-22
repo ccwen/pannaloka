@@ -45,7 +45,7 @@ var transclude_onclick=function(e) {
 	var m=this.getMarkup(key);
 	var highlight= [m.target.from,m.target.to];
 
-	util.gotoRange(m.target.file,highlight,this.props.wid);
+	util.gotoRangeOrMarkupID(m.target.file,highlight,this.props.wid);
 }
 
 var transclude=function(bm) {

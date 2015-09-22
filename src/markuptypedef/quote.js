@@ -16,7 +16,7 @@ var QuoteAttributeEditor=React.createClass({
 		if (buttontext) return E("button",{onClick:this.handler()},buttontext);
 	}
 	,handler:function() {
-		return this.props.editing?this.onUpdateMarkup:onCreateMarkup;
+		return this.props.editing?this.onUpdateMarkup:this.onCreateMarkup;
 	}
 	,onNoteChange(e) {
 		var dirty=e.target.value!==this.props.markup.note;
