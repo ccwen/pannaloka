@@ -60,8 +60,14 @@ module.exports = class DefaultTextView extends Component {
 		return this.state.markups[key];
 	}
 	removeMarkup (key) {
-		delete this.state.markups[key];
-		this.setState({dirty:true});
+		var m=this.state.markups[key];
+		if (m) {
+			m.handle.clear();
+			delete this.state.markups[key];
+			this.setState({dirty:true});
+		} else {
+			console.error("unknown markup id",key)
+		}
 	}
 
 	loadfile () {

@@ -11,17 +11,28 @@ module.exports = class MarkupSelector extends PureComponent {
 	}
 
 	getEditor (markups,idx) {
-		var markupeditor=null,trait=null;
+		var markupeditor=null,M=null,deletable=false,typedef=null;
 		if (markups.length) {
-			trait=(markups[idx]).markup;
-			this.setMarker(markups[idx].doc,trait.handle);
-			var typedef=markuptypedef.types[trait.className];
-			if (typedef) markupeditor=typedef.editor;
+			M=(markups[idx]).markup;
+			this.setMarker(markups[idx].doc,M.handle);
+			typedef=markuptypedef.types[M.className];
+			if (typedef) {
+				markupeditor=typedef.editor;
+				deletable=typedef.isDeletable(M);
+			}
 		} else {
 			clearMarker();
 		}
-		return {markupeditor,trait,idx};
+		return {markupeditor,M,idx,deletable,typedef};
 	}
+
+	componentWillReceiveProps () {
+		if (typedef) {
+			var deletable=typedef.isDeletable(this.state.M);
+			if (deletable!==this.state.deletable) this.setState({deletable});
+		}
+	}
+
 	clearMarker () {
 		if (this.editingMarker) {
 			this.editingMarker.clear();
@@ -60,7 +71,7 @@ module.exports = class MarkupSelector extends PureComponent {
 	//?s
 
 	renderOtherRange () {
-		var other=this.state.trait.by?this.state.trait.by:this.state.trait.source;
+		var other=this.state.M.by?this.state.M.by:this.state.M.source;
 		if (!other)return;
 		if (!Array.isArray( other[0]) ) other=[other];
 		return E(RangeHyperlink,{ranges:other,onHyperlinkClick:this.props.onHyperlinkClick});
@@ -76,16 +87,12 @@ module.exports = class MarkupSelector extends PureComponent {
 		for (var i in trait) {
 			mtrait[i]=trait[i];
 		}
+		this.props.onChanged&&this.props.onChanged(m.doc);	
+	}
 
-		this.props.onChanged&&this.props.onChanged(m.doc);
-
-		//console.log("updatemarkup",markup,trait);
-		/*
-		var selections=this.state.selections;
-		var typename=this.state.types[this.state.selectedIndex];
-		var typedef=types[typename];
-		markupaction.createMarkup({selections,payload,typename,typedef});
-		*/		
+	onDeleteMarkup () {
+		var m=this.props.markups[this.state.idx].markup;
+		this.props.onDelete(m,this.state.typedef);
 	}
 
 	render () {
@@ -97,8 +104,10 @@ module.exports = class MarkupSelector extends PureComponent {
 		return <span>
 				{this.renderMarkupPicker()}
 				{this.state.markupeditor?E(this.state.markupeditor,{
-					editing:true,markup:this.state.trait
+					editing:true,markup:this.state.M
+					,deletable:this.state.deletable
 					,onUpdateMarkup:this.onUpdateMarkup.bind(this)
+					,onDeleteMarkup:this.onDeleteMarkup.bind(this)
 				}):null}
 				{this.renderOtherRange()}
 		</span>

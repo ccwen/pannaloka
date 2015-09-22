@@ -4,6 +4,7 @@ var PureComponent=require('react-pure-render').PureComponent;
 
 var markupstore=require("../stores/markup");
 var selectionstore=require("../stores/selection");
+var docfilestore=require("../stores/docfile");
 var CreateMarkup=require("./createmarkup");
 var MarkupSelector=require("../components/markupselector");
 var util=require("./util");
@@ -11,7 +12,7 @@ var util=require("./util");
 module.exports = class MarkupEditor extends PureComponent {
 	constructor (props) {
 		super(props);
-		this.state={editing:null,markups:[],hasSelection:false};
+		this.state={editing:null,markups:[],hasSelection:false,deletable:false};
 	}
 	onClose () {
 		stackwidgetaction.closeWidget(this.props.wid)
@@ -26,12 +27,18 @@ module.exports = class MarkupEditor extends PureComponent {
 		}
 	}
 
+	onDocfile() {
+		this.forceUpdate();
+	}
+
 	componentDidMount () {
-		this.unsubscribe = markupstore.listen(this.onMarkup.bind(this));
+		this.unsubscribe1 = markupstore.listen(this.onMarkup.bind(this));
+		this.unsubscribe2 = docfilestore.listen(this.onDocfile.bind(this));
 	}
 
 	componentWillUnmount () {
-		this.unsubscribe();
+		this.unsubscribe1();
+		this.unsubscribe2();
 	}
 
 	onHyperlinkClick (file,mid) {
@@ -42,12 +49,22 @@ module.exports = class MarkupEditor extends PureComponent {
 		doc.getEditor().react.setDirty();
 	}
 
+	onDelete (m,typedef) {
+		if (!m || !m.handle) {
+			throw "wrong markup"
+			return;
+		}
+		markupstore.remove(m);
+		if (typedef.onDelete) typedef.onDelete(m);
+	}
+
 	render () {
 		var editor=(selectionstore.hasRange()||!this.state.markups.length)?
 			<CreateMarkup/>
 			:<MarkupSelector onHyperlinkClick={this.onHyperlinkClick.bind(this)}
 			 markups={this.state.markups} onChanged={this.onChanged.bind(this)}
-			 editing={this.state.editing}/>;
+			 onDelete={this.onDelete}
+			 editing={this.state.editing} deletable={this.state.deletable}/>;
 															   
 
 		return <div>{editor}</div>

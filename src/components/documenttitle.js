@@ -21,6 +21,11 @@ module.exports = class DocumentTitle extends PureComponent {
 		}
 	}
 
+	onBlur (e) {
+		setTimeout(function(){
+			this.setState({editing:false,title:this.props.title});	
+		}.bind(this),5000);
+	}
 	componentDidUpdate () {
 		var input=React.findDOMNode(this.refs.titleinput);
 		if (!input) return;
@@ -36,6 +41,7 @@ module.exports = class DocumentTitle extends PureComponent {
   render () {
   	if (this.state.editing) {
   		return <span><input ref="titleinput" style={styles.title} autofocus onKeyPress={this.onKeyPress.bind(this)} 
+  									onBlur={this.onBlur.bind(this)} 
   									onChange={this.onChange.bind(this)} value={this.state.title}/></span>
   	} else {
   		return <span onClick={this.edit.bind(this)}>{this.props.title}</span>
