@@ -66,21 +66,11 @@ module.exports = class CreateMarkup extends PureComponent {
 				type="radio" name="markuptype"></input>{types[item].label}</label>
 	}
 
-	onCreateMarkup (payload) {
+	onCreateMarkup (trait) {
 		var selections=this.state.selections;
 		var typename=this.state.types[this.state.selectedIndex];
 		var typedef=types[typename];
-		markupaction.createMarkup({selections,payload,typename,typedef});
-	}
-
-	onUpdateMarkup (payload) {
-		throw "not implement yet"
-		/*
-		var selections=this.state.selections;
-		var typename=this.state.types[this.state.selectedIndex];
-		var typedef=types[typename];
-		markupaction.createMarkup({selections,payload,typename,typedef});
-		*/
+		markupaction.createMarkup({selections,trait,typename,typedef});
 	}
 
 
@@ -91,8 +81,7 @@ module.exports = class CreateMarkup extends PureComponent {
 		var attributeEditor=types[activetype].editor || DefaultMarkupAttrEditor;
 		return React.createElement( attributeEditor,
 			{selections:this.state.selections
-				,onCreateMarkup:this.onCreateMarkup.bind(this)
-				,onUpdateMarkup:this.onUpdateMarkup.bind(this)} );
+				,onCreateMarkup:this.onCreateMarkup.bind(this)} );
 
 	}
 	render () {

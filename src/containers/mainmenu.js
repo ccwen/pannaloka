@@ -1,10 +1,10 @@
 var React=require("react");
 var Component=React.Component;
 var StackWidgetMainMenu=require("../views/stackwidgetmainmenu");
-var MarkupEditor=require("../views/markupeditor");
+var MarkupPanel=require("../views/markuppanel");
 
 module.exports =class MainMenu extends Component {
   render () {
-  	return <div><MarkupEditor/></div>
+  	return <div><MarkupPanel/></div>
   }
 }

@@ -17,8 +17,8 @@ var singleone=function(trait, docOf, cb) {
 
 }
 
-var dualone=function(trait,docOf, cb) {
-	var selections=validate.dualone(trait.selections);
+var dualone=function(mark,docOf, cb) {
+	var selections=validate.dualone(mark.selections);
 	if (!selections) return ;
 
 	var files=Object.keys(selections);
@@ -37,7 +37,7 @@ var dualone=function(trait,docOf, cb) {
 	if (text1.length>MAX_LABEL) text1=text1.substr(0,MAX_LABEL)+"…";
 	if (text2.length>MAX_LABEL) text2=text2.substr(0,MAX_LABEL)+"…";
 
-	var mrk1={className:"quote"  , from:range1[0], to:range1[1], source:[files[1],key2,text2] };
+	var mrk1={className:"quote"  , trait:mark.trait, from:range1[0], to:range1[1], source:[files[1],key2,text2] };
 	var mrk2={className:"quoteby", from:range2[0], to:range2[1], by:[files[0],key1,text1]};
 	
 

@@ -70,6 +70,24 @@ module.exports = class MarkupSelector extends PureComponent {
 		this.clearMarker();
 	}
 
+	onUpdateMarkup (trait) {
+		var m=this.props.markups[this.state.idx];
+		var mtrait=m.markup.trait;
+		for (var i in trait) {
+			mtrait[i]=trait[i];
+		}
+
+		this.props.onChanged&&this.props.onChanged(m.doc);
+
+		//console.log("updatemarkup",markup,trait);
+		/*
+		var selections=this.state.selections;
+		var typename=this.state.types[this.state.selectedIndex];
+		var typedef=types[typename];
+		markupaction.createMarkup({selections,payload,typename,typedef});
+		*/		
+	}
+
 	render () {
 		if (!this.props.markups.length) {
 			this.clearMarker();
@@ -78,7 +96,10 @@ module.exports = class MarkupSelector extends PureComponent {
 
 		return <span>
 				{this.renderMarkupPicker()}
-				{this.state.markupeditor?E(this.state.markupeditor,{editing:true,markup:this.state.trait}):null}
+				{this.state.markupeditor?E(this.state.markupeditor,{
+					editing:true,markup:this.state.trait
+					,onUpdateMarkup:this.onUpdateMarkup.bind(this)
+				}):null}
 				{this.renderOtherRange()}
 		</span>
 	}

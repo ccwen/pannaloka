@@ -3,13 +3,17 @@ var E=React.createElement;
 var styles={input:{fontSize:"100%"}};
 var QuoteAttributeEditor=React.createClass({
 	getInitialState:function() {
-		return {note:this.props.markup.note,dirty:false};
+		var m=this.props.markup;
+		this.note="";
+		if (m&&m.trait) this.note=m.trait.note;
+		return {note:this.note,dirty:false};
 	}
 	,onCreateMarkup:function() {
 		this.props.onCreateMarkup({note:this.state.note});
 	}
 	,onUpdateMarkup:function() {
 		this.props.onUpdateMarkup({note:this.state.note});
+		this.setState({dirty:false});
 	}
 	,renderButton:function () {
 		var buttontext=this.props.editing?(this.state.dirty?"Update":null):"Create";
@@ -19,7 +23,7 @@ var QuoteAttributeEditor=React.createClass({
 		return this.props.editing?this.onUpdateMarkup:this.onCreateMarkup;
 	}
 	,onNoteChange(e) {
-		var dirty=e.target.value!==this.props.markup.note;
+		var dirty=e.target.value!==this.note;
 		this.setState({note:e.target.value,dirty:dirty});
 	}
 	,render:function() {

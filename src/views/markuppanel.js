@@ -38,10 +38,16 @@ module.exports = class MarkupEditor extends PureComponent {
 		util.gotoRangeOrMarkupID(file,mid,this.state.wid);
 	}
 
+	onChanged (doc) {
+		doc.getEditor().react.setDirty();
+	}
+
 	render () {
-		var editor=(selectionstore.hasRange()||!this.state.markups.length)?<CreateMarkup/>
+		var editor=(selectionstore.hasRange()||!this.state.markups.length)?
+			<CreateMarkup/>
 			:<MarkupSelector onHyperlinkClick={this.onHyperlinkClick.bind(this)}
-			 markups={this.state.markups} editing={this.state.editing}/>;
+			 markups={this.state.markups} onChanged={this.onChanged.bind(this)}
+			 editing={this.state.editing}/>;
 															   
 
 		return <div>{editor}</div>
