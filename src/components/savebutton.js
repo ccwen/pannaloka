@@ -8,8 +8,9 @@ module.exports = class SaveButton extends Component {
 
 	constructor (props)	 {
 		super(props);
-		this.state={saved:false};
+		this.state={saved:false,countdown:60};
 	}
+
 	componentWillReceiveProps (nextProps) {
 		if (!nextProps.dirty && this.props.dirty && nextProps.generation !==this.state.generation) {
 			this.setState({saved:true});
@@ -17,6 +18,21 @@ module.exports = class SaveButton extends Component {
 				this.setState({saved:false,generation:nextProps.generation});
 			}.bind(this),1000);
 		}
+		if (nextProps.dirty ) {
+			clearInterval(this.countdowntimer);
+			this.setState({countdown:60});
+			this.countdowntimer=setInterval(function(){
+				if (this.state.countdown==0) {
+					this.props.onSave();//autosave
+					clearInterval(this.countdowntimer);
+				}
+				this.setState({countdown:this.state.countdown-1})
+			}.bind(this),1000);
+		}
+	}
+
+	componentWillUnmount () {
+		clearInterval(this.countdowntimer);
 	}
 
 	render () {
@@ -24,8 +40,10 @@ module.exports = class SaveButton extends Component {
 			return <span style={styles.saved}>Saved!!</span>
 		}
 		if (this.props.dirty) {
+			var countdown=this.state.countdown;
+			if (countdown>10) countdown=Math.round(countdown/10)*10;
 			return (<span>
-					<button onClick={this.props.onSave}>Save</button>
+					<button onClick={this.props.onSave}>Save in {countdown+"s"}</button>
 				</span>);
 		} else {
 			return <span></span>
