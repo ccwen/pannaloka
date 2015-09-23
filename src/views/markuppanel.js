@@ -9,7 +9,7 @@ var CreateMarkup=require("./createmarkup");
 var MarkupSelector=require("../components/markupselector");
 var util=require("./util");
 
-module.exports = class MarkupEditor extends PureComponent {
+module.exports = class MarkupPanel extends PureComponent {
 	constructor (props) {
 		super(props);
 		this.state={editing:null,markups:[],hasSelection:false,deletable:false};

@@ -12,10 +12,10 @@ module.exports = class SaveButton extends Component {
 	}
 
 	componentWillReceiveProps (nextProps) {
-		if (!nextProps.dirty && this.props.dirty && nextProps.generation !==this.state.generation) {
+		if (!nextProps.dirty && this.props.dirty) {
 			this.setState({saved:true});
 			setTimeout(function(){
-				this.setState({saved:false,generation:nextProps.generation});
+				this.setState({saved:false});
 			}.bind(this),1000);
 		}
 		if (nextProps.dirty ) {

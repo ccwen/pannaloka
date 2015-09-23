@@ -7,9 +7,9 @@ var style={cursor:"default"};
 var FileItem = React.createClass({
 	renderTitle:function() {
 		if (this.props.selected) {
-			return <a href="#" onClick={this.props.onClick}>{this.props.title}</a>
+			return <a href="#" onClick={this.props.onClick}>{this.props.title||this.props.t}</a>
 		} else {
-			return this.props.title;
+			return this.props.title||this.props.t;
 		}
 	}
 	,render:function () {

@@ -21,7 +21,13 @@ var readdirmeta=function(dataroot,path,cb){
 			var s=buffer.toString("utf8");
 			var idx=s.indexOf("\n");
 			try {
-				var meta=JSON.parse(s.substr(0,idx));				
+				var firstline=s.substr(0,idx).trim();
+				if (firstline[0]==="[") {
+					firstline=firstline.substr(1); //for ktx
+					var last=firstline[firstline.length-1];
+					if (last!=="}") firstline=firstline.substr(0,firstline.length-1);
+				}
+				var meta=JSON.parse(firstline);
 			} catch (e) {
 				meta={title:file.substr(0,file.lastIndexOf("."))};
 			}
