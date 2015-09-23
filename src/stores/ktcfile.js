@@ -9,7 +9,7 @@ var KTXFileStore=Reflux.createStore({
 	    if (err) {
 	      cb(err);
 	    } else {
-	    	cb(0,JSON.parse(filecontent));
+	    	cb(0,JSON.parse("["+filecontent.split(/\r?\n/).join(",")+"]"));
 	    }
 	  }.bind(this));
 	}
@@ -41,14 +41,12 @@ var KTXFileStore=Reflux.createStore({
 	}
 
 	,onWriteTree:function(toc,cb){
-		var tocstring="[";
+		var tocstring="";
 		toc.map(function(item,idx){
-			if (idx) tocstring+=",\n"
+			if (idx) tocstring+="\n"
 			tocstring+=JSON.stringify({t:item.t,d:item.d,links:item.links});
 		});
-		
-		tocstring+="]";
-		
+				
 	  socketfs.writeFile(this.fn,tocstring,"utf8",function(err){
 	  	this.loaddir(this.fn);
 	    cb&&cb(err);

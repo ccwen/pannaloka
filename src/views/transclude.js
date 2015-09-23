@@ -12,13 +12,13 @@ var bookmarkfromrange=function(doc) { //simulate bookmark format in file
 	var ranges=selectionstore.getRanges();
 	if (ranges.length!==1)return;
 	var thisfile=docfilestore.fileOf(doc);
-	if (!thisfile || thisfile==ranges[0][1])return ;//cannot tranclude in same file
+	if (!thisfile || thisfile==ranges[0][0])return ;//cannot tranclude in same file
 
   var text=selectionstore.getRangeText(0);
   if (text.length>MAX_TRANSCLUSION_LENGTH) text=text.substr(0,MAX_TRANSCLUSION_LENGTH)+"...";
 
   bookmark.text=text;
-  bookmark.target={from:ranges[0][0][0] ,to:ranges[0][0][1],file:ranges[0][1]};
+  bookmark.target={from:ranges[0][1][0] ,to:ranges[0][1][1],file:ranges[0][0]};
   bookmark.key=uuid();
   bookmark.className="transclusion";
   //TODO save target file generation 

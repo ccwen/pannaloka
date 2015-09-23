@@ -32,7 +32,7 @@ module.exports = class LeftPanel extends Component {
       <TabList>
 					<Tab>File</Tab>
           <Tab>Outline</Tab>
-          <Tab>Search</Tab>
+          <Tab>Help</Tab>
       </TabList>
 
       <TabPanel>
@@ -50,7 +50,7 @@ module.exports = class LeftPanel extends Component {
       </TabPanel>
       <TabPanel>
 	      <div style={this.panelstyle}>
-  	      <h2>SEARCH PANEL</h2>
+  	      <h2></h2>
   			</div>
       </TabPanel>
 

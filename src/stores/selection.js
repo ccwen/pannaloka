@@ -37,22 +37,36 @@ var selectionStore=Reflux.createStore({
 	,hasRange:function() {
 		return this.getRanges().length>0;
 	}
-	,getRanges:function () {
-		var out=[]; // selections, filename
+	,getRanges:function (opts) {
+		opts=opts||{};
+		var out=[]; // filename, selections
 		for (var i in this.selections) {
 			for (var j in this.selections[i]) {
 				if (this.selections[i][j].length>1) {
-					out.push( [ this.selections[i][j] , i ] );
+					var r=[i, this.selections[i][j] ];
+					if (opts.textLength) {
+						var text=this.getRangeText(r);
+						if (text.length>opts.textLength) {
+							text=text.substr(0,opts.textLength)+"…";
+						}
+						r.push(text);
+					}
+					out.push(r);
 				}
 			}
 		}
 		return out;
 	}
-	,getRangeText:function(idx) {
-		var ranges=this.getRanges();
-		if (idx>ranges.length-1)return null;
-		var r=ranges[idx][0];
-		var doc=docfile.docOf(ranges[idx][1]);
+	,getRangeText:function(idx_range) {
+		if (typeof idx_range==="number") {
+			var ranges=this.getRanges();
+			if (idx_range>ranges.length-1)return null;
+			var r=ranges[idx_range][1];			
+			var doc=docfile.docOf(ranges[idx][0]);
+		} else {
+			var r=idx_range[1]; //send in 
+			var doc=docfile.docOf(idx_range[0]);
+		}
 
 		var from={line:r[0][1],ch:r[0][0]},to={line:r[1][1],ch:r[1][0]} ;
 		return doc.getRange(from,to);
