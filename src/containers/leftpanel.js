@@ -6,6 +6,24 @@ var FileList=require('../views/filelist');
 var TreeList=require('../views/treelist');
 var OutlinePanel=require("../views/outlinepanel");
 
+var styles={key:{fontSize:"110%",color:"green",fontFamily:"monospace",textAlign:"center"},
+section:{fontSize:"130%",textAlign:"center"},
+desc:{textAlign:"center"}};
+class Key extends Component {
+  render () {
+    return <span style={styles.key}><br/>{this.props.children+" "}</span>
+  }
+}
+class Section extends Component {
+  render () {
+    return <div  style={styles.section}><br/>{this.props.children}</div>
+  }
+}
+class Desc extends Component {
+  render () {
+    return <span  style={styles.desc}>{this.props.children}</span>
+  }
+}
 module.exports = class LeftPanel extends Component {
   constructor (props) {
     super(props);
@@ -50,7 +68,27 @@ module.exports = class LeftPanel extends Component {
       </TabPanel>
       <TabPanel>
 	      <div style={this.panelstyle}>
-  	      <h2></h2>
+        <Section>Markup</Section>
+          <Key>Ctrl-Q</Key>
+          <Desc>Create a transclusion</Desc>
+        <Section>Editing</Section>
+          <Key>Ctrl-L</Key>
+          <Desc>Goto Line</Desc>
+          <Key>Ctrl-Z</Key>
+          <Desc>Undo</Desc>
+          <Key>Ctrl-Y</Key>
+          <Desc>Redo</Desc>
+        <Section>Search and Replace</Section>
+            <Key>Ctrl-F</Key>
+            <Desc>Start searching</Desc>
+            <Key>Ctrl-G</Key>
+            <Desc>Find next</Desc>
+            <Key>Shift-Ctrl-G</Key>
+            <Desc>Find previous</Desc>
+            <Key>Shift-Ctrl-F</Key>
+            <Desc>Replace</Desc>
+            <Key>Shift-Ctrl-R</Key>
+            <Desc>Replace all</Desc>
   			</div>
       </TabPanel>
 

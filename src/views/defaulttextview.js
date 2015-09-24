@@ -47,6 +47,7 @@ module.exports = class DefaultTextView extends Component {
 	  			console.log(bookmark.key);	
 	  		}
 	  	}
+	  	,"Ctrl-L":"gotoLine"
 		});
 	}
 
