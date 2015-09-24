@@ -4,13 +4,15 @@ var styles={input:{fontSize:"100%"}};
 var ActionButton=require("./actionbutton");
 var SimpleAttributeEditor=React.createClass({
 	getInitialState:function() {
-		return {attr1:"",dirty:false};
+		var attr1=(this.props.markup&&this.props.markup.trait)?this.props.markup.trait.attr1:"";
+		return {attr1:attr1,dirty:false};
 	}
 	,onCreateMarkup:function() {
 		this.props.onCreateMarkup({attr1:this.state.attr1});
 	}
 	,onUpdateMarkup:function() {
 		this.props.onUpdateMarkup({attr1:this.state.attr1});
+		this.setState({dirty:false});
 	}
 	,oAttr1Change(e) {
 		this.setState({attr1:e.target.value,dirty:true});

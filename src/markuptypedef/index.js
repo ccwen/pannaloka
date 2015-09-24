@@ -2,9 +2,6 @@ var vs=require("./validateselection");
 var mark=require("./mark");
 var docfilestore=require("../stores/docfile");
 var markupstore=require("../stores/markup");
-var alwaysDeletable=function(){
-	return true
-};
 
 var isQuoteDeletable=function(markup) {
 	var file=markup.source[0];
@@ -17,8 +14,8 @@ var deleteQuote=function(markup) {
 
 var types={
 	"important":{validate:vs.singleone,label:"重點",
-							editor:require("./simple"), mark:mark.singleone, isDeletable:alwaysDeletable}
-	,"title":{validate:vs.singleone,label:"標題"}
+							editor:require("./simple"), mark:mark.singleone}
+	,"title":{validate:vs.singleone,label:"標題",editor:require("./simple"),mark:mark.singleone}
 	,"dictionary":{validate:vs.singleone,label:"字典"}
 	,"partofspeech":{validate:vs.singleone,label:"詞性"}
 	,"intertext":{validate:vs.multi,label:"互文", mark:mark.dualone}

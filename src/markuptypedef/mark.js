@@ -9,7 +9,7 @@ var singleone=function(trait, docOf, cb) {
 	var range=selections[files[0]][0];
 	var key=uuid();
 
-	var mrk={className:trait.typename, from:range[0],to:range[1]};
+	var mrk={className:trait.typename, trait:trait.trait,from:range[0],to:range[1]};
 
 	var doc=docOf(files[0]);
 

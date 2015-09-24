@@ -11,14 +11,14 @@ module.exports = class MarkupSelector extends PureComponent {
 	}
 
 	getEditor (markups,idx) {
-		var markupeditor=null,M=null,deletable=false,typedef=null;
+		var markupeditor=null,M=null,deletable=true,typedef=null;
 		if (markups.length) {
 			M=(markups[idx]).markup;
 			this.setMarker(markups[idx].doc,M.handle);
 			typedef=markuptypedef.types[M.className];
 			if (typedef) {
 				markupeditor=typedef.editor;
-				deletable=typedef.isDeletable(M);
+				deletable=typedef.isDeletable?typedef.isDeletable(M):true;
 			}
 		} else {
 			clearMarker();
@@ -27,10 +27,10 @@ module.exports = class MarkupSelector extends PureComponent {
 	}
 
 	componentWillReceiveProps () {
-		if (typedef) {
+		if (typedef && typedef.isDeletable) {
 			var deletable=typedef.isDeletable(this.state.M);
 			if (deletable!==this.state.deletable) this.setState({deletable});
-		}
+		} else if (!this.state.deletable) this.setState({deletable:true});
 	}
 
 	clearMarker () {

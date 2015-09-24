@@ -11,7 +11,7 @@ var DefaultMarkupAttributeEditor=React.createClass({
 		this.props.onUpdateMarkup({});
 	}
 	,renderButton:function () {
-		var buttontext=this.props.editing?(this.state.dirty?"Update":null):"Create";
+		var buttontext=this.props.editing?(this.state.dirty?"Update":"|"):"Create";
 		if (buttontext) return E("button",{onClick:this.handler()},buttontext);
 	}
 	,handler:function() {
