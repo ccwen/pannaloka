@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "description": "A new Webpack boilerplate with hot reloading React components, and error handling on module and component level.",
   "main": "indexnw.html",  
+  "single-instance":true,
+  "window": {
+    "toolbar": true,
+    "width": 1280,
+    "height": 800
+  },  
   "scripts": {
     "start": "node server.js",
     "lint": "eslint src"
