@@ -62,7 +62,7 @@ var selectionStore=Reflux.createStore({
 			var ranges=this.getRanges();
 			if (idx_range>ranges.length-1)return null;
 			var r=ranges[idx_range][1];			
-			var doc=docfile.docOf(ranges[idx][0]);
+			var doc=docfile.docOf(ranges[idx_range][0]);
 		} else {
 			var r=idx_range[1]; //send in 
 			var doc=docfile.docOf(idx_range[0]);
