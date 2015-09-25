@@ -11,6 +11,7 @@ var docfileaction=require("../actions/docfile");
 var markupstore=require("../stores/markup"),markupaction=require("../actions/markup");
 var selectionaction=require("../actions/selection"), selectionstore=require("../stores/selection");
 var transclude=require("./transclude");
+var overlayaction=require("../actions/overlay");
 var util=require("./util");
 module.exports = class DefaultTextView extends Component {
 	constructor (props) {
@@ -163,9 +164,13 @@ module.exports = class DefaultTextView extends Component {
 	}
 
 	autoGoMarkup (markups) {
-		if (markups.length!==1)return;
+		if (markups.length!==1) {
+			overlayaction.clear();
+			return;
+		}
 		var m=markups[0];
 		var others=m.markup.source||m.markup.by;
+		if (!others)return;
 		if (typeof others[0]==="string"){
 			util.gotoRangeOrMarkupID(others[0],others[1],this.props.wid);
 		}

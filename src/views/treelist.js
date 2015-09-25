@@ -9,7 +9,10 @@ var ktcfileaction=require("../actions/ktcfile");
 class NewFileButton extends Component {
 	newfile () {
 		ktcfileaction.newTree();
-		this.props.onOpenTree();
+		setTimeout(function(){
+			this.props.onOpenTree();
+		}.bind(this),100);
+		
 	}
 
 	render () {

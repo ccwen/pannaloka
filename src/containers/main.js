@@ -4,7 +4,7 @@ var MainMenu=require('./mainmenu');
 var LeftPanel=require('./leftpanel');
 var RightPanel=require('./rightpanel');
 var StatusPanel=require('./statuspanel');
-
+var Overlay=require("../views/overlay");
 var styles={
 	Body:{fontSize:"150%"}
 	,Main:{display:"flex"}
@@ -33,7 +33,8 @@ module.exports = class Main extends Component {
 		*/
 	}
   render () {
-  	return <div style={styles.Body}>
+  	return   	<div>
+  		<div style={styles.Body}>
   			<MainMenu/>
 	  		<StatusPanel/>
   		<div ref="scrollstart" style={styles.Main}>
@@ -43,7 +44,9 @@ module.exports = class Main extends Component {
   			<div ref="rightpanel" style={styles.RightPanel}>
   				<RightPanel height={this.state.height} />				
   			</div>
+  		</div>
   	</div>
-  	</div>
+  	<Overlay/>
+  </div>
   }
 };
