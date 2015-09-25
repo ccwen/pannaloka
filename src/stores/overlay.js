@@ -12,7 +12,7 @@ var OverlayStore=Reflux.createStore({
 	//		x:F.x,y:F.y,width:F.w,height:F.h,rx:10,ry:10}
 	//	,{cmd:"rect",stroke:"brown",fillOpacity:0,strokeWidth:2,
 	//		x:T.x,y:T.y,width:T.w,height:T.h,rx:10,ry:10}
-		,{stroke:"black",strokeOpacity:0.25,strokeWidth:3,stroke:"green"  //line
+		,{stroke:"black",strokeOpacity:0.25,strokeWidth:4,stroke:"green"  //line
 			,d:"M"+(from.left+F.w/2)+" "+(from.top+F.h/2)+"L"+(to.left+T.w/2)+" "+(to.top+T.h/2)+"Z"},
 
 		]
@@ -25,7 +25,7 @@ var OverlayStore=Reflux.createStore({
 	}
 	,onClear:function() {
 		this.paths=[];
-		this.trigger(this.paths)
+		this.trigger(this.paths);
 	}
 });
 module.exports=OverlayStore;
