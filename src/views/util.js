@@ -16,8 +16,12 @@ var	scrollAndHighlight=function (doc,range_markupid,opts) {
 			opts=opts||{};
 			var hl=range_markupid;
 			if (typeof range_markupid==="string") {
-				var m=doc.getEditor().react.getMarkup(range_markupid).handle;
-				var pos=m.find();
+				var markup=doc.getEditor().react.getMarkup(range_markupid);
+				if (!markup) {
+					console.error("markup not found",range_markupid);
+					return;
+				}
+				var pos=markup.handle.find();
 				var from=pos.from, to=pos.to;
 				var scrollto={line:from.line,ch:from.ch};
 			} else {//array format

@@ -162,6 +162,15 @@ module.exports = class DefaultTextView extends Component {
 		this.writefile(this.props.filename);
 	}
 
+	autoGoMarkup (markups) {
+		if (markups.length!==1)return;
+		var m=markups[0];
+		var others=m.markup.source||m.markup.by;
+		if (typeof others[0]==="string"){
+			util.gotoRangeOrMarkupID(others[0],others[1],this.props.wid);
+		}
+	}
+
 	onCursorActivity () {
 		clearTimeout(this.timer1);
 		this.timer1=setTimeout(function(){
@@ -177,6 +186,7 @@ module.exports = class DefaultTextView extends Component {
 				}
 			}.bind(this));
 			markupaction.markupsUnderCursor(markups);
+			this.autoGoMarkup(markups);
 		}.bind(this),300);//cursor throttle
 	}
 	render () {
