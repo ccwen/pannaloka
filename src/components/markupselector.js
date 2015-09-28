@@ -101,7 +101,7 @@ module.exports = class MarkupSelector extends PureComponent {
 			return <span></span>
 		}
 
-		return <span>
+		return <span>|
 				{this.renderMarkupPicker()}
 				{this.state.markupeditor?E(this.state.markupeditor,{
 					editing:true,markup:this.state.M

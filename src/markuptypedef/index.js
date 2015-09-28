@@ -15,7 +15,9 @@ var deleteQuote=function(markup) {
 var types={
 	"important":{validate:vs.singleone,label:"重點",
 							editor:require("./simple"), mark:mark.singleone}
-	,"title":{validate:vs.singleone,label:"標題",editor:require("./simple"),mark:mark.singleone}
+	,"title":{validate:vs.singleone,label:"大標",editor:require("./simple"),mark:mark.singleone}
+	,"title2":{validate:vs.singleone,label:"中標",editor:require("./simple"),mark:mark.singleone}
+	,"title3":{validate:vs.singleone,label:"小標",editor:require("./simple"),mark:mark.singleone}	
 	,"dictionary":{validate:vs.singleone,label:"字典"}
 	,"partofspeech":{validate:vs.singleone,label:"詞性"}
 	,"intertext":{validate:vs.multi,label:"互文", mark:mark.dualone}

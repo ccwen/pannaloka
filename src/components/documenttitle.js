@@ -29,9 +29,11 @@ module.exports = class DocumentTitle extends PureComponent {
 	componentDidUpdate () {
 		var input=React.findDOMNode(this.refs.titleinput);
 		if (!input) return;
-		var len=this.state.title.length;
-		input.focus(); 
-		input.setSelectionRange(len,len)
+		if (document.activeElement!==input) {
+			var len=this.state.title.length;
+			input.focus(); 
+			input.setSelectionRange(len,len)
+		}
 	}
 
 	edit () {

@@ -1,6 +1,6 @@
 var React=require("react");
 var E=React.createElement;
-var styles={input:{fontSize:"100%"}};
+var styles={input:{fontSize:"90%"}};
 var ActionButton=require("./actionbutton");
 var SimpleAttributeEditor=React.createClass({
 	getInitialState:function() {
