@@ -7,6 +7,15 @@ var singleone=function(selections) {
 
 	return sels;
 }
+var milestone=function(selections,doc) {
+	var sels=filterEmptyRange(selections);
+	var keys=Object.keys(sels);
+	if (keys.length!==1) return null;
+	if (sels[keys[0]].length!==1) return null;
+
+	return sels;
+}
+
 var singletwo=function(selections) {
 	var sels=filterEmptyRange(selections);
 	var keys=Object.keys(sels);
@@ -41,4 +50,5 @@ var multi=function(selections) {
 	
 	return sels;
 }
-module.exports={singleone:singleone,singletwo:singletwo,singletwomore:singletwomore,dualone:dualone,multi:multi};
+module.exports={milestone:milestone,singleone:singleone,singletwo:singletwo,
+	singletwomore:singletwomore,dualone:dualone,multi:multi};

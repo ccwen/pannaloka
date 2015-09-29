@@ -13,7 +13,10 @@ var deleteQuote=function(markup) {
 }
 
 var types={
-	"important":{validate:vs.singleone,label:"重點",
+	"milestone":{validate:vs.milestone,label:"界石",
+							editor:require("./simple"), mark:mark.milestone}
+
+	,"important":{validate:vs.singleone,label:"重點",
 							editor:require("./simple"), mark:mark.singleone}
 	,"title":{validate:vs.singleone,label:"大標",editor:require("./simple"),mark:mark.singleone}
 	,"title2":{validate:vs.singleone,label:"中標",editor:require("./simple"),mark:mark.singleone}

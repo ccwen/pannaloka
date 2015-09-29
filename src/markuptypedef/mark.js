@@ -17,6 +17,18 @@ var singleone=function(trait, docOf, cb) {
 
 }
 
+var milestone=function(trait, docOf, cb) {
+	var selections=validate.milestone(trait.selections);
+	if (!selections) return ;
+	var files=Object.keys(selections);
+	var range=selections[files[0]][0];
+	var key=uuid();
+
+	var mrk={className:trait.typename, trait:trait.trait,from:range[0],to:range[1],automic:true,readOnly:true};
+	var doc=docOf(files[0]);
+	cb(0, [{markup:mrk, doc:doc, key:key}]);
+}
+
 var dualone=function(mark,docOf, cb) {
 	var selections=validate.dualone(mark.selections);
 	if (!selections) return ;
@@ -44,4 +56,4 @@ var dualone=function(mark,docOf, cb) {
 	cb(0, [{markup:mrk1, doc:doc1, key:key1}
 				,{markup:mrk2, doc:doc2, key:key2}] );
 }
-module.exports={singleone:singleone,dualone:dualone};
+module.exports={singleone:singleone,dualone:dualone,milestone:milestone};

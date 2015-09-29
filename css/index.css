@@ -2,6 +2,7 @@ body {margin:0px;height:100%;overflow-y:hidden;overflow-x:hidden;}
 .CodeMirror { line-height: 1.6;}
 .mymark {background:yellow;}
 .important {border-bottom :2px dotted red }
+.milestone {border-radius:10px;background :lightblue ;padding-top:8px;padding-bottom:8px;}
 
 .title {border-bottom:3px solid blue}
 .title2 {font-weight:bold}
