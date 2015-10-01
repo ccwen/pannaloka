@@ -16,7 +16,12 @@ var QuoteAttributeEditor=React.createClass({
 		this.props.onUpdateMarkup({note:this.state.note});
 		this.setState({dirty:false});
 	}
-
+	,componentWillReceiveProps:function(nextprops) {
+		var m=nextprops.markup;
+		this.note="";
+		if (m&&m.trait) this.note=m.trait.note;
+		this.setState({note:this.note});
+	}
 	,onNoteChange(e) {
 		var dirty=e.target.value!==this.note;
 		this.setState({note:e.target.value,dirty:dirty});

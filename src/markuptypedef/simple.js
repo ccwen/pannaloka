@@ -14,6 +14,10 @@ var SimpleAttributeEditor=React.createClass({
 		this.props.onUpdateMarkup({attr1:this.state.attr1});
 		this.setState({dirty:false});
 	}
+	,componentWillReceiveProps:function(nextprops) {
+		var attr1=(nextprops.markup&&nextprops.markup.trait)?nextprops.markup.trait.attr1:"";
+		this.setState({attr1:attr1});
+	}
 	,oAttr1Change(e) {
 		this.setState({attr1:e.target.value,dirty:true});
 	}
