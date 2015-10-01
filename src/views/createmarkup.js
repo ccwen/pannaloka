@@ -32,8 +32,11 @@ class UserPreference {
 module.exports = class CreateMarkup extends PureComponent {
 	constructor (props) {
 		super(props);
-		this.state={types:[],userselect:"",selectedIndex:0,selections:{}};
+		var selections=selectionstore.selections;
+		var types=getAvailableType(selections);
 		this.user=new UserPreference();
+		var selectedIndex=this.user.getPrefer(types);
+		this.state={types:types,userselect:"",selectedIndex:0,selections:selections};
 	}
 
 	onData (selections) {
