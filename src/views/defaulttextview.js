@@ -47,11 +47,11 @@ module.exports = class DefaultTextView extends Component {
 	  		var bookmark=cm.react.bookmark_transclusion();
 	  		if (bookmark) {
 	  			cm.react.addMarkup(bookmark);
-	  			console.log(bookmark.key);	
 	  		}
 	  	}
 	  	,"Ctrl-S":this.onSave.bind(this)
 	  	,"Ctrl-L":"gotoLine"
+	  	,"Ctrl-M":milestones.createMilestone.bind(this)
 		});
 	}
 

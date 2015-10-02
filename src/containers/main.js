@@ -36,7 +36,7 @@ module.exports = class Main extends Component {
   	return   	<div>
   		<div style={styles.Body}>
   			<MainMenu/>
-	  		
+	  		<StatusPanel/>
   		<div ref="scrollstart" style={styles.Main}>
   			<div style={styles.LeftPanel}>
   				<LeftPanel height={this.state.height}/>
@@ -50,4 +50,4 @@ module.exports = class Main extends Component {
   </div>
   }
 };
-//<StatusPanel/>
+//

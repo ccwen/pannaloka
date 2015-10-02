@@ -2,14 +2,14 @@ var uuid=require('../uuid');
 var validate=require('./validateselection');
 var util=require("./util");
 var MAX_LABEL=5;
-var singleone=function(trait, docOf, cb) {
-	var selections=validate.singleone(trait.selections);
+var singleone=function(params, docOf, cb) {
+	var selections=validate.singleone(params.selections);
 	if (!selections) return ;
 	var files=Object.keys(selections);
 	var range=selections[files[0]][0];
 	var key=uuid();
 
-	var mrk={className:trait.typename, trait:trait.trait,from:range[0],to:range[1]};
+	var mrk={className:params.typename, trait:params.trait,from:range[0],to:range[1]};
 
 	var doc=docOf(files[0]);
 
@@ -17,14 +17,14 @@ var singleone=function(trait, docOf, cb) {
 
 }
 
-var milestone=function(trait, docOf, cb) {
-	var selections=validate.milestone(trait.selections);
+var milestone=function(params, docOf, cb) {
+	var selections=validate.milestone(params.selections);
 	if (!selections) return ;
 	var files=Object.keys(selections);
 	var range=selections[files[0]][0];
 	var key=uuid();
 
-	var mrk={className:trait.typename, trait:trait.trait,from:range[0],to:range[1],automic:true,readOnly:true};
+	var mrk={className:params.typename, trait:params.trait,from:range[0],to:range[1],automic:true,readOnly:true};
 	var doc=docOf(files[0]);
 	cb(0, [{markup:mrk, doc:doc, key:key}]);
 }

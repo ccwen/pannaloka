@@ -13,8 +13,7 @@ var deleteQuote=function(markup) {
 }
 
 var types={
-	"milestone":{validate:vs.milestone,label:"界石",
-							editor:require("./simple"), mark:mark.milestone}
+	"milestone":{validate:vs.milestone,label:"界石",editor:require("./simple"), mark:mark.milestone,visible:false}
 
 	,"important":{validate:vs.singleone,label:"重點",
 							editor:require("./simple"), mark:mark.singleone}
@@ -34,7 +33,7 @@ var types={
 var getAvailableType=function(selections) {
 	var out=[];
 	for (var i in types) {
-		if (types[i].validate(selections)){
+		if (types[i].validate(selections) && types[i].visible){
 			out.push(i);
 		}
 	}
