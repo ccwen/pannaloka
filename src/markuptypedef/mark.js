@@ -16,17 +16,21 @@ var singleone=function(params, docOf, cb) {
 	cb(0, [{markup:mrk, doc:doc, key:key}]);
 
 }
+var milestone_novalidate=function(doc,range,trait) {
+	var key=uuid();
+	return {markup:{className:"milestone", trait:trait,from:range[0],to:range[1],automic:true,readOnly:true}
+		,doc:doc,key:key};
+}
 
 var milestone=function(params, docOf, cb) {
 	var selections=validate.milestone(params.selections);
 	if (!selections) return ;
 	var files=Object.keys(selections);
 	var range=selections[files[0]][0];
-	var key=uuid();
 
-	var mrk={className:params.typename, trait:params.trait,from:range[0],to:range[1],automic:true,readOnly:true};
 	var doc=docOf(files[0]);
-	cb(0, [{markup:mrk, doc:doc, key:key}]);
+	var mrk=milestone_novalidate(doc,range,params.trait);
+	cb(0, [mrk]);
 }
 
 var dualone=function(mark,docOf, cb) {
@@ -56,4 +60,4 @@ var dualone=function(mark,docOf, cb) {
 	cb(0, [{markup:mrk1, doc:doc1, key:key1}
 				,{markup:mrk2, doc:doc2, key:key2}] );
 }
-module.exports={singleone:singleone,dualone:dualone,milestone:milestone};
+module.exports={singleone:singleone,dualone:dualone,milestone:milestone,milestone_novalidate:milestone_novalidate};

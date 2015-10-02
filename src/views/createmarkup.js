@@ -87,8 +87,8 @@ module.exports = class CreateMarkup extends PureComponent {
 				,onCreateMarkup:this.onCreateMarkup.bind(this)} );
 
 	}
-	render () {
-		return <span>|
+	render () {//need 130% to prevent flickering when INPUT add to markup editor
+		return <span><span style={{fontSize:"130%"}}>|</span>
 			{this.state.types.map(this.renderType.bind(this))}
 			{this.renderAttributeEditor()}
 		</span>

@@ -2,7 +2,7 @@ var React=require("react");
 var Component=React.Component;
 var PureComponent=require('react-pure-render').PureComponent;
 var kcm=require("ksana-codemirror");
-var CodeMirror=kcm.CodeMirror, getSelections=kcm.getSelections, getCharAtCursor=kcm.getCharAtCursor;
+var CodeMirror=kcm.Component, getSelections=kcm.getSelections, getCharAtCursor=kcm.getCharAtCursor;
 var cmfileio=require("../cmfileio");
 var TextViewMenu=require("../components/textviewmenu");
 var stackwidgetaction=require("../actions/stackwidget");
@@ -50,8 +50,8 @@ module.exports = class DefaultTextView extends Component {
 	  		}
 	  	}
 	  	,"Ctrl-S":this.onSave.bind(this)
-	  	,"Ctrl-L":"gotoLine"
 	  	,"Ctrl-M":milestones.createMilestone.bind(this)
+	  	,"Ctrl-K":"automarkup"
 		});
 	}
 
@@ -70,6 +70,23 @@ module.exports = class DefaultTextView extends Component {
 		if (markup.className==="milestone") this.rebuildMilestone(this.state.markups);
 		this.setState({dirty:true});
 	}
+
+	createMilestones (ranges) { //no checking 
+		milestones.createMilestones.call(this.cm,ranges,function(newmarkups){
+			if (!newmarkups.length) return;
+			var markups={};
+			for (var i in this.state.markups ) markups[i]=this.state.markups[i];
+
+			for (var i=0;i<newmarkups.length;i++) {
+				markups[newmarkups[i].key]=newmarkups[i].markup;
+			}
+			
+			this.setState({dirty:true,markups},function(){
+				this.rebuildMilestone(this.state.markups);
+			}.bind(this));
+		}.bind(this));
+	}
+
 	getMarkup (key) {
 		return this.state.markups[key];
 	}
@@ -152,8 +169,14 @@ module.exports = class DefaultTextView extends Component {
 		docfileaction.closeFile(this.doc);
 	}
 
-	onChange () {
+	onChange (doc,change) {
 		this.setState({dirty:!this.doc.isClean(this.generation)});
+
+		if (doc.lineCount()!==this.state.lineCount) {
+			console.log("change rebuild milestone")
+			this.rebuildMilestone(this.state.markups);
+			this.setState({lineCount:doc.lineCount()})
+		}
 	}
 
 	onSetTitle(title) {

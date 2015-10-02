@@ -1,7 +1,4 @@
-{"title":"毛詩","textsize":"0x0000ec04"}
-毛詩
-
-<頁 n="1"/>
+{"title":"毛詩","textsize":"0x0000ebf4"}
 毛詩
 
 <章>國風</章>
@@ -3309,19 +3306,12 @@
 
 
     毛詩終
-
 {"markups":{
-"0b31b141-72e1-4fee-b7e1-47bee8ca3c9a":{"from":[3,30],"to":5,"className":"milestone","trait":{"attr1":""}},
-"ebb1afe8-4ed8-49ee-a8c1-2ec3887301b3":{"from":[3,40],"to":5,"className":"milestone","trait":{"attr1":""}},
-"4fe9744c-86bc-4f64-9924-f08ef7eb8fa0":{"from":[3,50],"to":5,"className":"milestone","trait":{"attr1":""}},
-"8fbbb31d-5c76-4f7c-b891-6ea9144e8ddd":{"from":[3,59],"to":5,"className":"milestone","trait":{"attr1":""}}
 }
 ,"history":[
 {"ranges":[{"anchor":{"line":0,"ch":0},"head":{"line":0,"ch":0}}],"primIndex":0},
-{"ranges":[{"anchor":{"line":67,"ch":3,"xRel":1},"head":{"line":67,"ch":5,"xRel":-1}}],"primIndex":0},
-{"ranges":[{"anchor":{"line":67,"ch":5,"xRel":-1},"head":{"line":67,"ch":5,"xRel":-1}}],"primIndex":0},
-{"ranges":[{"anchor":{"line":7,"ch":3,"xRel":0},"head":{"line":7,"ch":5,"xRel":-1}}],"primIndex":0},
-{"ranges":[{"anchor":{"line":7,"ch":3,"xRel":1},"head":{"line":7,"ch":3,"xRel":1}}],"primIndex":0},
-{"ranges":[{"anchor":{"line":7,"ch":5,"xRel":0},"head":{"line":7,"ch":5,"xRel":0}}],"primIndex":0}
+{"ranges":[{"anchor":{"line":1,"ch":0,"xRel":1},"head":{"line":1,"ch":0,"xRel":1}}],"primIndex":0},
+{"ranges":[{"anchor":{"line":0,"ch":2,"xRel":1},"head":{"line":0,"ch":0,"xRel":1}}],"primIndex":0},
+{"ranges":[{"anchor":{"line":3,"ch":9,"xRel":1},"head":{"line":3,"ch":9,"xRel":1}}],"primIndex":0}
 ]
 }

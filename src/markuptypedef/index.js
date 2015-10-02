@@ -13,7 +13,7 @@ var deleteQuote=function(markup) {
 }
 
 var types={
-	"milestone":{validate:vs.milestone,label:"界石",editor:require("./simple"), mark:mark.milestone,visible:false}
+	"milestone":{validate:vs.milestone,label:"界石",editor:require("./simple"), mark:mark.milestone,hidden:true}
 
 	,"important":{validate:vs.singleone,label:"重點",
 							editor:require("./simple"), mark:mark.singleone}
@@ -33,10 +33,10 @@ var types={
 var getAvailableType=function(selections) {
 	var out=[];
 	for (var i in types) {
-		if (types[i].validate(selections) && types[i].visible){
+		if (types[i].validate(selections) && !types[i].hidden){
 			out.push(i);
 		}
 	}
 	return out;
 }
-module.exports={getAvailableType:getAvailableType, types:types};
+module.exports={getAvailableType:getAvailableType, types:types, milestone_novalidate:mark.milestone_novalidate};
