@@ -32,8 +32,11 @@ class UserPreference {
 module.exports = class CreateMarkup extends PureComponent {
 	constructor (props) {
 		super(props);
-		this.state={types:[],userselect:"",selectedIndex:0,selections:{}};
+		var selections=selectionstore.selections;
+		var types=getAvailableType(selections);
 		this.user=new UserPreference();
+		var selectedIndex=this.user.getPrefer(types);
+		this.state={types:types,userselect:"",selectedIndex:0,selections:selections};
 	}
 
 	onData (selections) {
@@ -84,8 +87,8 @@ module.exports = class CreateMarkup extends PureComponent {
 				,onCreateMarkup:this.onCreateMarkup.bind(this)} );
 
 	}
-	render () {
-		return <span>|
+	render () {//need 130% to prevent flickering when INPUT add to markup editor
+		return <span><span style={{fontSize:"130%"}}>|</span>
 			{this.state.types.map(this.renderType.bind(this))}
 			{this.renderAttributeEditor()}
 		</span>

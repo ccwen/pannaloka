@@ -27,7 +27,7 @@ var markupStore=Reflux.createStore({
 		doc.getEditor().react.removeMarkup(mid);
 		this.trigger([],{cursor:true});
 	}
-	,onCreateMarkup:function(obj) {
+	,onCreateMarkup:function(obj,cb) {
 		if (!obj.typedef || !obj.typedef.mark) {
 			console.log(obj);
 			throw "cannot create markup"
@@ -36,6 +36,7 @@ var markupStore=Reflux.createStore({
 		obj.typedef.mark(obj, docfilestore.docOf ,function(err,newmarkup){
 			this.markupsUnderCursor=newmarkup;
 			this.trigger( this.markupsUnderCursor,{newly:true});
+			if (cb) cb();
 		}.bind(this));
 	}
 })

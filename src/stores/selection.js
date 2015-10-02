@@ -15,7 +15,6 @@ var selectionStore=Reflux.createStore({
 		sels[filename]=selections;
 		this.cursorchar=cursorchar;
 		this.selections=sels;
-
 		this.trigger(this.selections,cursorchar);
 	}
 	,onClearAllSelection:function() {

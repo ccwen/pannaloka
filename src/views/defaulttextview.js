@@ -2,7 +2,7 @@ var React=require("react");
 var Component=React.Component;
 var PureComponent=require('react-pure-render').PureComponent;
 var kcm=require("ksana-codemirror");
-var CodeMirror=kcm.CodeMirror, getSelections=kcm.getSelections, getCharAtCursor=kcm.getCharAtCursor;
+var CodeMirror=kcm.Component, getSelections=kcm.getSelections, getCharAtCursor=kcm.getCharAtCursor;
 var cmfileio=require("../cmfileio");
 var TextViewMenu=require("../components/textviewmenu");
 var stackwidgetaction=require("../actions/stackwidget");
@@ -12,11 +12,13 @@ var markupstore=require("../stores/markup"),markupaction=require("../actions/mar
 var selectionaction=require("../actions/selection"), selectionstore=require("../stores/selection");
 var transclude=require("./transclude");
 var overlayaction=require("../actions/overlay");
+var milestones=require("./milestones");
 var util=require("./util");
 module.exports = class DefaultTextView extends Component {
 	constructor (props) {
 		super(props);
 		this.state={dirty:false,markups:{},value:"",history:[]};
+		this.milestones={};
 	}
 
 	componentDidMount() {
@@ -45,27 +47,58 @@ module.exports = class DefaultTextView extends Component {
 	  		var bookmark=cm.react.bookmark_transclusion();
 	  		if (bookmark) {
 	  			cm.react.addMarkup(bookmark);
-	  			console.log(bookmark.key);	
 	  		}
 	  	}
-	  	,"Ctrl-L":"gotoLine"
+	  	,"Ctrl-S":this.onSave.bind(this)
+	  	,"Ctrl-M":milestones.createMilestone.bind(this)
+	  	,"Ctrl-K":"automarkup"
 		});
 	}
 
+	rebuildMilestone (markups) {
+		var res=milestones.buildMilestone(this.doc,markups);
+		this.name2milestone=res.name2milestone;
+		this.line2milestone=res.line2milestone;
+		//this will force repaint of gutter
+		this.cm.setOption("lineNumbers",false);
+		this.cm.setOption("lineNumbers",true);
+	}
 	//just for lookup , not trigger redraw as markup.handle already exists.
 	addMarkup (markup) {
 		if (!markup  || !markup.key) return;
 		this.state.markups[markup.key]=markup;
+		if (markup.className==="milestone") this.rebuildMilestone(this.state.markups);
 		this.setState({dirty:true});
 	}
+
+	createMilestones (ranges) { //no checking 
+		milestones.createMilestones.call(this.cm,ranges,function(newmarkups){
+			if (!newmarkups.length) return;
+			var markups={};
+			for (var i in this.state.markups ) markups[i]=this.state.markups[i];
+
+			for (var i=0;i<newmarkups.length;i++) {
+				markups[newmarkups[i].key]=newmarkups[i].markup;
+			}
+			
+			this.setState({dirty:true,markups},function(){
+				this.rebuildMilestone(this.state.markups);
+			}.bind(this));
+		}.bind(this));
+	}
+
 	getMarkup (key) {
 		return this.state.markups[key];
 	}
 	removeMarkup (key) {
 		var m=this.state.markups[key];
+
 		if (m) {
+			var clsname=m.className;
+			
 			m.handle.clear();
 			delete this.state.markups[key];
+			if (clsname==="milestone") this.rebuildMilestone(this.state.markups);
 			this.setState({dirty:true});
 		} else {
 			console.error("unknown markup id",key)
@@ -76,7 +109,7 @@ module.exports = class DefaultTextView extends Component {
 		this.cm=this.refs.cm.getCodeMirror();
 		this.cm.react=this;
 		this.generation=this.cm.changeGeneration(true);
-		this.doc=this.cm.getDoc();			
+		this.doc=this.cm.getDoc();	
 		docfileaction.openFile(this.doc,this.props.filename);
 		this.setsize();
 		this.keymap();
@@ -114,6 +147,7 @@ module.exports = class DefaultTextView extends Component {
 			selectionaction.clearAllSelection();
 			this.setState({dirty:true});
 			if (markups) this.setState({markups});
+			if (M[0].markup.className==="milestone") this.rebuildMilestone(markups);
 		}
 	}
 
@@ -135,8 +169,14 @@ module.exports = class DefaultTextView extends Component {
 		docfileaction.closeFile(this.doc);
 	}
 
-	onChange () {
+	onChange (doc,change) {
 		this.setState({dirty:!this.doc.isClean(this.generation)});
+
+		if (doc.lineCount()!==this.state.lineCount) {
+			console.log("change rebuild milestone")
+			this.rebuildMilestone(this.state.markups);
+			this.setState({lineCount:doc.lineCount()})
+		}
 	}
 
 	onSetTitle(title) {
@@ -161,6 +201,11 @@ module.exports = class DefaultTextView extends Component {
 
 	onSave () {
 		this.writefile(this.props.filename);
+	}
+
+	onMarkupReady () {
+		this.rebuildMilestone(this.state.markups);
+		console.log("markup ready");
 	}
 
 	autoGoMarkup (markups) {
@@ -204,7 +249,9 @@ module.exports = class DefaultTextView extends Component {
 				onSetTitle={this.onSetTitle.bind(this)}/>
 			<CodeMirror ref="cm" value={this.state.value} history={this.state.history} 
 				markups={this.state.markups} 
+				onMarkupReady={this.onMarkupReady.bind(this)}
 				onCursorActivity={this.onCursorActivity.bind(this)}
+				lineNumberFormatter={milestones.lineNumberFormatter.bind(this)}
 				onChange={this.onChange.bind(this)}/>
 		</div>
 	}

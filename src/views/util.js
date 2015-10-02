@@ -67,7 +67,7 @@ var	scrollAndHighlight=function (doc,range_markupid,opts) {
 				if (!opts.keep) {
 					setTimeout(function(){
 						highlight.clear();
-					},3000);				
+					},1500);				
 				}
 			},100);			
 		}.bind(this),100);

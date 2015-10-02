@@ -13,9 +13,13 @@ var deleteQuote=function(markup) {
 }
 
 var types={
-	"important":{validate:vs.singleone,label:"重點",
+	"milestone":{validate:vs.milestone,label:"界石",editor:require("./simple"), mark:mark.milestone,hidden:true}
+
+	,"important":{validate:vs.singleone,label:"重點",
 							editor:require("./simple"), mark:mark.singleone}
-	,"title":{validate:vs.singleone,label:"標題",editor:require("./simple"),mark:mark.singleone}
+	,"title":{validate:vs.singleone,label:"大標",editor:require("./simple"),mark:mark.singleone}
+	,"title2":{validate:vs.singleone,label:"中標",editor:require("./simple"),mark:mark.singleone}
+	,"title3":{validate:vs.singleone,label:"小標",editor:require("./simple"),mark:mark.singleone}	
 	,"dictionary":{validate:vs.singleone,label:"字典"}
 	,"partofspeech":{validate:vs.singleone,label:"詞性"}
 	,"intertext":{validate:vs.multi,label:"互文", mark:mark.dualone}
@@ -29,10 +33,10 @@ var types={
 var getAvailableType=function(selections) {
 	var out=[];
 	for (var i in types) {
-		if (types[i].validate(selections)){
+		if (types[i].validate(selections) && !types[i].hidden){
 			out.push(i);
 		}
 	}
 	return out;
 }
-module.exports={getAvailableType:getAvailableType, types:types};
+module.exports={getAvailableType:getAvailableType, types:types, milestone_novalidate:mark.milestone_novalidate};

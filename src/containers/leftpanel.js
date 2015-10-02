@@ -78,6 +78,8 @@ module.exports = class LeftPanel extends Component {
           <Desc>Undo</Desc>
           <Key>Ctrl-Y</Key>
           <Desc>Redo</Desc>
+          <Key>Ctrl-S</Key>
+          <Desc>Save Immediately</Desc>
         <Section>Search and Replace</Section>
             <Key>Ctrl-F</Key>
             <Desc>Start searching</Desc>

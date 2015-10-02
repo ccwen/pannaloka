@@ -2,10 +2,13 @@ body {margin:0px;height:100%;overflow-y:hidden;overflow-x:hidden;}
 .CodeMirror { line-height: 1.6;}
 .mymark {background:yellow;}
 .important {border-bottom :2px dotted red }
+.milestone {border-radius:10px;background :lightblue ;padding-top:8px;padding-bottom:8px;}
 
-.title {background:yellow;font-size:150%;}
-.quote   {border-bottom:1px solid gray;}
-.quoteby {border-bottom:1px dotted gray;}
+.title {border-bottom:3px solid blue}
+.title2 {font-weight:bold}
+.title3 {background:lightblue;}
+.quote   {border-bottom:2px solid gray;}
+.quoteby {border-bottom:2px dotted gray;}
 .transclusion {color:green;cursor:pointer;}
 .highlight {background:lightgreen;}
 .editingMarker  {background:pink;}
