@@ -3,14 +3,8 @@ var mark=require("./mark");
 var docfilestore=require("../stores/docfile");
 var markupstore=require("../stores/markup");
 
-var isQuoteDeletable=function(markup) {
-	var file=markup.source[0];
-	return !!docfilestore.docOf(file);
-}
 
-var deleteQuote=function(markup) {
-	markupstore.removeByMid(markup.source[1],markup.source[0]);
-}
+
 
 var types={
 	"milestone":{validate:vs.milestone,label:"界石",editor:require("./simple"), mark:mark.milestone,hidden:true}
@@ -23,8 +17,7 @@ var types={
 	,"dictionary":{validate:vs.singleone,label:"字典"}
 	,"partofspeech":{validate:vs.singleone,label:"詞性"}
 	,"intertext":{validate:vs.multi,label:"互文", mark:mark.dualone}
-	,"quote":{validate:vs.dualone,label:"出處", mark:mark.dualone, 
-					editor:require("./quote"),isDeletable: isQuoteDeletable,onDelete:deleteQuote}
+	,"quote":{validate:vs.dualone,label:"出處", mark:mark.oneway, editor:require("./quote")}
   ,"signifer":{validate:vs.singletwo,label:"能指"}
   ,"causeeffect":{validate:vs.singletwo,label:"因果"}
   ,"synonym":{validate:vs.singletwomore,label:"同義"}

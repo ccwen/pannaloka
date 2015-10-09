@@ -136,16 +136,18 @@ module.exports = class DefaultTextView extends Component {
 			return out;
 		}
 		if (action && action.newly) {
+			var touched=false;
 			var markups=null;
 			for (var i in M) {
 				var m=M[i];
 				if (m.doc===this.doc) {
 					if (!markups) markups=shallowCopyMarkups(this.state.markups);
 					markups[m.key]=m.markup;
+					touched=true;
 				}
 			}
 			selectionaction.clearAllSelection();
-			this.setState({dirty:true});
+			if (touched) this.setState({dirty:true});
 			if (markups) this.setState({markups});
 			if (M[0].markup.className==="milestone") this.rebuildMilestone(markups);
 		}
@@ -214,7 +216,7 @@ module.exports = class DefaultTextView extends Component {
 			return;
 		}
 		var m=markups[0];
-		var others=m.markup.source||m.markup.by;
+		var others=m.markup.source||m.markup.by||m.markup.target;
 		if (!others)return;
 		if (typeof others[0]==="string"){
 			util.gotoRangeOrMarkupID(others[0],others[1],this.props.wid);

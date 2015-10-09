@@ -33,6 +33,7 @@ var milestone=function(params, docOf, cb) {
 	cb(0, [mrk]);
 }
 
+
 var dualone=function(mark,docOf, cb) {
 	var selections=validate.dualone(mark.selections);
 	if (!selections) return ;
@@ -60,4 +61,29 @@ var dualone=function(mark,docOf, cb) {
 	cb(0, [{markup:mrk1, doc:doc1, key:key1}
 				,{markup:mrk2, doc:doc2, key:key2}] );
 }
-module.exports={singleone:singleone,dualone:dualone,milestone:milestone,milestone_novalidate:milestone_novalidate};
+
+
+var oneway=function(mark,docOf, cb) {
+	var selections=validate.dualone(mark.selections);
+	if (!selections) return ;
+
+	var files=Object.keys(selections);
+	var range1=selections[files[0]][0];
+	var key1=uuid();
+
+	var range2=selections[files[1]][0];
+
+	var doc1=docOf(files[0]);
+	var doc2=docOf(files[1]);
+
+	var text2=util.getRangeText(doc2,range2); 
+	if (text2.length>MAX_LABEL) text2=text2.substr(0,MAX_LABEL)+"…";
+
+	var mrk1={className:"quote"  , trait:mark.trait, from:range1[0], to:range1[1], 
+	target:[files[1],[range2[0],range2[1]],text2] };
+
+	cb(0, [{markup:mrk1, doc:doc1, key:key1}] );
+}
+
+module.exports={singleone:singleone,dualone:dualone,
+	milestone:milestone,milestone_novalidate:milestone_novalidate,oneway};
