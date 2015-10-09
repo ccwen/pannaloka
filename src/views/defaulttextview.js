@@ -90,6 +90,20 @@ module.exports = class DefaultTextView extends Component {
 	getMarkup (key) {
 		return this.state.markups[key];
 	}
+
+	getOther (markup) {
+		var out=[],markups=this.state.markups;
+		if (markup.master) {
+			out.push(markups[markup.master]);
+		} else if (markup.others) {
+			for (var i=0;i<markup.others.length;i++) {
+				var key=markup.others[i];
+				out.push(markups[key]);
+			}
+		}
+		return out;
+	}
+
 	removeMarkup (key) {
 		var m=this.state.markups[key];
 
@@ -135,7 +149,7 @@ module.exports = class DefaultTextView extends Component {
 			for (var i in M) out[i]=M[i];
 			return out;
 		}
-		if (action && action.newly) {
+		if (action && action.newly && M.length) {
 			var touched=false;
 			var markups=null;
 			for (var i in M) {
@@ -225,16 +239,18 @@ module.exports = class DefaultTextView extends Component {
 
 	onCursorActivity () {
 		clearTimeout(this.timer1);
+
 		this.timer1=setTimeout(function(){
 			var cursorch=getCharAtCursor(this.doc);
 			var selections=getSelections(this.doc);
 			selectionaction.setSelection(this.props.filename,selections,cursorch);
+
 			var marks=this.doc.findMarksAt(this.doc.getCursor());
-			var markups=[];
-			var doc=this.doc;
+			var markups=[], doc=this.doc;
 			marks.forEach(function(m){
 				if (m.type!=="bookmark" && !m.clearOnEnter) {
-					markups.push({markup:this.state.markups[m.key],key:m.key,doc:doc})
+					var markup=this.state.markups[m.key];
+					markups.push({markup:markup,key:m.key,doc:doc});
 				}
 			}.bind(this));
 			markupaction.markupsUnderCursor(markups);

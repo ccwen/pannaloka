@@ -21,9 +21,12 @@ module.exports = class MarkupPanel extends PureComponent {
 	onMarkup (markups,action) {
 		if (action.cursor) {
 			var keys=Object.keys(markups);
-			var wid=null;
-			if (keys.length) wid=markups[keys[0]].doc.getEditor().react.getWid();
-			this.setState({markups,wid});
+			var wid=null,cm=null;
+			if (keys.length) {
+				cm=markups[keys[0]].doc.getEditor();
+				wid=cm.react.getWid();
+			}
+			this.setState({markups,wid,cm});
 		}
 	}
 
@@ -55,13 +58,18 @@ module.exports = class MarkupPanel extends PureComponent {
 			return;
 		}
 		markupstore.remove(m);
-		if (typedef.onDelete) typedef.onDelete(m);
+		var others=this.getOther(m);
+		if (others) {
+			others.map(function(other){markupstore.remove(other)});
+		}
+		typedef.onDelete &&	typedef.onDelete(m);
 	}
 
 	render () {
 		var editor=(selectionstore.hasRange()||!this.state.markups.length)?
 			<CreateMarkup/>
 			:<MarkupSelector onHyperlinkClick={this.onHyperlinkClick.bind(this)}
+			 getOther={this.state.cm.react.getOther.bind(this.state.cm.react)} 
 			 markups={this.state.markups} onChanged={this.onChanged.bind(this)}
 			 onDelete={this.onDelete}
 			 editing={this.state.editing} deletable={this.state.deletable}/>;

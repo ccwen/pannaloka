@@ -7,14 +7,30 @@ var styles={picker:{border:"2px solid silver",borderRadius:"25%",cursor:"pointer
 module.exports = class MarkupSelector extends PureComponent {
 	constructor (props) {
 		super(props);
+		this.editingMarker=[];
 		this.state=this.getEditor(props.markups,0);
 	}
+	
+	highlightMarkup (markups,idx) {
+		this.clearMarker();
+		this.setMarker(markups[idx].doc,markups[idx].markup.handle);
+		var others=this.props.getOther.call(this,markups[idx].markup);
+		others.map(function(m){
+			this.setMarker(m.handle.doc,m.handle);
+		}.bind(this));
+	}
+
+	
+	setMarker (doc,textmarker) {
+		var pos=textmarker.find();
+		this.editingMarker.push(doc.markText(pos.from,pos.to,{className:"editingMarker",clearOnEnter:true}));
+	}	
 
 	getEditor (markups,idx) {
 		var markupeditor=null,M=null,deletable=true,typedef=null;
 		if (markups.length) {
 			M=(markups[idx]).markup;
-			this.setMarker(markups[idx].doc,M.handle);
+			this.highlightMarkup.call(this,markups,idx);
 			typedef=markuptypedef.types[M.className];
 			if (typedef) {
 				markupeditor=typedef.editor;
@@ -35,16 +51,13 @@ module.exports = class MarkupSelector extends PureComponent {
 
 	clearMarker () {
 		if (this.editingMarker) {
-			this.editingMarker.clear();
-			this.editingMarker=null;
+			this.editingMarker.map(function(m){m.clear()});
+			this.editingMarker=[];
 		}
 	}
-	
-	setMarker (doc,textmarker) {
-		this.clearMarker();
-		var pos=textmarker.find();
-		this.editingMarker=doc.markText(pos.from,pos.to,{className:"editingMarker",clearOnEnter:true});
-	}
+
+
+
 
 	componentWillReceiveProps (nextProps) {
 		this.setState(this.getEditor(nextProps.markups,0));

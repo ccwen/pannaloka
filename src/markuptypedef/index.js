@@ -19,8 +19,8 @@ var types={
 	,"intertext":{validate:vs.multi,label:"互文", mark:mark.dualone}
 	,"quote":{validate:vs.dualone,label:"出處", mark:mark.oneway, editor:require("./quote")}
   ,"signifer":{validate:vs.singletwo,label:"能指"}
-  ,"causeeffect":{validate:vs.singletwo,label:"因果"}
-  ,"synonym":{validate:vs.singletwomore,label:"同義"}
+  ,"causeeffect":{validate:vs.singletwo,label:"因果",mark:mark.singletwo,editor:require("./simple")}
+  ,"synonym":{validate:vs.singletwomore,label:"同義",mark:mark.singletwo,editor:require("./simple")}
 }
 
 var getAvailableType=function(selections) {
