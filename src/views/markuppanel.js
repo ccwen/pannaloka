@@ -59,7 +59,7 @@ module.exports = class MarkupPanel extends PureComponent {
 			return;
 		}
 		markupstore.remove(m);
-		var others=this.getOther(m);
+		var others=this.state.cm.react.getOther(m);
 		if (others) {
 			others.map(function(other){markupstore.remove(other)});
 		}
