@@ -5,13 +5,13 @@ var stackwidgetaction=require("../actions/stackwidget");
 var selectionaction=require("../actions/selection");
 
 module.exports = class StackWidgetMainMenu extends Component {
-	newWidget () {
+	newWidget = () => {
 		stackwidgetaction.newWidget({text:"widget"});
 	}
 
   render () {
   	return <span>
-  		<button onClick={this.newWidget.bind(this)}>New widget</button>
+  		<button onClick={this.newWidget}>New widget</button>
   	</span>
   }
 }

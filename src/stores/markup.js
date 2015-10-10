@@ -10,9 +10,17 @@ var markupStore=Reflux.createStore({
 	listenables:[require("../actions/markup")]
 	,markupsUnderCursor:[]
 	,onMarkupsUnderCursor:function(markupsUnderCursor) {
+		this.editing=null;
 		if (!markupsUnderCursor.length&& !this.markupsUnderCursor.length) return ;//nothing happen
 		this.markupsUnderCursor=markupsUnderCursor;
 		this.trigger(this.markupsUnderCursor,{cursor:true});
+	}
+	,getEditing:function() {
+		return this.editing;
+	}
+	,onEditing:function(markup) {
+		this.editing=markup;
+		this.trigger(markup,{editing:true});
 	}
 	,remove:function(markup) {
 		//console.log("remove markup",markup);
@@ -32,6 +40,7 @@ var markupStore=Reflux.createStore({
 			console.log(obj);
 			throw "cannot create markup"
 		}
+		this.editing=null;
 
 		obj.typedef.mark(obj, docfilestore.docOf ,function(err,newmarkup){
 			this.markupsUnderCursor=newmarkup;

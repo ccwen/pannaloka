@@ -39,21 +39,21 @@ module.exports = class CreateMarkup extends PureComponent {
 		this.state={types:types,userselect:"",selectedIndex:0,selections:selections};
 	}
 
-	onData (selections) {
+	onData = (selections) => {
 		var types=getAvailableType(selections);
 		var selectedIndex=this.user.getPrefer(types);
 		this.setState({types,selectedIndex,selections});
 	}
 
 	componentDidMount () {
-		this.unsubscribe = selectionstore.listen(this.onData.bind(this));
+		this.unsubscribe = selectionstore.listen(this.onData);
 	}
 
 	componentWillUnmount () {
 		this.unsubscribe();
 	}
 
-	selecttype (e) {
+	selecttype =(e) => {
 		var target=e.target;
 		while (target && typeof target.dataset.idx==="undefined") target=target.parentElement;
 		if (!target) return;
@@ -65,11 +65,11 @@ module.exports = class CreateMarkup extends PureComponent {
 
 	renderType (item,idx) {
 		return <label key={idx} data-idx={idx}><input checked={idx==this.state.selectedIndex} 
-				onChange={this.selecttype.bind(this)} 
+				onChange={this.selecttype} 
 				type="radio" name="markuptype"></input>{types[item].label}</label>
 	}
 
-	onCreateMarkup (trait) {
+	onCreateMarkup = (trait) => {
 		var selections=this.state.selections;
 		var typename=this.state.types[this.state.selectedIndex];
 		var typedef=types[typename];
@@ -84,7 +84,7 @@ module.exports = class CreateMarkup extends PureComponent {
 		var attributeEditor=types[activetype].editor || DefaultMarkupAttrEditor;
 		return React.createElement( attributeEditor,
 			{selections:this.state.selections
-				,onCreateMarkup:this.onCreateMarkup.bind(this)} );
+				,onCreateMarkup:this.onCreateMarkup} );
 
 	}
 	render () {//need 130% to prevent flickering when INPUT add to markup editor

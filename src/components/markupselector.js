@@ -7,14 +7,30 @@ var styles={picker:{border:"2px solid silver",borderRadius:"25%",cursor:"pointer
 module.exports = class MarkupSelector extends PureComponent {
 	constructor (props) {
 		super(props);
+		this.editingMarker=[];
 		this.state=this.getEditor(props.markups,0);
 	}
+	
+	highlightMarkup (markups,idx) {
+		this.clearMarker();
+		this.setMarker(markups[idx].doc,markups[idx].markup.handle);
+		var others=this.props.getOther(markups[idx].markup);
+		others.map(function(m){
+			this.setMarker(m.handle.doc,m.handle);
+		}.bind(this));
+	}
+
+	
+	setMarker (doc,textmarker) {
+		var pos=textmarker.find();
+		this.editingMarker.push(doc.markText(pos.from,pos.to,{className:"editingMarker",clearOnEnter:true}));
+	}	
 
 	getEditor (markups,idx) {
 		var markupeditor=null,M=null,deletable=true,typedef=null;
 		if (markups.length) {
 			M=(markups[idx]).markup;
-			this.setMarker(markups[idx].doc,M.handle);
+			this.highlightMarkup.call(this,markups,idx);
 			typedef=markuptypedef.types[M.className];
 			if (typedef) {
 				markupeditor=typedef.editor;
@@ -23,6 +39,7 @@ module.exports = class MarkupSelector extends PureComponent {
 		} else {
 			clearMarker();
 		}
+		this.props.onEditing&&this.props.onEditing(markups[idx]);
 		return {markupeditor,M,idx,deletable,typedef};
 	}
 
@@ -35,16 +52,13 @@ module.exports = class MarkupSelector extends PureComponent {
 
 	clearMarker () {
 		if (this.editingMarker) {
-			this.editingMarker.clear();
-			this.editingMarker=null;
+			this.editingMarker.map(function(m){m.clear()});
+			this.editingMarker=[];
 		}
 	}
-	
-	setMarker (doc,textmarker) {
-		this.clearMarker();
-		var pos=textmarker.find();
-		this.editingMarker=doc.markText(pos.from,pos.to,{className:"editingMarker",clearOnEnter:true});
-	}
+
+
+
 
 	componentWillReceiveProps (nextProps) {
 		this.setState(this.getEditor(nextProps.markups,0));
@@ -56,7 +70,7 @@ module.exports = class MarkupSelector extends PureComponent {
 		return <span key={idx}>{(idx+1)+"/"+this.props.markups.length}</span>
 	}
 
-	onNextMarkup (e) {
+	onNextMarkup = (e) => {
 		var i=this.state.idx+1;
 		if (i&& i===this.props.markups.length) i=0;
 		this.setState(this.getEditor(this.props.markups,i));
@@ -64,7 +78,7 @@ module.exports = class MarkupSelector extends PureComponent {
 
 	renderMarkupPicker () {
 		if (this.props.markups.length>1) {
-			return <span style={styles.picker} onClick={this.onNextMarkup.bind(this)}>{this.renderMarkupItem()}</span>
+			return <span style={styles.picker} onClick={this.onNextMarkup}>{this.renderMarkupItem()}</span>
 		}
 	}
 	//<select style={styles.select} onChange={this.onSelectMarkup.bind(this)}>
@@ -81,7 +95,7 @@ module.exports = class MarkupSelector extends PureComponent {
 		this.clearMarker();
 	}
 
-	onUpdateMarkup (trait) {
+	onUpdateMarkup = (trait) => {
 		var m=this.props.markups[this.state.idx];
 		var mtrait=m.markup.trait;
 		for (var i in trait) {
@@ -90,7 +104,7 @@ module.exports = class MarkupSelector extends PureComponent {
 		this.props.onChanged&&this.props.onChanged(m.doc);	
 	}
 
-	onDeleteMarkup () {
+	onDeleteMarkup = () => {
 		var m=this.props.markups[this.state.idx].markup;
 		this.props.onDelete(m,this.state.typedef);
 	}
@@ -106,8 +120,8 @@ module.exports = class MarkupSelector extends PureComponent {
 				{this.state.markupeditor?E(this.state.markupeditor,{
 					editing:true,markup:this.state.M
 					,deletable:this.state.deletable
-					,onUpdateMarkup:this.onUpdateMarkup.bind(this)
-					,onDeleteMarkup:this.onDeleteMarkup.bind(this)
+					,onUpdateMarkup:this.onUpdateMarkup
+					,onDeleteMarkup:this.onDeleteMarkup
 				}):null}
 				{this.renderOtherRange()}
 		</span>

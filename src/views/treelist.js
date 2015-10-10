@@ -7,7 +7,7 @@ var FileItem=require("../components/fileitem");
 
 var ktcfileaction=require("../actions/ktcfile");
 class NewFileButton extends Component {
-	newfile () {
+	newfile = () => {
 		ktcfileaction.newTree();
 		setTimeout(function(){
 			this.props.onOpenTree();
@@ -16,7 +16,7 @@ class NewFileButton extends Component {
 	}
 
 	render () {
-		return <button onClick={this.newfile.bind(this)}>Create New Tree</button>
+		return <button onClick={this.newfile}>Create New Tree</button>
 	}
 }
 module.exports = class TreeList extends Component {
@@ -25,19 +25,19 @@ module.exports = class TreeList extends Component {
 		this.state={files:[],selectedIndex:0};
 	}
 
-	onData (files) {
+	onData = (files) => {
 		this.setState({files});
 	}
 
 	componentDidMount () {
-		this.unsubscribe = ktcfilestore.listen(this.onData.bind(this));
+		this.unsubscribe = ktcfilestore.listen(this.onData);
 	}
 
 	componentWillUnmount () {
 		this.unsubscribe();
 	}
 
-	opentree (e) {
+	opentree = (e) => {
 		var file=this.state.files[this.state.selectedIndex];
 		ktcfileaction.openTree(file.filename);
 		this.props.onOpenTree && this.props.onOpenTree();
@@ -45,10 +45,10 @@ module.exports = class TreeList extends Component {
 
 	renderItem (item,idx) {
 		return <div key={idx} data-idx={idx}>
-			<FileItem onClick={this.opentree.bind(this)} selected={this.state.selectedIndex==idx} {...item}/></div>
+			<FileItem onClick={this.opentree} selected={this.state.selectedIndex==idx} {...item}/></div>
 	}
 
-	selectItem (e) {
+	selectItem = (e) => {
 		var target=e.target;
 		while (target && !target.dataset.idx) {
 			target=target.parentElement;
@@ -59,8 +59,8 @@ module.exports = class TreeList extends Component {
 
 	render () {
 		return <div>
-				<NewFileButton onOpenTree={this.props.onOpenTree.bind(this)}/>
-				<div onClick={this.selectItem.bind(this)}>{this.state.files.map(this.renderItem.bind(this))}</div>
+				<NewFileButton onOpenTree={this.props.onOpenTree}/>
+				<div onClick={this.selectItem}>{this.state.files.map(this.renderItem.bind(this))}</div>
 		</div>
 	}
 }

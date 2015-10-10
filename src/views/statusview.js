@@ -11,12 +11,12 @@ module.exports = class StatusView extends PureComponent {
 		this.state={selections:{},cursorch:""};
 	}
 
-	onData (selections,cursorch) {
+	onData = (selections,cursorch) => {
 		this.setState({selections,cursorch});
 	}
 
 	componentDidMount () {
-		this.unsubscribe = selectionstore.listen(this.onData.bind(this));
+		this.unsubscribe = selectionstore.listen(this.onData);
 	}
 
 	componentWillUnmount () {

@@ -7,13 +7,13 @@ var FileItem=require("../components/fileitem");
 
 var stackwidgetaction=require("../actions/stackwidget");
 class NewFileButton extends Component {
-	newfile () {
+	newfile = () => {
 		var emptyfile={filename:ktxfilestore.newfilename() , title:"Untitled" , newfile:true};
 		stackwidgetaction.openWidget(emptyfile,"TextWidget");
 	}
 
 	render () {
-		return <button onClick={this.newfile.bind(this)}>Create New File</button>
+		return <button onClick={this.newfile}>Create New File</button>
 	}
 }
 module.exports = class FileList extends Component {
@@ -22,29 +22,29 @@ module.exports = class FileList extends Component {
 		this.state={files:[],selectedIndex:0};
 	}
 
-	onData (files) {
+	onData = (files) => {
 		this.setState({files});
 	}
 
 	componentDidMount () {
-		this.unsubscribe = ktxfilestore.listen(this.onData.bind(this));
+		this.unsubscribe = ktxfilestore.listen(this.onData);
 	}
 
 	componentWillUnmount () {
 		this.unsubscribe();
 	}
 
-	openfile (e) {
+	openfile = (e) => {
 		var file=this.state.files[this.state.selectedIndex];
 		stackwidgetaction.openWidget(file,"TextWidget");
 	}
 
 	renderItem (item,idx) {
 		return <div key={idx} data-idx={idx}>
-			<FileItem onClick={this.openfile.bind(this)} selected={this.state.selectedIndex==idx} {...item}/></div>
+			<FileItem onClick={this.openfile} selected={this.state.selectedIndex==idx} {...item}/></div>
 	}
 
-	selectItem (e) {
+	selectItem = (e) => {
 		var target=e.target;
 		while (target && !target.dataset.idx) {
 			target=target.parentElement;
@@ -56,7 +56,7 @@ module.exports = class FileList extends Component {
 	render () {
 		return <div>
 				<NewFileButton/>
-				<div onClick={this.selectItem.bind(this)}>{this.state.files.map(this.renderItem.bind(this))}</div>
+				<div onClick={this.selectItem}>{this.state.files.map(this.renderItem.bind(this))}</div>
 		</div>
 	}
 }

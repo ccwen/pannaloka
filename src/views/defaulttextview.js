@@ -24,14 +24,14 @@ module.exports = class DefaultTextView extends Component {
 	componentDidMount() {
 		if (this.props.newfile) {
 			this.setState({dirty:true,titlechanged:true,value:"new file",meta:{title:this.props.title}}
-										,this.loadfile.bind(this));
+										,this.loadfile);
 		} else {
 			cmfileio.readFile(this.props.filename,function(err,data){
-				this.setState(data,this.loadfile.bind(this));
+				this.setState(data,this.loadfile);
 			}.bind(this));
 		}
-		this.unsubscribeMarkup = markupstore.listen(this.onMarkup.bind(this));
-		this.unsubscribeSelection = selectionstore.listen(this.onSelection.bind(this));
+		this.unsubscribeMarkup = markupstore.listen(this.onMarkup);
+		this.unsubscribeSelection = selectionstore.listen(this.onSelection);
 	}
 	componentWillUnmount () {
 		this.unsubscribeMarkup();
@@ -49,13 +49,13 @@ module.exports = class DefaultTextView extends Component {
 	  			cm.react.addMarkup(bookmark);
 	  		}
 	  	}
-	  	,"Ctrl-S":this.onSave.bind(this)
+	  	,"Ctrl-S":this.onSave
 	  	,"Ctrl-M":milestones.createMilestone.bind(this)
 	  	,"Ctrl-K":"automarkup"
 		});
 	}
 
-	rebuildMilestone (markups) {
+	rebuildMilestone = (markups) => {
 		var res=milestones.buildMilestone(this.doc,markups);
 		this.name2milestone=res.name2milestone;
 		this.line2milestone=res.line2milestone;
@@ -64,14 +64,14 @@ module.exports = class DefaultTextView extends Component {
 		this.cm.setOption("lineNumbers",true);
 	}
 	//just for lookup , not trigger redraw as markup.handle already exists.
-	addMarkup (markup) {
+	addMarkup = (markup) => {
 		if (!markup  || !markup.key) return;
 		this.state.markups[markup.key]=markup;
 		if (markup.className==="milestone") this.rebuildMilestone(this.state.markups);
 		this.setState({dirty:true});
 	}
 
-	createMilestones (ranges) { //no checking 
+	createMilestones = (ranges) => { //no checking 
 		milestones.createMilestones.call(this.cm,ranges,function(newmarkups){
 			if (!newmarkups.length) return;
 			var markups={};
@@ -87,9 +87,23 @@ module.exports = class DefaultTextView extends Component {
 		}.bind(this));
 	}
 
-	getMarkup (key) {
+	getMarkup = (key) => {
 		return this.state.markups[key];
 	}
+
+	getOther = (markup) => {
+		var out=[],markups=this.state.markups;
+		if (markup.master) {
+			out.push(markups[markup.master]);
+		} else if (markup.others) {
+			for (var i=0;i<markup.others.length;i++) {
+				var key=markup.others[i];
+				out.push(markups[key]);
+			}
+		}
+		return out;
+	}
+
 	removeMarkup (key) {
 		var m=this.state.markups[key];
 
@@ -105,7 +119,7 @@ module.exports = class DefaultTextView extends Component {
 		}
 	}
 
-	loadfile () {
+	loadfile = () => {
 		this.cm=this.refs.cm.getCodeMirror();
 		this.cm.react=this;
 		this.generation=this.cm.changeGeneration(true);
@@ -118,7 +132,7 @@ module.exports = class DefaultTextView extends Component {
 		}
 	}
 
-	onSelection (fileselections) {
+	onSelection = (fileselections) => {
 		var selections=fileselections[this.props.filename];
 		if (!selections) return;
 		if (selections.length==0) {
@@ -129,23 +143,25 @@ module.exports = class DefaultTextView extends Component {
 	}
 
 
-	onMarkup (M,action) {		
+	onMarkup = (M,action) => {		
 		var shallowCopyMarkups = function(M) { //use Object.assign in future
 			var out={};
 			for (var i in M) out[i]=M[i];
 			return out;
 		}
-		if (action && action.newly) {
+		if (action && action.newly && M.length) {
+			var touched=false;
 			var markups=null;
 			for (var i in M) {
 				var m=M[i];
 				if (m.doc===this.doc) {
 					if (!markups) markups=shallowCopyMarkups(this.state.markups);
 					markups[m.key]=m.markup;
+					touched=true;
 				}
 			}
 			selectionaction.clearAllSelection();
-			this.setState({dirty:true});
+			if (touched) this.setState({dirty:true});
 			if (markups) this.setState({markups});
 			if (M[0].markup.className==="milestone") this.rebuildMilestone(markups);
 		}
@@ -163,13 +179,13 @@ module.exports = class DefaultTextView extends Component {
 	getWid() {
 		return this.props.wid;
 	}
-	onClose () {
+	onClose = () => {
 		stackwidgetaction.closeWidget(this.props.wid);
 		selectionaction.clearSelectionOf(this.props.wid,this.props.filename);
 		docfileaction.closeFile(this.doc);
 	}
 
-	onChange (doc,change) {
+	onChange = (doc,change) => {
 		this.setState({dirty:!this.doc.isClean(this.generation)});
 
 		if (doc.lineCount()!==this.state.lineCount) {
@@ -179,7 +195,7 @@ module.exports = class DefaultTextView extends Component {
 		}
 	}
 
-	onSetTitle(title) {
+	onSetTitle = (title) => {
 		this.state.meta.title=title;
 		this.setState({dirty:true,titlechanged:true});
 	}
@@ -199,11 +215,11 @@ module.exports = class DefaultTextView extends Component {
     }.bind(this));
   }
 
-	onSave () {
+	onSave = () => {
 		this.writefile(this.props.filename);
 	}
 
-	onMarkupReady () {
+	onMarkupReady = () => {
 		this.rebuildMilestone(this.state.markups);
 		console.log("markup ready");
 	}
@@ -214,25 +230,27 @@ module.exports = class DefaultTextView extends Component {
 			return;
 		}
 		var m=markups[0];
-		var others=m.markup.source||m.markup.by;
+		var others=m.markup.source||m.markup.by||m.markup.target;
 		if (!others)return;
 		if (typeof others[0]==="string"){
 			util.gotoRangeOrMarkupID(others[0],others[1],this.props.wid);
 		}
 	}
 
-	onCursorActivity () {
+	onCursorActivity = () => {
 		clearTimeout(this.timer1);
+
 		this.timer1=setTimeout(function(){
 			var cursorch=getCharAtCursor(this.doc);
 			var selections=getSelections(this.doc);
 			selectionaction.setSelection(this.props.filename,selections,cursorch);
+
 			var marks=this.doc.findMarksAt(this.doc.getCursor());
-			var markups=[];
-			var doc=this.doc;
+			var markups=[], doc=this.doc;
 			marks.forEach(function(m){
 				if (m.type!=="bookmark" && !m.clearOnEnter) {
-					markups.push({markup:this.state.markups[m.key],key:m.key,doc:doc})
+					var markup=this.state.markups[m.key];
+					markups.push({markup:markup,key:m.key,doc:doc});
 				}
 			}.bind(this));
 			markupaction.markupsUnderCursor(markups);
@@ -245,14 +263,14 @@ module.exports = class DefaultTextView extends Component {
 		return <div>
 			<TextViewMenu ref="menu" {...this.props}  dirty={this.state.dirty}  generation={this.state.generation}
 				title={this.state.meta.title}
-				onClose={this.onClose.bind(this)} onSave={this.onSave.bind(this)}
-				onSetTitle={this.onSetTitle.bind(this)}/>
+				onClose={this.onClose} onSave={this.onSave}
+				onSetTitle={this.onSetTitle}/>
 			<CodeMirror ref="cm" value={this.state.value} history={this.state.history} 
 				markups={this.state.markups} 
-				onMarkupReady={this.onMarkupReady.bind(this)}
-				onCursorActivity={this.onCursorActivity.bind(this)}
+				onMarkupReady={this.onMarkupReady}
+				onCursorActivity={this.onCursorActivity}
 				lineNumberFormatter={milestones.lineNumberFormatter.bind(this)}
-				onChange={this.onChange.bind(this)}/>
+				onChange={this.onChange}/>
 		</div>
 	}
 }
