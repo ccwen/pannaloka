@@ -3,6 +3,7 @@ var Component=React.Component;
 var PureComponent=require('react-pure-render').PureComponent;
 
 var markupstore=require("../stores/markup");
+var markupaction=require("../actions/markup");
 var selectionstore=require("../stores/selection");
 var docfilestore=require("../stores/docfile");
 var CreateMarkup=require("./createmarkup");
@@ -14,11 +15,11 @@ module.exports = class MarkupPanel extends PureComponent {
 		super(props);
 		this.state={editing:null,markups:[],hasSelection:false,deletable:false};
 	}
-	onClose () {
+	onClose = () => {
 		stackwidgetaction.closeWidget(this.props.wid)
 	}
 
-	onMarkup (markups,action) {
+	onMarkup = (markups,action) => {
 		if (action.cursor) {
 			var keys=Object.keys(markups);
 			var wid=null,cm=null;
@@ -30,13 +31,13 @@ module.exports = class MarkupPanel extends PureComponent {
 		}
 	}
 
-	onDocfile() {
+	onDocfile =() => {
 		this.forceUpdate();
 	}
 
 	componentDidMount () {
-		this.unsubscribe1 = markupstore.listen(this.onMarkup.bind(this));
-		this.unsubscribe2 = docfilestore.listen(this.onDocfile.bind(this));
+		this.unsubscribe1 = markupstore.listen(this.onMarkup);
+		this.unsubscribe2 = docfilestore.listen(this.onDocfile);
 	}
 
 	componentWillUnmount () {
@@ -44,15 +45,15 @@ module.exports = class MarkupPanel extends PureComponent {
 		this.unsubscribe2();
 	}
 
-	onHyperlinkClick (file,mid) {
+	onHyperlinkClick = (file,mid) => {
 		util.gotoRangeOrMarkupID(file,mid,this.state.wid);
 	}
 
-	onChanged (doc) {
+	onChanged = (doc) => {
 		doc.getEditor().react.setDirty();
 	}
 
-	onDelete (m,typedef) {
+	onDelete = (m,typedef) => {
 		if (!m || !m.handle) {
 			throw "wrong markup"
 			return;
@@ -65,13 +66,18 @@ module.exports = class MarkupPanel extends PureComponent {
 		typedef.onDelete &&	typedef.onDelete(m);
 	}
 
+	onEditing = (m) => {
+		markupaction.editing(m);
+	}
+
 	render () {
 		var editor=(selectionstore.hasRange()||!this.state.markups.length)?
 			<CreateMarkup/>
-			:<MarkupSelector onHyperlinkClick={this.onHyperlinkClick.bind(this)}
-			 getOther={this.state.cm.react.getOther.bind(this.state.cm.react)} 
-			 markups={this.state.markups} onChanged={this.onChanged.bind(this)}
+			:<MarkupSelector onHyperlinkClick={this.onHyperlinkClick}
+			 getOther={this.state.cm.react.getOther} 
+			 markups={this.state.markups} onChanged={this.onChanged}
 			 onDelete={this.onDelete}
+			 onEditing={this.onEditing}
 			 editing={this.state.editing} deletable={this.state.deletable}/>;
 															   
 

@@ -15,3 +15,5 @@ body {margin:0px;height:100%;overflow-y:hidden;overflow-x:hidden;}
 
 .causeeffect {border-bottom:2px solid red;}
 .causeeffect2 {border-bottom:2px dotted red;}
+.causeeffect.editingMarker:after {content:"因";}
+.causeeffect2.editingMarker:after {content:"果";}

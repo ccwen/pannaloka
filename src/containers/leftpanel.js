@@ -35,7 +35,7 @@ module.exports = class LeftPanel extends Component {
 		this.panelstyle={height:this.panelheight,overflowY:"auto"};		
 	}
 
-  switchToTree () {
+  switchToTree = () => {
     this.setState({selectedIndex:1});
   }
 
@@ -56,7 +56,7 @@ module.exports = class LeftPanel extends Component {
       <TabPanel>
 	      <div style={this.panelstyle}>
           <FileList/>
-          <TreeList onOpenTree={this.switchToTree.bind(this)}/>
+          <TreeList onOpenTree={this.switchToTree}/>
 	  		</div>
       </TabPanel>
 

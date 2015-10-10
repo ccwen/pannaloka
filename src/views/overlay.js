@@ -11,11 +11,11 @@ module.exports = class Overlay extends PureComponent {
     this.state={paths:[]};
     //{stroke:"red",d:"M150 0 L75 200 L225 200Z"}
   }
-  onPath (paths) {
+  onPath = (paths) => {
     this.setState({paths});
   }
   componentDidMount() {
-    this.unsubscribe = overlaystore.listen(this.onPath.bind(this));
+    this.unsubscribe = overlaystore.listen(this.onPath);
   }
   componentWillUnmount () {
     this.unsubscribe();

@@ -74,4 +74,10 @@ var	scrollAndHighlight=function (doc,range_markupid,opts) {
 		//wait for this.state.markups ready, because markups is load later
 		//see ksana-codemirror/src/codemirror-react.js componentDidMount
 	}
-module.exports={gotoRangeOrMarkupID:gotoRangeOrMarkupID,scrollAndHighlight:scrollAndHighlight};
+
+var getMarkupText=function(doc,m) {
+	var pos=m.find();
+	return doc.getRange(pos.from,pos.to);
+}	
+module.exports={gotoRangeOrMarkupID:gotoRangeOrMarkupID,scrollAndHighlight:scrollAndHighlight
+,getMarkupText:getMarkupText};

@@ -13,14 +13,14 @@ module.exports = class StackWidgetList extends Component {
   }
 
 	componentDidMount () {
-		this.unsubscribe = stackwidgetstore.listen(this.onData.bind(this));
+		this.unsubscribe = stackwidgetstore.listen(this.onData);
 	}
 
 	componentWillUnmount () {
 		this.unsubscribe();
 	}
 
-	onData (widgets) {
+	onData = (widgets) => {
 		var widgetheight=(this.props.height / widgets.length)-2 ;
 		if (widgetheight<MINWIDGETHEIGHT) widgetheight=MINWIDGETHEIGHT;
 		this.setState({widgets,widgetheight});
