@@ -1,4 +1,5 @@
 var React=require("react");
+var ReactDOM=require("react-dom");
 var Component=React.Component;
 var PureComponent=require('react-pure-render').PureComponent;
 var kcm=require("ksana-codemirror");
@@ -172,7 +173,7 @@ module.exports = class DefaultTextView extends Component {
 	}
 
 	setsize () {
-		var menu=React.findDOMNode(this.refs.menu);
+		var menu=ReactDOM.findDOMNode(this.refs.menu);
 		if (this.cm) this.cm.setSize("100%",this.props.height-menu.offsetHeight); 
 	}
 

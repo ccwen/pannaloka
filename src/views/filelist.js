@@ -41,7 +41,8 @@ module.exports = class FileList extends Component {
 
 	renderItem (item,idx) {
 		return <div key={idx} data-idx={idx}>
-			<FileItem onClick={this.openfile} selected={this.state.selectedIndex==idx} {...item}/></div>
+			<FileItem onClick={this.openfile}
+			selected={this.state.selectedIndex==idx} {...item}/></div>
 	}
 
 	selectItem = (e) => {

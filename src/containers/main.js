@@ -1,4 +1,5 @@
 var React=require("react");
+var ReactDOM=require("react-dom");
 var Component=React.Component;
 var MainMenu=require('./mainmenu');
 var LeftPanel=require('./leftpanel');
@@ -19,10 +20,13 @@ module.exports = class Main extends Component {
 	}
 
 	componentDidMount () {
-		var offsetheight=React.findDOMNode(this).offsetHeight-20;
+		var offsetheight=ReactDOM.findDOMNode(this).offsetHeight-20;
 		var height=window.innerHeight-offsetheight;
-		styles.LeftPanel.height=height;
-		styles.RightPanel.height=height;
+		this.refs.leftpanel.style.height=height;
+		this.refs.rightpanel.style.height=height;
+
+		//styles.LeftPanel.height=height;
+		//styles.RightPanel.height=height;
 		this.setState({height});
 		/*
 		window.onbeforeunload = function (e) {
@@ -38,7 +42,7 @@ module.exports = class Main extends Component {
   			<MainMenu/>
 	  		<StatusPanel/>
   		<div ref="scrollstart" style={styles.Main}>
-  			<div style={styles.LeftPanel}>
+  			<div ref="leftpanel" style={styles.LeftPanel}>
   				<LeftPanel height={this.state.height}/>
   			</div>
   			<div ref="rightpanel" style={styles.RightPanel}>

@@ -1,4 +1,5 @@
 var React=require("react");
+var ReactDOM=require("react-dom");
 var Component=React.Component;
 var PureComponent=require("react-pure-render/component");
 var WidgetClasses=require("../views/widgetclasses");
@@ -9,12 +10,16 @@ module.exports = class StackWidget extends PureComponent {
 
 	constructor (props) {
 		super(props);
-		for (var i in props.style) style[i]=props.style[i];
-		style.height=props.height;
 	}
 
-	componentWillReceiveProps(nextProps) {
-		if (nextProps.height!==this.props.height) style.height=nextProps.height;
+	updateHeight () {
+		ReactDOM.findDOMNode(this).style.height=this.height;
+	}
+	componentDidMount () {
+		this.updateHeight();
+	}
+	componentDidUpdate () {
+		this.updateHeight();
 	}
 
 	renderWidget() {

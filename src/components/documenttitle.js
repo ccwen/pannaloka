@@ -1,4 +1,5 @@
 var React=require("react");
+var ReactDOM=require("react-dom");
 var Component=React.Component;
 var PureComponent=require('react-pure-render').PureComponent;
 
@@ -27,7 +28,7 @@ module.exports = class DocumentTitle extends PureComponent {
 		}.bind(this),5000);
 	}
 	componentDidUpdate () {
-		var input=React.findDOMNode(this.refs.titleinput);
+		var input=ReactDOM.findDOMNode(this.refs.titleinput);
 		if (!input) return;
 		if (document.activeElement!==input) {
 			var len=this.state.title.length;
