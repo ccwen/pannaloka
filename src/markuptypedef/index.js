@@ -3,7 +3,14 @@ var mark=require("./mark");
 var docfilestore=require("../stores/docfile");
 var markupstore=require("../stores/markup");
 
+var isIntertextDeletable=function(markup) {
+	var file=markup.source[0];
+	return !!docfilestore.docOf(file);
+}
 
+var deletIntertext=function(markup) {
+	markupstore.removeByMid(markup.source[1],markup.source[0]);
+}
 
 
 var types={
@@ -16,7 +23,8 @@ var types={
 	,"title3":{validate:vs.singleone,label:"小標",editor:require("./simple"),mark:mark.singleone}	
 	,"dictionary":{validate:vs.singleone,label:"字典"}
 	,"partofspeech":{validate:vs.singleone,label:"詞性"}
-	,"intertext":{validate:vs.multi,label:"互文", mark:mark.dualone}
+	,"intertext":{validate:vs.multi,label:"互文", mark:mark.dualone, editor:require("./quote"),
+						isDeletable: isIntertextDeletable,onDelete:deletIntertext}
 	,"quote":{validate:vs.dualone,label:"出處", mark:mark.oneway, editor:require("./quote")}
   ,"signifer":{validate:vs.singletwo,label:"能指"}
   ,"causeeffect":{validate:vs.singletwo,label:"因果",mark:mark.singletwo,editor:require("./simple")}

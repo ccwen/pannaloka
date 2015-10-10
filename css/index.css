@@ -7,6 +7,11 @@ body {margin:0px;height:100%;overflow-y:hidden;overflow-x:hidden;}
 .title {border-bottom:3px solid blue}
 .title2 {font-weight:bold}
 .title3 {background:lightblue;}
+
+.intertext   {border-bottom:2px solid gray;}
+.intertext2   {border-bottom:2px dotted gray;}
+
+
 .quote   {border-bottom:2px solid gray;}
 .quoteby {border-bottom:2px dotted gray;}
 .transclusion {color:green;cursor:pointer;}

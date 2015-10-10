@@ -34,7 +34,7 @@ var getMarkupRect=function(m){
 var drawLink=function(m1,m2) {	
 	var rect1=getMarkupRect(m1);
 	var rect2=getMarkupRect(m2);
-	console.log("drawlink",rect1,rect2)
+	//console.log("drawlink",rect1,rect2)
 	overlayaction.connect(rect1,rect2);
 }
 var	scrollAndHighlight=function (doc,range_markupid,opts) {

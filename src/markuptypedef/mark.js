@@ -56,7 +56,7 @@ var dualone=function(mark,docOf, cb) {
 	if (text2.length>MAX_LABEL) text2=text2.substr(0,MAX_LABEL)+"…";
 
 	var mrk1={className:mark.typename , trait:mark.trait, from:range1[0], to:range1[1], source:[files[1],key2,text2] };
-	var mrk2={className:mark.typename+"by", from:range2[0], to:range2[1], by:[files[0],key1,text1]};
+	var mrk2={className:mark.typename+"2", from:range2[0], to:range2[1], by:[files[0],key1,text1]};
 	
 
 	cb(0, [{markup:mrk1, doc:doc1, key:key1}
