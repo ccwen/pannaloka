@@ -18,7 +18,9 @@ module.exports = class DocumentTitle extends PureComponent {
 	onKeyPress = (e) => {
 		if (e.key==="Enter") {
 			this.setState({editing:false});
-			this.props.onSetTitle&&this.props.onSetTitle(this.state.title);
+			if (this.props.title!==this.state.title) {
+				this.props.onSetTitle&&this.props.onSetTitle(this.state.title);
+			}
 		}
 	}
 

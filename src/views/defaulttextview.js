@@ -238,7 +238,7 @@ module.exports = class DefaultTextView extends Component {
 		}
 	}
 
-	onCursorActivity = () => {
+	onCursorActivity = (cm) => {
 		clearTimeout(this.timer1);
 
 		this.timer1=setTimeout(function(){
@@ -264,11 +264,13 @@ module.exports = class DefaultTextView extends Component {
 		return <div>
 			<TextViewMenu ref="menu" {...this.props}  dirty={this.state.dirty}  generation={this.state.generation}
 				title={this.state.meta.title}
+				readOnly={this.state.meta.readOnly}
 				onClose={this.onClose} onSave={this.onSave}
 				onSetTitle={this.onSetTitle}/>
 			<CodeMirror ref="cm" value={this.state.value} history={this.state.history} 
 				markups={this.state.markups} 
 				onMarkupReady={this.onMarkupReady}
+				readOnly={this.state.meta.readOnly}
 				onCursorActivity={this.onCursorActivity}
 				lineNumberFormatter={milestones.lineNumberFormatter.bind(this)}
 				onChange={this.onChange}/>

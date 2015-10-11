@@ -12,7 +12,8 @@ module.exports = class TextViewMenu extends PureComponent {
   render () {
   	return <div style={styles.menu}>
   		<SaveButton {...this.props} />
-  		<DocumentTitle title={this.props.title} onSetTitle={this.props.onSetTitle} />({this.props.wid})
+  		<DocumentTitle title={this.props.title} onSetTitle={this.props.onSetTitle} />
+  		{this.props.readOnly?"(fixed text)":""}
   		<span style={styles.closebutton} onClick={this.props.onClose}>x</span>
   	</div>
   }
