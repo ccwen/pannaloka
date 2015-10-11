@@ -16,15 +16,19 @@ var KTXFileStore=Reflux.createStore({
 	,loaddir:function(openfn){
 		socketfs.readdirmeta("ktc",function(err,data){
 			if (!err) {
-				this.files=data;
-				if (!data.length) return;
+				this.files=data.filter(function(f){
+						var ext=f.filename.substr(f.filename.length-4);
+						return  (ext===".ktc");
+				});
+
+				if (!this.files.length) return;
 				var idx=0;
 				if (openfn) {
-					idx=data.indexOf(openfn);
+					idx=this.files.indexOf(openfn);
 					if (idx==-1) idx=0;
 				}
 				setTimeout(function(){
-					this.onOpenTree(data[idx].filename);	
+					this.onOpenTree(this.files[idx].filename);	
 				}.bind(this),100);
 				
 			}
