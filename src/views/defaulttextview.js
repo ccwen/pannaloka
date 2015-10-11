@@ -14,12 +14,12 @@ var selectionaction=require("../actions/selection"), selectionstore=require("../
 var transclude=require("./transclude");
 var overlayaction=require("../actions/overlay");
 var milestones=require("./milestones");
+
 var util=require("./util");
 module.exports = class DefaultTextView extends Component {
 	constructor (props) {
 		super(props);
 		this.state={dirty:false,markups:{},value:"",history:[]};
-		this.milestones={};
 	}
 
 	componentDidMount() {
@@ -58,9 +58,9 @@ module.exports = class DefaultTextView extends Component {
 	}
 
 	rebuildMilestone = (markups) => {
-		var res=milestones.buildMilestone(this.doc,markups);
-		this.name2milestone=res.name2milestone;
-		this.line2milestone=res.line2milestone;
+		var res=kcm.milestones.buildMilestone(this.doc,markups);
+		this.cm.name2milestone=res.name2milestone;
+		this.cm.line2milestone=res.line2milestone;
 		//this will force repaint of gutter
 		this.cm.setOption("lineNumbers",false);
 		this.cm.setOption("lineNumbers",true);
@@ -273,7 +273,6 @@ module.exports = class DefaultTextView extends Component {
 				onMarkupReady={this.onMarkupReady}
 				readOnly={this.state.meta.readOnly}
 				onCursorActivity={this.onCursorActivity}
-				lineNumberFormatter={milestones.lineNumberFormatter.bind(this)}
 				onChange={this.onChange}/>
 		</div>
 	}

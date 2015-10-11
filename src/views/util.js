@@ -1,7 +1,7 @@
 var docfilestore=require("../stores/docfile");
 var stackwidgetaction=require("../actions/stackwidget");
 var overlayaction=require("../actions/overlay");
-
+var milestones=require("ksana-codemirror").milestones;
 var gotoRangeOrMarkupID=function(file,range_mid,wid) {
 	var targetdoc=docfilestore.docOf(file);
 	if (targetdoc) {
@@ -54,8 +54,9 @@ var	scrollAndHighlight=function (doc,range_markupid,opts) {
 				var from=pos.from, to=pos.to;
 				var scrollto={line:from.line,ch:from.ch};
 			} else {//array format
-				var from={line:hl[0][1],ch:hl[0][0]},to={line:hl[1][1],ch:hl[1][0]};
-				var scrollto={line:hl[0][1],ch:hl[0][0]};
+				var newhl=milestones.unpack.call(doc.getEditor(),hl);
+				var from={line:newhl[0][1],ch:newhl[0][0]},to={line:newhl[1][1],ch:newhl[1][0]};
+				var scrollto={line:newhl[0][1],ch:newhl[0][0]};
 			}
 			var marker = document.createElement('span');
 			if (scrollto.line>0) scrollto.line--;//show one line on top;
