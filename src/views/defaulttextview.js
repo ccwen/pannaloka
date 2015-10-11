@@ -52,7 +52,8 @@ module.exports = class DefaultTextView extends Component {
 	  	}
 	  	,"Ctrl-S":this.onSave
 	  	,"Ctrl-M":milestones.createMilestone.bind(this)
-	  	,"Ctrl-K":"automarkup"
+	  	,"Ctrl-K":"text2markup"
+	  	,"Shift-Ctrl-K":"markup2text"
 		});
 	}
 

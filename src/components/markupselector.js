@@ -109,6 +109,9 @@ module.exports = class MarkupSelector extends PureComponent {
 		this.props.onDelete(m,this.state.typedef);
 	}
 
+	renderTypedef () {
+		return (this.state.typedef)?this.state.typedef.label:"";
+	}
 	render () {
 		if (!this.props.markups.length) {
 			this.clearMarker();
@@ -117,6 +120,7 @@ module.exports = class MarkupSelector extends PureComponent {
 
 		return <span>|
 				{this.renderMarkupPicker()}
+				{this.renderTypedef()}
 				{this.state.markupeditor?E(this.state.markupeditor,{
 					editing:true,markup:this.state.M
 					,deletable:this.state.deletable

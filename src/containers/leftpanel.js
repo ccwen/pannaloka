@@ -71,6 +71,12 @@ module.exports = class LeftPanel extends Component {
         <Section>Markup</Section>
           <Key>Ctrl-Q</Key>
           <Desc>Create a transclusion</Desc>
+          <Key>Ctrl-K</Key>
+          <Desc>Convert Text to Markup</Desc>
+          <Key>Shift-Ctrl-K</Key>
+          <Desc>Convert Markup to Text</Desc>
+          <Key>Ctrl-M</Key>
+          <Desc>Convert selection to milestone</Desc>
         <Section>Editing</Section>
           <Key>Ctrl-L</Key>
           <Desc>Goto Line</Desc>
