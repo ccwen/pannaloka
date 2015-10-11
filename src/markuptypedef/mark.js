@@ -68,7 +68,9 @@ var oneway=function(mark,docOf, cb) {
 	var selections=validate.dualone(mark.selections);
 	if (!selections) return ;
 
-	var files=Object.keys(selections);
+	var files=[];
+	for (var i in selections) files.push(i);//cannot use Object.keys, files should not be sorted
+
 	var range1=selections[files[0]][0];
 	var key1=uuid();
 
