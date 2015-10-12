@@ -45,7 +45,7 @@ module.exports = class OutlinePanel extends PureComponent {
 			var text=util.getMarkupText(m.doc,m.markup.handle);
 			node.links=[[docfilestore.fileOf(m.doc),m.key,text]];
 		} else { //try range
-			var ranges=selectionstore.getRanges({textLength:5});
+			var ranges=selectionstore.getRanges({textLength:5,pack:true});
 			if (ranges.length) {
 				node.links=ranges;
 			} else delete node.links;

@@ -26,8 +26,8 @@ module.exports = class MarkupPanel extends PureComponent {
 			if (keys.length) {
 				cm=markups[keys[0]].doc.getEditor();
 				wid=cm.react.getWid();
+				this.setState({markups,wid,cm});	
 			}
-			this.setState({markups,wid,cm});
 		}
 	}
 

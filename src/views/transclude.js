@@ -1,11 +1,12 @@
 var MAX_TRANSCLUSION_LENGTH = 30;
 
 var React=require("react");
-
+var ReactDOM=require("react-dom");
 var selectionstore=require("../stores/selection");
 var docfilestore=require("../stores/docfile");
 var uuid=require("../uuid");
 var transclusion = require("../components/transclusion");
+var milestones=require("ksana-codemirror").milestones;
 var util=require("./util");
 var bookmarkfromrange=function(doc) { //simulate bookmark format in file
 	var bookmark={}; 
@@ -17,8 +18,8 @@ var bookmarkfromrange=function(doc) { //simulate bookmark format in file
   var text=selectionstore.getRangeText(0);
   if (text.length>MAX_TRANSCLUSION_LENGTH) text=text.substr(0,MAX_TRANSCLUSION_LENGTH)+"...";
 
-  bookmark.text=text;
-  bookmark.target={from:ranges[0][1][0] ,to:ranges[0][1][1],file:ranges[0][0]};
+  var packed=milestones.pack.call( docfilestore.docOf(ranges[0][0]),ranges[0][1]);
+  bookmark.target=[ranges[0][0],packed,text];
   bookmark.key=uuid();
   bookmark.className="transclusion";
   //TODO save target file generation 
@@ -43,9 +44,9 @@ var removeBookmarkAtCursor = function(doc) {
 var transclude_onclick=function(e) {
 	var key=e.target.dataset.mid;
 	var m=this.getMarkup(key);
-	var highlight= [m.target.from,m.target.to];
+	var highlight= m.target[1];
 
-	util.gotoRangeOrMarkupID(m.target.file,highlight,this.props.wid);
+	util.gotoRangeOrMarkupID(m.target[0],m.target[1],this.props.wid);
 }
 
 var transclude=function(bm) {
@@ -62,12 +63,11 @@ var transclude=function(bm) {
 
 	var cursor=doc.getCursor();
   var marker = document.createElement('span');
-  React.render(  React.createElement(transclusion,
-  	{mid:bm.key,text:bm.text,onClick:transclude_onclick.bind(this)})
+  ReactDOM.render(  React.createElement(transclusion,
+  	{mid:bm.key,text:bm.target[2],onClick:transclude_onclick.bind(this)})
   ,marker);
   var textmarker=doc.markText(cursor,cursor,{
-  	replacedWith:marker,target:{from:bm.target.from,to:bm.target.to,file:bm.target.file}
-  		,className:bm.className, text:bm.text,clearWhenEmpty: false,key:bm.key
+  	replacedWith:marker,target:bm.target,className:bm.className,clearWhenEmpty: false,key:bm.key
   	}
   	,"bookmark" //require patch in codemirror.js to allow passing textmarker type
   	/*

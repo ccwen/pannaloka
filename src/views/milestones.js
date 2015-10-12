@@ -27,7 +27,7 @@ var invalidChar=function(name) {
 
 var canCreateMS=function(name,range) {
 	if (range[0][1]!==range[1][1]) return "cannot cross line";
-	if (this.cm.name2milestone[name]) return "repeated";
+	if (this.doc.name2milestone[name]) return "repeated";
 	if (name.length>15) return "name too long";
 
 	var ch=invalidChar(name);
@@ -57,7 +57,7 @@ var markMilestone=function(cm) { //convert cursor to
 	var err=createMS.call(cm.react,name,range);
 	if (!err) {
 		//temporary set the name to check uniqueness, valid until next rebuildMilestone
-		cm.react.name2milestone[name]=true;
+		doc.name2milestone[name]=true;
 	}
 	return err;
 }

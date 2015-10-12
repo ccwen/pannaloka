@@ -1,5 +1,7 @@
 var Reflux=require("reflux");
 var docfile=require("./docfile");
+var milestones=require("ksana-codemirror").milestones;
+
 var selectionStore=Reflux.createStore({
 	listenables:[require("../actions/selection")]
 	,selections:{}
@@ -53,6 +55,13 @@ var selectionStore=Reflux.createStore({
 					out.push(r);
 				}
 			}
+		}
+		if (opts.pack) {
+
+			out=out.map(function(range){
+				var doc=docfile.docOf(range[0]);
+				return [range[0],milestones.pack.call(doc,range[1]),range[2]];
+			});
 		}
 		return out;
 	}
