@@ -53,6 +53,7 @@ var	scrollAndHighlight=function (doc,range_markupid,opts) {
 				var pos=markup.handle.find();
 				var from=pos.from, to=pos.to;
 				var scrollto={line:from.line,ch:from.ch};
+				doc.setCursor(from);
 			} else {//array format
 				var newhl=milestones.unpack.call(doc,hl);
 				var from={line:newhl[0][1],ch:newhl[0][0]},to={line:newhl[1][1],ch:newhl[1][0]};

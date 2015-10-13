@@ -11,8 +11,8 @@ var markupStore=Reflux.createStore({
 	,markupsUnderCursor:[]
 	,onMarkupsUnderCursor:function(markupsUnderCursor) {
 		this.editing=null;
-		if (!markupsUnderCursor.length&& !this.markupsUnderCursor.length) return ;//nothing happen
-		this.markupsUnderCursor=markupsUnderCursor;
+		if (this.markupsUnderCursor==markupsUnderCursor) return;
+		this.markupsUnderCursor=markupsUnderCursor||[];
 		this.trigger(this.markupsUnderCursor,{cursor:true});
 	}
 	,getEditing:function() {
