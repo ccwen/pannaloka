@@ -1,6 +1,7 @@
 var uuid=require('../uuid');
 var validate=require('./validateselection');
 var util=require("./util");
+var milestones=require("ksana-codemirror").milestones;
 var MAX_LABEL=5;
 var singleone=function(params, docOf, cb) {
 	var selections=validate.singleone(params.selections);
@@ -82,8 +83,9 @@ var oneway=function(mark,docOf, cb) {
 	var text2=util.getRangeText(doc2,range2); 
 	if (text2.length>MAX_LABEL) text2=text2.substr(0,MAX_LABEL)+"…";
 
+	var packed=milestones.pack.call(doc2,[range2[0],range2[1]]);
 	var mrk1={className:mark.typename, trait:mark.trait, from:range1[0], to:range1[1], 
-		target:[files[1],[range2[0],range2[1]],text2] };
+		target:[files[1],packed,text2] };
 
 	cb(0, [{markup:mrk1, doc:doc1, key:key1}] );
 }
