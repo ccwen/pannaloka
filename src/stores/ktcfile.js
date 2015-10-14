@@ -13,7 +13,7 @@ var KTXFileStore=Reflux.createStore({
 	    }
 	  }.bind(this));
 	}
-	,loaddir:function(openfn){
+	,loaddir:function(openfn,noopen){
 		socketfs.readdirmeta("ktc",function(err,data){
 			if (!err) {
 				this.files=data.filter(function(f){
@@ -27,10 +27,11 @@ var KTXFileStore=Reflux.createStore({
 					idx=this.files.indexOf(openfn);
 					if (idx==-1) idx=0;
 				}
-				setTimeout(function(){
-					this.onOpenTree(this.files[idx].filename);	
-				}.bind(this),100);
-				
+				if (!noopen) {
+					setTimeout(function(){
+						this.onOpenTree(this.files[idx].filename);	
+					}.bind(this),100);					
+				}
 			}
 		}.bind(this));
 	}
@@ -52,7 +53,7 @@ var KTXFileStore=Reflux.createStore({
 		});
 				
 	  socketfs.writeFile(this.fn,tocstring,"utf8",function(err){
-	  	this.loaddir(this.fn);
+	  	this.loaddir(this.fn,true);
 	    cb&&cb(err);
 	  }.bind(this));
 	}
