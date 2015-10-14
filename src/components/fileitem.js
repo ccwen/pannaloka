@@ -1,7 +1,7 @@
 var React=require("react");
 var PureComponent=require('react-pure-render').PureComponent;
 
-var selectedstyle={background:"highlight",cursor:"pointer",borderBottom:"1px solid blue"};
+var selectedstyle={cursor:"pointer"};
 var style={cursor:"default"};
 
 var FileItem = React.createClass({

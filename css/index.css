@@ -20,10 +20,16 @@ body {margin:0px;height:100%;overflow-y:hidden;overflow-x:hidden;}
 
 .causeeffect {border-bottom:2px solid red;}
 .causeeffect2 {border-bottom:2px dotted red;}
-.causeeffect.editingMarker:after {content:"因";}
-.causeeffect2.editingMarker:after {content:"果";}
+.causeeffect.editingMarker:before {font-size:50%;content:"因";vertical-align:text-top}
+.causeeffect2.editingMarker:before {font-size:50%;content:"果";vertical-align:text-top}
 
-.synonym {border-bottom:2px solid red;}
-.synonym2 {border-bottom:2px dotted red;}
-.synonym.editingMarker:after {content:"";}
-.synonym2.editingMarker:after {content:"*";}
+.signifier {border-bottom:2px solid purple;}
+.signifier2 {border-bottom:2px dotted purple;}
+.signifier.editingMarker:before {font-size:50%;content:"能";vertical-align:text-top}
+.signifier2.editingMarker:before {font-size:50%;content:"所";vertical-align:text-top}
+
+
+.synonym {border-bottom:2px solid blue;}
+.synonym2 {border-bottom:2px dotted blue;}
+.synonym.editingMarker:before {font-size:50%;content:"釋";vertical-align:text-top}
+.synonym2.editingMarker:before {font-size:50%;content:"義";vertical-align:text-top}

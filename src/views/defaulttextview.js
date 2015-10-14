@@ -60,7 +60,7 @@ module.exports = class DefaultTextView extends Component {
 
 	rebuildMilestone = (markups) => {
 		kcm.milestones.buildMilestone(this.doc,markups);
-		//this will force repaint of gutter
+		//force repaint of gutter
 		this.cm.setOption("lineNumbers",false);
 		this.cm.setOption("lineNumbers",true);
 	}
