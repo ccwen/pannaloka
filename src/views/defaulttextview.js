@@ -137,8 +137,11 @@ module.exports = class DefaultTextView extends Component {
 		docfileaction.openFile(this.doc,this.props.filename);
 		this.setsize();
 		this.keymap();
+		if (this.state.meta.top) {
+			this.cm.scrollTo(0,this.state.meta.top);
+		}
 		if (this.props.scrollTo) {
-			util.scrollAndHighlight(this.doc,this.props.scrollTo);	
+			util.scrollAndHighlight(this.doc,this.props.scrollTo);
 		}
 	}
 
@@ -215,7 +218,9 @@ module.exports = class DefaultTextView extends Component {
 	}
 
   writefile (fn) {
-  	cmfileio.writeFile(this.state.meta,this.cm,fn,function(err,newmeta){
+  	var meta=this.state.meta;
+  	meta.top=this.cm.getScrollInfo().top;
+  	cmfileio.writeFile(meta,this.cm,fn,function(err,newmeta){
       if (err) console.log(err);
       else  {
       	if (this.state.titlechanged) ktxfileaction.reload();
