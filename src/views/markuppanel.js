@@ -71,16 +71,15 @@ module.exports = class MarkupPanel extends PureComponent {
 	}
 
 	render () {
-		var editor=(selectionstore.hasRange()||!this.state.markups.length)?
-			<CreateMarkup/>
-			:<MarkupSelector onHyperlinkClick={this.onHyperlinkClick}
-			 getOther={this.state.cm.react.getOther} 
+		var getOther=(this.state.cm && this.state.cm.react)?this.state.cm.react.getOther:null;
+		return (<div><CreateMarkup editing={!this.state.markups.length}/>
+			<MarkupSelector onHyperlinkClick={this.onHyperlinkClick}
+			 getOther={getOther} 
 			 markups={this.state.markups} onChanged={this.onChanged}
 			 onDelete={this.onDelete}
 			 onEditing={this.onEditing}
-			 editing={this.state.editing} deletable={this.state.deletable}/>;
-															   
-
-		return <div>{editor}</div>
+			 editing={this.state.editing} deletable={this.state.deletable}/>
+			</div>
+		)
 	}
 }

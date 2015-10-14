@@ -12,6 +12,7 @@ module.exports = class MarkupSelector extends PureComponent {
 	}
 	
 	highlightMarkup (markups,idx) {
+		if (!this.props.getOther) return;
 		this.clearMarker();
 		this.setMarker(markups[idx].doc,markups[idx].markup.handle);
 		var others=this.props.getOther(markups[idx].markup);
@@ -37,7 +38,7 @@ module.exports = class MarkupSelector extends PureComponent {
 				deletable=typedef.isDeletable?typedef.isDeletable(M):true;
 			}
 		} else {
-			clearMarker();
+			this.clearMarker();
 		}
 		this.props.onEditing&&this.props.onEditing(markups[idx]);
 		return {markupeditor,M,idx,deletable,typedef};
@@ -56,9 +57,6 @@ module.exports = class MarkupSelector extends PureComponent {
 			this.editingMarker=[];
 		}
 	}
-
-
-
 
 	componentWillReceiveProps (nextProps) {
 		this.setState(this.getEditor(nextProps.markups,0));
@@ -118,7 +116,7 @@ module.exports = class MarkupSelector extends PureComponent {
 			return <span></span>
 		}
 
-		return <span>|
+		return <span>
 				{this.renderMarkupPicker()}
 				{this.renderTypedef()}
 				{this.state.markupeditor?E(this.state.markupeditor,{
