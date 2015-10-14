@@ -231,7 +231,7 @@ module.exports = class DefaultTextView extends Component {
 		}
 		var m=markups[0];
 		if (!m.markup) {
-			console.error("invalid markup");
+			//console.error("invalid markup");
 			return;
 		}
 		var others=m.markup.source||m.markup.by||m.markup.target;

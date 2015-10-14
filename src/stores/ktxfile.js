@@ -21,6 +21,10 @@ var KTXFileStore=Reflux.createStore({
 	,onReload:function() {
 		this.loaddir();
 	}
+	,findFile:function(fn) {
+		var res=this.files.filter(function(f){return f.filename===fn});
+		if (res.length) return res[0];
+	}
 	,newfilename:function() {
 		return "ktx/"+Math.random().toString().substr(2,8)+".ktx";
 	}

@@ -2,13 +2,17 @@ var docfilestore=require("../stores/docfile");
 var stackwidgetaction=require("../actions/stackwidget");
 var overlayaction=require("../actions/overlay");
 var milestones=require("ksana-codemirror").milestones;
+var ktxfilestore=require("../stores/ktxfile");
 var gotoRangeOrMarkupID=function(file,range_mid,wid) {
 	var targetdoc=docfilestore.docOf(file);
 	if (targetdoc) {
 		scrollAndHighlight(targetdoc,range_mid);
 	} else {
-		var target={filename:file, scrollTo:range_mid };
-		stackwidgetaction.openWidget(target,"TextWidget",{below:wid});	
+		var target=ktxfilestore.findFile(file);
+		if (target) {
+			target.scrollTo=range_mid;
+			stackwidgetaction.openWidget(target,"TextWidget",{below:wid});	
+		}
 	}
 }
 var getLinkedBy=function(m){

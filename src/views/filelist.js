@@ -35,8 +35,11 @@ module.exports = class FileList extends Component {
 	}
 
 	openfile = (e) => {
-		var file=this.state.files[this.state.selectedIndex];
-		stackwidgetaction.openWidget(file,"TextWidget");
+		var fobj=this.state.files[this.state.selectedIndex];
+		var obj=ktxfilestore.findFile(fobj.filename);
+		if (obj) {
+			stackwidgetaction.openWidget(obj,"TextWidget");	
+		}
 	}
 
 	renderItem (item,idx) {

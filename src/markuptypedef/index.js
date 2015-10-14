@@ -4,12 +4,12 @@ var docfilestore=require("../stores/docfile");
 var markupstore=require("../stores/markup");
 
 var isIntertextDeletable=function(markup) {
-	var file=markup.source[0];
+	var file=markup.target[0];
 	return !!docfilestore.docOf(file);
 }
 
 var deletIntertext=function(markup) {
-	markupstore.removeByMid(markup.source[1],markup.source[0]);
+	markupstore.removeByMid(markup.target[1],markup.target[0]);
 }
 
 
