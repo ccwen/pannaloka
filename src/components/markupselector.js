@@ -31,6 +31,7 @@ module.exports = class MarkupSelector extends PureComponent {
 		var markupeditor=null,M=null,deletable=true,typedef=null;
 		if (markups.length) {
 			M=(markups[idx]).markup;
+			if (!M) return {markupeditor:null,M:null,idx:0,deletable:false,typedef:null};
 			this.highlightMarkup.call(this,markups,idx);
 			typedef=markuptypedef.types[M.className];
 			if (typedef) {
@@ -82,11 +83,20 @@ module.exports = class MarkupSelector extends PureComponent {
 	//<select style={styles.select} onChange={this.onSelectMarkup.bind(this)}>
 	//?s
 
-	renderOtherRange () {
-		var other=this.state.M.target||this.state.M.others;
-		if (!other)return;
-		if (!Array.isArray( other[0]) ) other=[other];
-		return E(RangeHyperlink,{ranges:other,onHyperlinkClick:this.props.onHyperlinkClick});
+	renderTarget() {
+		if (!this.state.M) return;
+		var others=this.state.M.target;
+		if (!others)return;
+		if (!Array.isArray( others) ) others=[others];
+		return E(RangeHyperlink,{ranges:others,onHyperlinkClick:this.props.onHyperlinkClick});		
+	}
+
+
+	renderOthers() { //same view
+		if (!this.state.M) return;
+		if (!this.props.getOther) return;
+		var others=this.props.getOther(this.state.M,{format:"range"});
+		return E(RangeHyperlink,{ranges:others,onHyperlinkClick:this.props.onHyperlinkClick});
 	}
 
 	componentWillUnmount () {
@@ -125,7 +135,8 @@ module.exports = class MarkupSelector extends PureComponent {
 					,onUpdateMarkup:this.onUpdateMarkup
 					,onDeleteMarkup:this.onDeleteMarkup
 				}):null}
-				{this.renderOtherRange()}
+				{this.renderTarget()}
+				{this.renderOthers()}				
 		</span>
 	}
 }

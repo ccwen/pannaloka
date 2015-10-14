@@ -9,6 +9,7 @@ var TextViewMenu=require("../components/textviewmenu");
 var stackwidgetaction=require("../actions/stackwidget");
 var ktxfileaction=require("../actions/ktxfile");
 var docfileaction=require("../actions/docfile");
+var docfilestore=require("../stores/docfile");
 var markupstore=require("../stores/markup"),markupaction=require("../actions/markup");
 var selectionaction=require("../actions/selection"), selectionstore=require("../stores/selection");
 var transclude=require("./transclude");
@@ -91,8 +92,9 @@ module.exports = class DefaultTextView extends Component {
 		return this.state.markups[key];
 	}
 
-	getOther = (markup) => {
+	getOther = (markup,opts) => {
 		var out=[],markups=this.state.markups;
+		opts=opts||{};
 		if (markup.master) {
 			out.push(markups[markup.master]);
 		} else if (markup.others) {
@@ -100,6 +102,14 @@ module.exports = class DefaultTextView extends Component {
 				var key=markup.others[i];
 				out.push(markups[key]);
 			}
+		}
+
+		if (out.length && opts.format=="range") {
+			return out.map(function(m){
+				var file=docfilestore.fileOf(m.handle.doc);
+				var text=util.getMarkupText(m.handle.doc,m.handle);
+				return [file,m.key,text];
+			});
 		}
 		return out;
 	}
