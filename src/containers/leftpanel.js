@@ -6,7 +6,7 @@ var FileList=require('../views/filelist');
 var TreeList=require('../views/treelist');
 var OutlinePanel=require("../views/outlinepanel");
 
-var styles={key:{fontSize:"110%",color:"green",fontFamily:"monospace",textAlign:"center"},
+var styles={key:{fontSize:"110%",color:"darkblue",fontFamily:"monospace",textAlign:"center"},
 section:{fontSize:"130%",textAlign:"center"},
 desc:{textAlign:"center"}};
 class Key extends Component {
@@ -69,14 +69,14 @@ module.exports = class LeftPanel extends Component {
       <TabPanel>
 	      <div style={this.panelstyle}>
         <Section>Markup</Section>
+          <Key>Ctrl-M</Key>
+          <Desc>Create/Delete Markup</Desc>
           <Key>Ctrl-Q</Key>
-          <Desc>Create a transclusion</Desc>
+          <Desc>Create/Delete a transclusion</Desc>
           <Key>Ctrl-K</Key>
           <Desc>Convert Text to Markup</Desc>
           <Key>Shift-Ctrl-K</Key>
           <Desc>Convert Markup to Text</Desc>
-          <Key>Ctrl-M</Key>
-          <Desc>Convert selection to milestone</Desc>
         <Section>Editing</Section>
           <Key>Ctrl-L</Key>
           <Desc>Goto Line</Desc>

@@ -21,16 +21,16 @@ a:visited {color:darkblue;}
 
 .causeeffect {border-bottom:2px solid red;}
 .causeeffect2 {border-bottom:2px dotted red;}
-.causeeffect.xeditingMarker:before {font-size:50%;content:"因";vertical-align:text-top}
-.causeeffect2.xeditingMarker:before {font-size:50%;content:"果";vertical-align:text-top}
+.causeeffect.editingMarker:after {font-size:50%;content:"因";vertical-align:text-top}
+.causeeffect2.editingMarker:after {font-size:50%;content:"果";vertical-align:text-top}
 
 .signifier {border-bottom:2px solid purple;}
 .signifier2 {border-bottom:2px dotted purple;}
-.signifier.xeditingMarker:before {font-size:50%;content:"能";vertical-align:text-top}
-.signifier2.xeditingMarker:before {font-size:50%;content:"所";vertical-align:text-top}
+.signifier.editingMarker:after {font-size:50%;content:"能";vertical-align:text-top}
+.signifier2.editingMarker:after {font-size:50%;content:"所";vertical-align:text-top}
 
 
 .synonym {border-bottom:2px solid blue;}
 .synonym2 {border-bottom:2px dotted blue;}
-.synonym.xeditingMarker:before {font-size:50%;content:"釋";vertical-align:text-top}
-.synonym2.xeditingMarker:before {font-size:50%;content:"義";vertical-align:text-top}
+.synonym.editingMarker:after {font-size:50%;content:"釋";vertical-align:text-top}
+.synonym2.editingMarker:after {font-size:50%;content:"義";vertical-align:text-top}

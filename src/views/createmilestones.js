@@ -1,11 +1,13 @@
 var types=require("../markuptypedef").types;
 var milestone_novalidate=require("../markuptypedef").milestone_novalidate;
+var validTextRange=require("../markuptypedef/validatemilestone").validTextRange;
 var markupAction=require("../actions/markup");
 var CodeMirror=require("codemirror");
 var milestones=require("ksana-codemirror").milestones;
 var docOf=require("../stores/docfile").docOf;
 
 var selectionStore=require("../stores/selection");
+/*
 var createMilestone=function(){
 	var ranges=selectionStore.getRanges();
 	if (ranges.length!==1)return;
@@ -35,13 +37,14 @@ var canCreateMS=function(name,range) {
 
 	var line=range[0][1];
 	//check overlap
-	var idx=milestones.findMilestone(this.cm.line2milestone,line);
+	var idx=milestones.findMilestone(this.doc.line2milestone,line);
 	if (idx>-1) return "already have milestone at this line";
 	return null;
 }
+*/
 
 var createMS=function(name,range) {
-	var err=canCreateMS.call(this,name,range);
+	var err=validTextRange.call(this.doc,name,range);
 	if (!err){
 		var o={typename:"milestone",selections:selectionStore.selections,typedef:types.milestone};
 		markupAction.createMarkup(o);	
@@ -61,7 +64,7 @@ var markMilestone=function(cm) { //convert cursor to
 	}
 	return err;
 }
-CodeMirror.commands.markMilestone=markMilestone;
+CodeMirror.commands.markMilestone=markMilestone; //uses by ksana-codemirror/automarkup
 
 //create from batch replace
 var createMilestones=function(ranges,cb) { //this is CodeMirror instance
@@ -76,4 +79,4 @@ var createMilestones=function(ranges,cb) { //this is CodeMirror instance
 }
 
 
-module.exports={createMilestone:createMilestone,createMilestones:createMilestones};
+module.exports=createMilestones;

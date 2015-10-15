@@ -76,6 +76,9 @@ module.exports = class CreateMarkup extends PureComponent {
 		markupaction.createMarkup({selections,trait,typename,typedef});
 	}
 
+	setHotkey = (handler) => {
+		markupaction.setHotkey(handler);
+	}
 
 	renderAttributeEditor () {
 		if (this.state.types.length===0 || this.state.selectedIndex===-1) return;
@@ -84,16 +87,23 @@ module.exports = class CreateMarkup extends PureComponent {
 		var attributeEditor=types[activetype].editor || DefaultMarkupAttrEditor;
 		return React.createElement( attributeEditor,
 			{selections:this.state.selections
+				,setHotkey:this.setHotkey
 				,onCreateMarkup:this.onCreateMarkup} );
 
 	}
 	render () {//need 130% to prevent flickering when INPUT add to markup editor
 		if (!this.props.editing) {
-			return <span>|</span>
+			markupaction.setHotkey(null);
+			return <span></span>
+		}
+		
+		if (!this.state.types.length) {
+			markupaction.setHotkey(null);
 		}
 
-		return <span><span style={{fontSize:"130%"}}>|</span>
-			{this.state.types.map(this.renderType.bind(this))}
+		return <span>【
+			{this.state.types.length?this.state.types.map(this.renderType.bind(this))
+				:"選取文字，按Ctrl選多段"}】
 			{this.renderAttributeEditor()}
 		</span>
 	}

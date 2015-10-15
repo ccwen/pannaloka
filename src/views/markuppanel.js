@@ -13,7 +13,7 @@ var util=require("./util");
 module.exports = class MarkupPanel extends PureComponent {
 	constructor (props) {
 		super(props);
-		this.state={editing:null,markups:[],hasSelection:false,deletable:false};
+		this.state={editing:null,markups:[],hasSelection:false,deletable:false,getOther:null};
 	}
 	onClose = () => {
 		stackwidgetaction.closeWidget(this.props.wid)
@@ -22,12 +22,13 @@ module.exports = class MarkupPanel extends PureComponent {
 	onMarkup = (markups,action) => {
 		if (action.cursor) {
 			var keys=Object.keys(markups);
-			var wid=null,cm=null;
+			var wid=null,cm=null,getOther=null;
 			if (keys.length) {
 				cm=markups[keys[0]].doc.getEditor();
 				wid=cm.react.getWid();
+				getOther=cm.react.getOther;
 			}
-			this.setState({markups,wid,cm});	
+			this.setState({markups,wid,cm,getOther});
 		}
 	}
 
@@ -59,27 +60,27 @@ module.exports = class MarkupPanel extends PureComponent {
 			return;
 		}
 		markupstore.remove(m);
-		var others=this.state.cm.react.getOther(m);
+		var others=m.handle.doc.getEditor().react.getOther(m);
 		if (others) {
 			others.map(function(other){markupstore.remove(other)});
 		}
 		typedef.onDelete &&	typedef.onDelete(m);
 	}
 
-	onEditing = (m) => {
-		markupaction.editing(m);
+	onEditing = (m,handler) => {
+		markupaction.editing(m,handler);
 	}
 
-	render () {
-		var getOther=(this.state.cm && this.state.cm.react)?this.state.cm.react.getOther:null;
-		return (<div><CreateMarkup editing={!this.state.markups.length}/>
+	render () {		
+		return (<span><span style={{fontSize:"130%"}}>|</span>
+			<CreateMarkup editing={!this.state.markups.length}/>
 			<MarkupSelector onHyperlinkClick={this.onHyperlinkClick}
-			 getOther={getOther} 
+			 getOther={this.state.getOther} 
 			 markups={this.state.markups} onChanged={this.onChanged}
 			 onDelete={this.onDelete}
 			 onEditing={this.onEditing}
 			 editing={this.state.editing} deletable={this.state.deletable}/>
-			</div>
+			</span>
 		)
 	}
 }

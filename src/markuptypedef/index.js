@@ -1,4 +1,5 @@
 var vs=require("./validateselection");
+var vsmilestone=require("./validatemilestone");
 var mark=require("./mark");
 var docfilestore=require("../stores/docfile");
 var markupstore=require("../stores/markup");
@@ -14,9 +15,8 @@ var deletIntertext=function(markup) {
 
 
 var types={
-	"milestone":{validate:vs.milestone,label:"界石",editor:require("./simple"), mark:mark.milestone,hidden:true}
 
-	,"important":{validate:vs.singleone,label:"重點",
+	"important":{validate:vs.singleone,label:"重點",
 							editor:require("./simple"), mark:mark.singleone}
 	,"title":{validate:vs.singleone,label:"大標",editor:require("./simple"),mark:mark.singleone}
 	,"title2":{validate:vs.singleone,label:"中標",editor:require("./simple"),mark:mark.singleone}
@@ -29,6 +29,8 @@ var types={
   ,"causeeffect":{validate:vs.singletwo,label:"因果",mark:mark.singletwo,editor:require("./simple")}
   ,"synonym":{validate:vs.singletwomore,label:"同義",mark:mark.singletwo,editor:require("./simple")}
   ,"signifier":{validate:vs.singletwo,label:"能所",mark:mark.singletwo,editor:require("./simple")}
+	,"milestone":{validate:vsmilestone.milestone,label:"界石",editor:require("./simple"), mark:mark.milestone}
+
 }
 
 var getAvailableType=function(selections) {
@@ -40,4 +42,5 @@ var getAvailableType=function(selections) {
 	}
 	return out;
 }
-module.exports={getAvailableType:getAvailableType, types:types, milestone_novalidate:mark.milestone_novalidate};
+module.exports={getAvailableType:getAvailableType, types:types, 
+	milestone_novalidate:mark.milestone_novalidate};

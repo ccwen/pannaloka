@@ -14,7 +14,7 @@ var markupstore=require("../stores/markup"),markupaction=require("../actions/mar
 var selectionaction=require("../actions/selection"), selectionstore=require("../stores/selection");
 var transclude=require("./transclude");
 var overlayaction=require("../actions/overlay");
-var milestones=require("./milestones");
+var createMilestones=require("./createmilestones");
 
 var util=require("./util");
 module.exports = class DefaultTextView extends Component {
@@ -52,7 +52,7 @@ module.exports = class DefaultTextView extends Component {
 	  		}
 	  	}
 	  	,"Ctrl-S":this.onSave
-	  	,"Ctrl-M":milestones.createMilestone.bind(this)
+	  	,"Ctrl-M":markupaction.toggleMarkup.bind(this)
 	  	,"Ctrl-K":"text2markup"
 	  	,"Shift-Ctrl-K":"markup2text"
 		});
@@ -72,8 +72,8 @@ module.exports = class DefaultTextView extends Component {
 		this.setState({dirty:true});
 	}
 
-	createMilestones = (ranges) => { //no checking 
-		milestones.createMilestones.call(this.cm,ranges,function(newmarkups){
+	createMilestones = (ranges) => { //uses by ksana-codemirror/automarkup.js
+		createMilestones.call(this.cm,ranges,function(newmarkups){
 			if (!newmarkups.length) return;
 			var markups={};
 			for (var i in this.state.markups ) markups[i]=this.state.markups[i];

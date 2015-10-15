@@ -1,5 +1,6 @@
 var uuid=require('../uuid');
 var validate=require('./validateselection');
+var validatemilestone=require('./validatemilestone');
 var util=require("./util");
 var milestones=require("ksana-codemirror").milestones;
 var MAX_LABEL=5;
@@ -25,7 +26,7 @@ var milestone_novalidate=function(doc,range,trait) {
 }
 
 var milestone=function(params, docOf, cb) {
-	var selections=validate.milestone(params.selections);
+	var selections=validatemilestone.milestone(params.selections);
 	if (!selections) return ;
 	var files=Object.keys(selections);
 	var range=selections[files[0]][0];

@@ -9,6 +9,8 @@ var docfilestore=require("./docfile");
 var markupStore=Reflux.createStore({
 	listenables:[require("../actions/markup")]
 	,markupsUnderCursor:[]
+	,ctrl_m_handler:null
+	,editing:null
 	,onMarkupsUnderCursor:function(markupsUnderCursor) {
 		this.editing=null;
 		if (this.markupsUnderCursor==markupsUnderCursor) return;
@@ -18,9 +20,14 @@ var markupStore=Reflux.createStore({
 	,getEditing:function() {
 		return this.editing;
 	}
-	,onEditing:function(markup) {
+	,onEditing:function(markup,handler) {
 		this.editing=markup;
+		this.ctrl_m_handler=handler;
 		this.trigger(markup,{editing:true});
+	}
+	,onSetHotkey:function(handler) {
+		this.ctrl_m_handler=handler;
+		//console.log("handler",handler,this);
 	}
 	,remove:function(markup) {
 		//console.log("remove markup",markup);
@@ -34,6 +41,12 @@ var markupStore=Reflux.createStore({
 		var doc=docfilestore.docOf(file);
 		doc.getEditor().react.removeMarkup(mid);
 		this.trigger([],{cursor:true});
+	}
+	,onToggleMarkup:function(){
+		if (this.ctrl_m_handler) {
+				this.ctrl_m_handler();
+				this.ctrl_m_handler=null;//fire once
+		}
 	}
 	,onCreateMarkup:function(obj,cb) {
 		if (!obj.typedef || !obj.typedef.mark) {

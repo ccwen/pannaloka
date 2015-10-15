@@ -12,11 +12,13 @@ module.exports = class MarkupSelector extends PureComponent {
 	}
 	
 	highlightMarkup (markups,idx) {
-		if (!this.props.getOther) return;
+		
 		this.clearMarker();
 		this.setMarker(markups[idx].doc,markups[idx].markup.handle);
+		if (!this.props.getOther) return;
 		var others=this.props.getOther(markups[idx].markup);
 		others.map(function(m){
+			if (!m.handle)return;
 			this.setMarker(m.handle.doc,m.handle);
 		}.bind(this));
 	}
@@ -28,7 +30,7 @@ module.exports = class MarkupSelector extends PureComponent {
 	}	
 
 	getEditor (markups,idx) {
-		var markupeditor=null,M=null,deletable=true,typedef=null;
+		var markupeditor=null,M=null,deletable=false,typedef=null;
 		if (markups.length) {
 			M=(markups[idx]).markup;
 			if (!M) return {markupeditor:null,M:null,idx:0,deletable:false,typedef:null};
@@ -38,18 +40,18 @@ module.exports = class MarkupSelector extends PureComponent {
 				markupeditor=typedef.editor;
 				deletable=typedef.isDeletable?typedef.isDeletable(M):true;
 			}
+			var ctrl_m_handler=deletable?this.onDeleteMarkup:null;
+			this.props.onEditing&&this.props.onEditing(markups[idx],ctrl_m_handler);
 		} else {
 			this.clearMarker();
 		}
-		this.props.onEditing&&this.props.onEditing(markups[idx]);
 		return {markupeditor,M,idx,deletable,typedef};
 	}
 
-	componentWillReceiveProps () {
-		if (typedef && typedef.isDeletable) {
-			var deletable=typedef.isDeletable(this.state.M);
-			if (deletable!==this.state.deletable) this.setState({deletable});
-		} else if (!this.state.deletable) this.setState({deletable:true});
+	componentWillReceiveProps (nextProps) {
+		if (nextProps.markups!==this.props.markups) {
+			this.setState(this.getEditor(nextProps.markups,0));
+		}
 	}
 
 	clearMarker () {
@@ -59,9 +61,6 @@ module.exports = class MarkupSelector extends PureComponent {
 		}
 	}
 
-	componentWillReceiveProps (nextProps) {
-		this.setState(this.getEditor(nextProps.markups,0));
-	}
 
 	renderMarkupItem () {
 		var idx=this.state.idx;
@@ -80,8 +79,6 @@ module.exports = class MarkupSelector extends PureComponent {
 			return <span style={styles.picker} onClick={this.onNextMarkup}>{this.renderMarkupItem()}</span>
 		}
 	}
-	//<select style={styles.select} onChange={this.onSelectMarkup.bind(this)}>
-	//?s
 
 	renderTarget() {
 		if (!this.state.M) return;
@@ -106,6 +103,7 @@ module.exports = class MarkupSelector extends PureComponent {
 	onUpdateMarkup = (trait) => {
 		var m=this.props.markups[this.state.idx];
 		var mtrait=m.markup.trait;
+		if (!mtrait) mtrait=m.markup.trait={};
 		for (var i in trait) {
 			mtrait[i]=trait[i];
 		}
@@ -121,13 +119,13 @@ module.exports = class MarkupSelector extends PureComponent {
 		return (this.state.typedef)?this.state.typedef.label:"";
 	}
 	render () {
-		if (!this.props.markups.length) {
+		if (!this.props.markups.length || !this.props.getOther) {
 			this.clearMarker();
 			return <span></span>
 		}
 
 		return <span>
-				{this.renderMarkupPicker()}
+				【{this.renderMarkupPicker()}】
 				{this.renderTypedef()}
 				{this.state.markupeditor?E(this.state.markupeditor,{
 					editing:true,markup:this.state.M
