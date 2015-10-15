@@ -87,7 +87,7 @@ module.exports = class MarkupSelector extends PureComponent {
 		if (!this.state.M) return;
 		var others=this.state.M.target;
 		if (!others)return;
-		if (!Array.isArray( others) ) others=[others];
+		if (!Array.isArray( others[0]) ) others=[others];
 		return E(RangeHyperlink,{ranges:others,onHyperlinkClick:this.props.onHyperlinkClick});		
 	}
 

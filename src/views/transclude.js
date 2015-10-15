@@ -67,13 +67,8 @@ var transclude=function(bm) {
   	{mid:bm.key,text:bm.target[2],onClick:transclude_onclick.bind(this)})
   ,marker);
   var textmarker=doc.markText(cursor,cursor,{
-  	replacedWith:marker,target:bm.target,className:bm.className,clearWhenEmpty: false,key:bm.key
-  	}
-  	,"bookmark" //require patch in codemirror.js to allow passing textmarker type
-  	/*
-  	  markText: function(from, to, options, type) {
-      return markText(this, clipPos(this, from), clipPos(this, to), options, type||"range");
-    */
+  	  //need codemirror after 5.7.1 https://github.com/codemirror/CodeMirror/commit/bc5a4939b2603f587c2358a8b13063862660bcdf
+  	replacedWith:marker,target:bm.target,className:bm.className,clearWhenEmpty: false,key:bm.key,type:"bookmark"}
   );
 
   //textmarker.type="bookmark"; //load from file will cause transclusion class apply till end-of-line

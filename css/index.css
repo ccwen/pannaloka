@@ -1,9 +1,10 @@
-body {margin:0px;height:100%;overflow-y:hidden;overflow-x:hidden;}
+body {margin:0px;height:100%;overflow-y:hidden;overflow-x:hidden;background: gray}
 .CodeMirror { line-height: 1.6;}
+.cm-s-ambiance.CodeMirror { line-height: 1.6em;}
 .mymark {background:yellow;}
 .important {border-bottom :2px dotted red }
-.milestone {border-radius:10px;background :lightblue ;padding-top:8px;padding-bottom:8px;}
-
+.milestone {border-radius:10px;background :lightblue ;color:black;padding-top:8px;padding-bottom:8px;}
+a:visited {color:darkblue;}
 .title {border-bottom:3px solid blue}
 .title2 {font-weight:bold}
 .title3 {background:lightblue;}
@@ -15,21 +16,21 @@ body {margin:0px;height:100%;overflow-y:hidden;overflow-x:hidden;}
 .quote   {border-bottom:2px solid gray;}
 .quoteby {border-bottom:2px dotted gray;}
 .transclusion {color:green;cursor:pointer;}
-.highlight {background:lightgreen;}
-.editingMarker  {background:pink;}
+.highlight {background:darkgreen;}
+.editingMarker  {background:#A80000 ;color:yellow;}
 
 .causeeffect {border-bottom:2px solid red;}
 .causeeffect2 {border-bottom:2px dotted red;}
-.causeeffect.editingMarker:before {font-size:50%;content:"因";vertical-align:text-top}
-.causeeffect2.editingMarker:before {font-size:50%;content:"果";vertical-align:text-top}
+.causeeffect.xeditingMarker:before {font-size:50%;content:"因";vertical-align:text-top}
+.causeeffect2.xeditingMarker:before {font-size:50%;content:"果";vertical-align:text-top}
 
 .signifier {border-bottom:2px solid purple;}
 .signifier2 {border-bottom:2px dotted purple;}
-.signifier.editingMarker:before {font-size:50%;content:"能";vertical-align:text-top}
-.signifier2.editingMarker:before {font-size:50%;content:"所";vertical-align:text-top}
+.signifier.xeditingMarker:before {font-size:50%;content:"能";vertical-align:text-top}
+.signifier2.xeditingMarker:before {font-size:50%;content:"所";vertical-align:text-top}
 
 
 .synonym {border-bottom:2px solid blue;}
 .synonym2 {border-bottom:2px dotted blue;}
-.synonym.editingMarker:before {font-size:50%;content:"釋";vertical-align:text-top}
-.synonym2.editingMarker:before {font-size:50%;content:"義";vertical-align:text-top}
+.synonym.xeditingMarker:before {font-size:50%;content:"釋";vertical-align:text-top}
+.synonym2.xeditingMarker:before {font-size:50%;content:"義";vertical-align:text-top}

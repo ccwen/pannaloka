@@ -1,0 +1,20 @@
+{"title":"test automarkup","textsize":"0x00000045","top":0}
+因果  因因因      果果果
+同義  本詞  義一  義二 義三
+能所  能指  所指
+互文 互文連結 
+引用 《麟之趾》 
+嵌用  {"markups":{
+"bf340b6b-c3f4-46ab-807e-c650a418b55e":{"from":[4,0],"to":7,"className":"causeeffect","others":["42f4cea6-a24b-42ad-9deb-2fed83c135e2"]},
+"42f4cea6-a24b-42ad-9deb-2fed83c135e2":{"from":[13,0],"to":16,"className":"causeeffect2","master":"bf340b6b-c3f4-46ab-807e-c650a418b55e"},
+"d7d697eb-4b17-44a3-a536-7b46bb676ecb":{"from":[4,1],"to":6,"className":"synonym","others":["0fa24992-193b-4377-a812-0f02bcfdcec9","33674ebf-06d6-4ea0-a92c-df7b6ec4592a","5894dca1-1d8d-4e8b-a5cd-d7c0283b0e3f"]},
+"0fa24992-193b-4377-a812-0f02bcfdcec9":{"from":[8,1],"to":10,"className":"synonym2","master":"d7d697eb-4b17-44a3-a536-7b46bb676ecb"},
+"33674ebf-06d6-4ea0-a92c-df7b6ec4592a":{"from":[12,1],"to":14,"className":"synonym2","master":"d7d697eb-4b17-44a3-a536-7b46bb676ecb"},
+"5894dca1-1d8d-4e8b-a5cd-d7c0283b0e3f":{"from":[15,1],"to":17,"className":"synonym2","master":"d7d697eb-4b17-44a3-a536-7b46bb676ecb"},
+"bf5316a5-ab77-43d7-a3bd-10a00b6b71e5":{"from":[4,2],"to":6,"className":"signifier","others":["8db3e348-45e5-4d87-811e-37b2b41df9fb"]},
+"8db3e348-45e5-4d87-811e-37b2b41df9fb":{"from":[8,2],"to":10,"className":"signifier2","master":"bf5316a5-ab77-43d7-a3bd-10a00b6b71e5"},
+"e06ddae9-19f2-4b55-88b5-e3fe05a37d75":{"from":[3,3],"to":7,"className":"intertext","trait":{"note":""},"target":["ktx/maoshi.ktx","b2d465bd-fe90-49d1-bb6a-2d42ee3a8189","惄如調飢"]},
+"210304b5-da8d-4a12-babb-53bff054fbcf":{"from":[4,4],"to":7,"className":"quote","trait":{"note":""},"target":["ktx/maoshi.ktx",[[0,2,"麟之趾"],[46,4,"麟之趾"]],"麟之趾．關…"]},
+"3536e37f-b72b-46b8-8c16-256b7b298e20":{"from":[3,5],"target":["ktx/maoshi.ktx",[[22,17,"關雎"],[26]],"參差荇菜"],"className":"transclusion"}
+}
+}
