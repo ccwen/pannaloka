@@ -12,7 +12,7 @@ var markupStore=Reflux.createStore({
 	,ctrl_m_handler:null
 	,editing:null
 	,onMarkupsUnderCursor:function(markupsUnderCursor) {
-		this.editing=null;
+		//this.editing=null;
 		if (this.markupsUnderCursor==markupsUnderCursor) return;
 		this.markupsUnderCursor=markupsUnderCursor||[];
 		this.trigger(this.markupsUnderCursor,{cursor:true});
@@ -20,9 +20,15 @@ var markupStore=Reflux.createStore({
 	,getEditing:function() {
 		return this.editing;
 	}
+	,cancelEdit:function() {
+		this.editing=null;
+		this.ctrl_m_handler=null;
+	}
 	,onEditing:function(markup,handler) {
+		this.cancelEdit();
 		this.editing=markup;
 		this.ctrl_m_handler=handler;
+		//this.trigger([],{cursor:true});
 		this.trigger(markup,{editing:true});
 	}
 	,onSetHotkey:function(handler) {
@@ -31,6 +37,7 @@ var markupStore=Reflux.createStore({
 	}
 	,remove:function(markup) {
 		//console.log("remove markup",markup);
+		this.cancelEdit();
 		var doc=markup.handle.doc;
 		doc.getEditor().react.removeMarkup(markup.key);
 

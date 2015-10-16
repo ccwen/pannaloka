@@ -46,9 +46,10 @@ module.exports = class DefaultTextView extends Component {
 	keymap(){
 		this.cm.setOption("extraKeys", {
 	  	"Ctrl-Q": function(cm) {
-	  		var bookmark=cm.react.bookmark_transclusion();
+	  		var bookmark=cm.react.bookmark_transclusion(null,markupstore.getEditing());
 	  		if (bookmark) {
 	  			cm.react.addMarkup(bookmark);
+	  			cm.react.setState({dirty:true});
 	  		}
 	  	}
 	  	,"Ctrl-S":this.onSave
@@ -181,9 +182,10 @@ module.exports = class DefaultTextView extends Component {
 		}
 	}
 
-	bookmark_transclusion () { // bookmark.className="transclusion"
-		return transclude.apply(this,arguments);
+	bookmark_transclusion (bookmark,editing_markup) { // bookmark.className="transclusion" , bookmark_ prefix (see markups.js applyBookmark)
+		return transclude.call(this,bookmark,editing_markup);
 	}
+
 
 	setsize () {
 		var menu=ReactDOM.findDOMNode(this.refs.menu);

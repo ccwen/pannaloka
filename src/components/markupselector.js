@@ -4,7 +4,7 @@ var PureComponent=require("react-pure-render").PureComponent;
 var RangeHyperlink=require("./rangehyperlink");
 var markuptypedef=require("../markuptypedef/");
 var styles={picker:{border:"2px solid silver",borderRadius:"25%",cursor:"pointer"}}
-module.exports = class MarkupSelector extends PureComponent {
+module.exports = class MarkupSelector extends React.Component {
 	constructor (props) {
 		super(props);
 		this.editingMarker=[];
@@ -48,9 +48,13 @@ module.exports = class MarkupSelector extends PureComponent {
 		return {markupeditor,M,idx,deletable,typedef};
 	}
 
+	shouldComponentUpdate (nextProps) {
+		return (nextProps.markups!==this.props.markups && nextProps.markups.length>0
+			||this.props.ranges.length>0) ;
+	}
 	componentWillReceiveProps (nextProps) {
-		if (nextProps.markups!==this.props.markups) {
-			this.setState(this.getEditor(nextProps.markups,0));
+		if (nextProps.markups.length) {
+			this.setState(this.getEditor(nextProps.markups,0));	
 		}
 	}
 
@@ -60,7 +64,6 @@ module.exports = class MarkupSelector extends PureComponent {
 			this.editingMarker=[];
 		}
 	}
-
 
 	renderMarkupItem () {
 		var idx=this.state.idx;
@@ -113,6 +116,9 @@ module.exports = class MarkupSelector extends PureComponent {
 	onDeleteMarkup = () => {
 		var m=this.props.markups[this.state.idx].markup;
 		this.props.onDelete(m,this.state.typedef);
+		//this is a hack, because shouldComponentUpdate return false
+		this.setState({M:null,markupeditor:null});
+		this.forceUpdate();
 	}
 
 	renderTypedef () {
@@ -125,7 +131,7 @@ module.exports = class MarkupSelector extends PureComponent {
 		}
 
 		return <span>
-				【{this.renderMarkupPicker()}】
+				{this.renderMarkupPicker()}
 				{this.renderTypedef()}
 				{this.state.markupeditor?E(this.state.markupeditor,{
 					editing:true,markup:this.state.M

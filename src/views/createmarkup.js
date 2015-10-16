@@ -2,6 +2,7 @@ var React=require("react");
 var Component=React.Component;
 var PureComponent=require('react-pure-render').PureComponent;
 var selectionstore=require("../stores/selection");
+var markupstore=require("../stores/markup");
 var markupaction=require("../actions/markup");
 var markuptypedef=require("../markuptypedef");
 var getAvailableType=markuptypedef.getAvailableType;
@@ -42,6 +43,9 @@ module.exports = class CreateMarkup extends PureComponent {
 	onData = (selections) => {
 		var types=getAvailableType(selections);
 		var selectedIndex=this.user.getPrefer(types);
+		if (types.length) {
+			markupaction.editing(null,null);
+		}
 		this.setState({types,selectedIndex,selections});
 	}
 
@@ -91,19 +95,28 @@ module.exports = class CreateMarkup extends PureComponent {
 				,onCreateMarkup:this.onCreateMarkup} );
 
 	}
+	msg () {
+		var s="選取文字，按Ctrl選多段";
+		if (markupstore.getEditing()) {
+			s="Ctrl+Q 嵌用此標記→";
+		}
+		return s;
+	}
+
 	render () {//need 130% to prevent flickering when INPUT add to markup editor
 		if (!this.props.editing) {
 			markupaction.setHotkey(null);
 			return <span></span>
 		}
-		
+
 		if (!this.state.types.length) {
 			markupaction.setHotkey(null);
 		}
 
-		return <span>【
-			{this.state.types.length?this.state.types.map(this.renderType.bind(this))
-				:"選取文字，按Ctrl選多段"}】
+		return <span>
+			{this.state.types.length?
+			this.state.types.map(this.renderType.bind(this)):this.msg()}
+			|
 			{this.renderAttributeEditor()}
 		</span>
 	}

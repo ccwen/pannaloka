@@ -26,6 +26,16 @@ var bookmarkfromrange=function(doc) { //simulate bookmark format in file
   return bookmark;
 }
 
+var bookmarkfrommarkup=function(mrk) {
+	var bookmark={};
+	var file=docfilestore.fileOf(mrk.markup.handle.doc);
+	var text="~"+util.getMarkupText(mrk.markup.handle.doc,mrk.markup.handle);
+	bookmark.target=[file, mrk.key, text];
+	bookmark.key=uuid();
+	bookmark.className="transclusion";
+	return bookmark;
+}
+
 var removeBookmarkAtCursor = function(doc) {
 	var cursor=doc.getCursor();
 	var removed=0;
@@ -49,17 +59,16 @@ var transclude_onclick=function(e) {
 	util.gotoRangeOrMarkupID(m.target[0],m.target[1],this.props.wid);
 }
 
-var transclude=function(bm) {
+var transclude=function(bm,mrk) {
 	var doc=this.doc;
 	var removed=removeBookmarkAtCursor.call(this,doc);
 	if (removed) return;
-	if (!bm) {
+	if (mrk) {
+		bm=bookmarkfrommarkup(mrk);
+	} else if (mrk) {
 		bm=bookmarkfromrange(doc);
-		if (!bm) {
-			return;
-		};
-		this.setState({dirty:true});
 	}
+	if (!bm) return;
 
 	var cursor=doc.getCursor();
   var marker = document.createElement('span');
@@ -75,5 +84,6 @@ var transclude=function(bm) {
   bm.handle=textmarker;
   return bm;
 }
+
 
 module.exports=transclude;
