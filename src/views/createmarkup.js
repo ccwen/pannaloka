@@ -43,9 +43,7 @@ module.exports = class CreateMarkup extends PureComponent {
 	onData = (selections) => {
 		var types=getAvailableType(selections);
 		var selectedIndex=this.user.getPrefer(types);
-		if (types.length) {
-			markupaction.editing(null,null);
-		}
+		if (types.length) markupstore.cancelEdit();
 		this.setState({types,selectedIndex,selections});
 	}
 

@@ -17,7 +17,7 @@ a:visited {color:darkblue;}
 .quoteby {border-bottom:2px dotted gray;}
 .transclusion {color:#3366FF;cursor:pointer;}
 .highlight {background:#3366FF;}
-.editingMarker  {background:#A80000 ;color:yellow;}
+.editingMarker  {background:#A80000 ;color:yellow;cursor:pointer;}
 
 .causeeffect {border-bottom:2px solid red;}
 .causeeffect2 {border-bottom:2px dotted red;}

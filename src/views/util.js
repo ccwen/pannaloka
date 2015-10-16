@@ -85,5 +85,18 @@ var getMarkupText=function(doc,m) {
 	var pos=m.find();
 	return doc.getRange(pos.from,pos.to);
 }	
+
+var posInRange=function(pos,range) { //check if a pos in range, cm format
+	if (pos.line>range.from.line && pos.line<range.to.line) return true;//in range , not on boundary
+	if (pos.line<range.from.line||pos.line>range.to.line)return false; //out of range
+	if (pos.line===range.from.line) {
+		return pos.ch>=range.from.ch;
+	}
+
+	if (pos.line===range.to.line) {
+		return pos.ch<range.from.ch;
+	}
+	return false;
+}
 module.exports={gotoRangeOrMarkupID:gotoRangeOrMarkupID,scrollAndHighlight:scrollAndHighlight
-,getMarkupText:getMarkupText};
+,getMarkupText:getMarkupText,posInRange:posInRange};

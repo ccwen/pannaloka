@@ -50,7 +50,7 @@ module.exports = class MarkupSelector extends React.Component {
 
 	shouldComponentUpdate (nextProps) {
 		return (nextProps.markups!==this.props.markups && nextProps.markups.length>0
-			||this.props.ranges.length>0) ;
+			||nextProps.ranges.length>0) ;
 	}
 	componentWillReceiveProps (nextProps) {
 		if (nextProps.markups.length) {

@@ -50,7 +50,7 @@ module.exports = class FileList extends Component {
 
 	selectItem = (e) => {
 		var target=e.target;
-		while (target && !target.dataset.idx) {
+		while (target && target.dataset && !target.dataset.idx) {
 			target=target.parentElement;
 		}
 		var selectedIndex=parseInt(target.dataset.idx);

@@ -55,9 +55,10 @@ var transclude_onclick=function(e) {
 	var key=e.target.dataset.mid;
 	var m=this.getMarkup(key);
 	var highlight= m.target[1];
-
+	this.doc.setCursor(m.handle.find());
 	util.gotoRangeOrMarkupID(m.target[0],m.target[1],this.props.wid);
-}
+}	
+
 
 var transclude=function(bm,mrk) {
 	var doc=this.doc;
@@ -65,7 +66,7 @@ var transclude=function(bm,mrk) {
 	if (removed) return;
 	if (mrk) {
 		bm=bookmarkfrommarkup(mrk);
-	} else if (mrk) {
+	} else if (!bm) {
 		bm=bookmarkfromrange(doc);
 	}
 	if (!bm) return;
