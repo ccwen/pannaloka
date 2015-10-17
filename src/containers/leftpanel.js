@@ -71,21 +71,23 @@ module.exports = class LeftPanel extends Component {
         <Section>Markup</Section>
           <Key>Ctrl-M</Key>
           <Desc>Create/Delete Markup</Desc>
-          <Key>Ctrl-Q</Key>
+          <Key>Ctrl-L</Key>
           <Desc>Create/Delete a transclusion</Desc>
           <Key>Ctrl-K</Key>
           <Desc>Convert Text to Markup</Desc>
           <Key>Shift-Ctrl-K</Key>
           <Desc>Convert Markup to Text</Desc>
         <Section>Editing</Section>
-          <Key>Ctrl-L</Key>
-          <Desc>Goto Line</Desc>
+          <Key>Ctrl-I</Key>
+          <Desc>Character information</Desc>
           <Key>Ctrl-Z</Key>
           <Desc>Undo</Desc>
           <Key>Ctrl-Y</Key>
           <Desc>Redo</Desc>
           <Key>Ctrl-S</Key>
           <Desc>Save Immediately</Desc>
+          <Key>Ctrl-Q</Key>
+          <Desc>Close the editing file</Desc>
         <Section>Search and Replace</Section>
             <Key>Ctrl-F</Key>
             <Desc>Start searching</Desc>

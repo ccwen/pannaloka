@@ -42,7 +42,7 @@ module.exports = class DefaultTextView extends React.Component {
 
 	keymap(){
 		this.cm.setOption("extraKeys", {
-	  	"Ctrl-Q": function(cm) {
+	  	"Ctrl-L": function(cm) {
 	  		var bookmark=cm.react.bookmark_transclusion(null,markupstore.getEditing());
 	  		if (bookmark) {
 	  			cm.react.addMarkup(bookmark);
@@ -54,6 +54,9 @@ module.exports = class DefaultTextView extends React.Component {
 	  	,"Ctrl-K":"text2markup"
 	  	,"Shift-Ctrl-K":"markup2text"
 	  	,"Ctrl-I":charinfo.run
+	  	//,"Ctrl-B": search markup with same type, jump to first markup if no editing markup
+	  	//,"Ctrl-E": //dangerous, beside ctrl+W
+	  	,"Ctrl-Q":this.onClose.bind(this)
 		});
 	}
 
