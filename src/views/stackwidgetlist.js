@@ -20,10 +20,19 @@ module.exports = class StackWidgetList extends Component {
 		this.unsubscribe();
 	}
 
-	onData = (widgets) => {
-		var widgetheight=(this.props.height / widgets.length)-2 ;
+	setWidgetHeight (props,widgets) {
+		var widgetheight=(props.height / widgets.length)-2 ;
 		if (widgetheight<MINWIDGETHEIGHT) widgetheight=MINWIDGETHEIGHT;
-		this.setState({widgets,widgetheight});
+		if (this.state.widgetheight!==widgetheight) this.setState({widgetheight});
+	}
+
+	componentWillReceiveProps (nextProps) {
+		this.setWidgetHeight(nextProps,this.state.widgets);
+	}
+
+	onData = (widgets) => {
+		this.setWidgetHeight(this.props,widgets);
+		this.setState({widgets});
 	}
 
 	renderItem (item,idx) {

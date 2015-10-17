@@ -19,28 +19,27 @@ module.exports = class Main extends Component {
 		this.state= {height:0};
 	}
 
-	componentDidMount () {
-		var offsetheight=ReactDOM.findDOMNode(this).offsetHeight-20;
-		var height=window.innerHeight-offsetheight;
+	setHeight = () => {
+		var height=window.innerHeight-ReactDOM.findDOMNode(this.refs.mainmenu).style.height; //
 		this.refs.leftpanel.style.height=height;
 		this.refs.rightpanel.style.height=height;
-
-		//styles.LeftPanel.height=height;
-		//styles.RightPanel.height=height;
 		this.setState({height});
-		/*
-		window.onbeforeunload = function (e) {
-			return true;
-    e = e || window.event;
-    return 'Do you want to quit program?';
-		};
-		*/
+	}
+
+	resize = () => {
+		clearTimeout(this.resizetimer);
+		this.resizetimer=setTimeout(function(){
+			this.setHeight();
+		}.bind(this),200);
+	}
+	componentDidMount () {
+		this.setHeight();
+		window.onresize = this.resize;
 	}
   render () {
   	return   	<div>
   		<div style={styles.Body}>
-  			<MainMenu/>
-	  		<StatusPanel/>
+  			<MainMenu ref="mainmenu"/>
   		<div ref="scrollstart" style={styles.Main}>
   			<div ref="leftpanel" style={styles.LeftPanel}>
   				<LeftPanel height={this.state.height}/>

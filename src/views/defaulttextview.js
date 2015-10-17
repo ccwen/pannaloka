@@ -11,6 +11,7 @@ var transclude=require("./transclude");
 var cursoractivity=require("./cursoractivity");
 var filemethod=require("./filemethod");
 var markupmethod=require("./markupmethod");
+var charinfo=require("./charinfo");
 module.exports = class DefaultTextView extends React.Component {
 	constructor (props) {
 		super(props);
@@ -52,6 +53,7 @@ module.exports = class DefaultTextView extends React.Component {
 	  	,"Ctrl-M":markupaction.toggleMarkup.bind(this)
 	  	,"Ctrl-K":"text2markup"
 	  	,"Shift-Ctrl-K":"markup2text"
+	  	,"Ctrl-I":charinfo.run
 		});
 	}
 
