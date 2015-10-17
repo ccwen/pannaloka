@@ -75,6 +75,7 @@ module.exports = class MarkupSelector extends React.Component {
 		var i=this.state.idx+1;
 		if (i&& i===this.props.markups.length) i=0;
 		this.setState(this.getEditor(this.props.markups,i));
+		this.forceUpdate();
 	}
 
 	renderMarkupPicker () {
