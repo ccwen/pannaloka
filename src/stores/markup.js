@@ -24,6 +24,10 @@ var markupStore=Reflux.createStore({
 		this.editing=null;
 		this.ctrl_m_handler=null;
 	}
+	,freeEditing:function() {
+		if (!this.editing) return;
+		this.editing.doc=null;//to notify markupselector shouldComponentUpdate
+	}
 	,onEditing:function(markup,handler) {
 		this.cancelEdit();
 		this.editing=markup;

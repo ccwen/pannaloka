@@ -3,7 +3,8 @@ var docfileaction=require("../actions/docfile");
 var selectionaction=require("../actions/selection");
 var cmfileio=require("../cmfileio");
 var stackwidgetaction=require("../actions/stackwidget");
-
+var markupaction=require("../actions/markup");
+var markupstore=require("../stores/markup");
 var	loaded = function() {
 	this.cm=this.refs.cm.getCodeMirror();
 	this.cm.react=this;
@@ -38,9 +39,17 @@ var save = function(fn) {
       }
     }.bind(this));
 }
+
 var close = function() {
 		stackwidgetaction.closeWidget(this.props.wid);
-		selectionaction.clearSelectionOf(this.props.wid,this.props.filename);
+		selectionaction.clearSelectionOf(this.props.filename);
 		docfileaction.closeFile(this.doc);
+
+		var editing=markupstore.getEditing();
+		if (editing && editing.doc===this.doc) {
+			markupstore.freeEditing();
+			markupaction.markupsUnderCursor([]);
+		}
+
 }
 module.exports={load:load,loaded:loaded,save:save,close:close};

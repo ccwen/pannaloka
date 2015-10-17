@@ -33,7 +33,8 @@ module.exports = class MarkupSelector extends React.Component {
 		var markupeditor=null,M=null,deletable=false,typedef=null;
 		if (markups.length) {
 			M=(markups[idx]).markup;
-			if (!M) return {markupeditor:null,M:null,idx:0,deletable:false,typedef:null};
+			//doc==null, markup owner doc is freed
+			if (!markups[idx].doc|| !M) return {markupeditor:null,M:null,idx:0,deletable:false,typedef:null};
 			this.highlightMarkup.call(this,markups,idx);
 			typedef=markuptypedef.types[M.className];
 			if (typedef) {
@@ -50,7 +51,7 @@ module.exports = class MarkupSelector extends React.Component {
 
 	shouldComponentUpdate (nextProps) {
 		return (nextProps.markups!==this.props.markups && nextProps.markups.length>0
-			||nextProps.ranges.length>0) ;
+			||nextProps.ranges.length>0 || (this.props.markups.length && this.props.markups[0].doc==null)) ;
 	}
 	componentWillReceiveProps (nextProps) {
 		if (nextProps.markups.length) {
