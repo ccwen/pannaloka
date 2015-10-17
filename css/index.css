@@ -29,6 +29,9 @@ a:visited {color:darkblue;}
 .signifier.editingMarker:after {font-size:50%;content:"能";vertical-align:text-top}
 .signifier2.editingMarker:after {font-size:50%;content:"所";vertical-align:text-top}
 
+.part {border-bottom:2px solid yellow;}
+.part2 {border-bottom:2px dotted yellow;}
+
 
 .synonym {border-bottom:2px solid blue;}
 .synonym2 {border-bottom:2px dotted blue;}
