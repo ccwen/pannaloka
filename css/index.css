@@ -28,6 +28,12 @@ a:visited {color:darkblue;}
 .signifier.editingMarker:after {font-size:50%;content:"能";vertical-align:text-top}
 .signifier2.editingMarker:after {font-size:50%;content:"所";vertical-align:text-top}
 
+.extsignifier {border-bottom:2px solid purple;}
+.extsignifier2 {border-bottom:2px dotted purple;}
+.extsignifier.editingMarker:after {font-size:50%;content:"能";vertical-align:text-top}
+.extsignifier2.editingMarker:after {font-size:50%;content:"所";vertical-align:text-top}
+
+
 .part {border-bottom:2px solid yellow;}
 .part2 {border-bottom:2px dotted yellow;}
 
