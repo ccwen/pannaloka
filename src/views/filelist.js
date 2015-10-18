@@ -53,6 +53,7 @@ module.exports = class FileList extends Component {
 		while (target && target.dataset && !target.dataset.idx) {
 			target=target.parentElement;
 		}
+		if (!target || !target.dataset) return;
 		var selectedIndex=parseInt(target.dataset.idx);
 		if (!isNaN(selectedIndex)) this.setState({selectedIndex});
 	}

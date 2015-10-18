@@ -5,6 +5,7 @@
 var Reflux=require("reflux");
 
 var docfilestore=require("./docfile");
+var markupNav=require("../markup/nav");
 
 var markupStore=Reflux.createStore({
 	listenables:[require("../actions/markup")]
@@ -20,6 +21,14 @@ var markupStore=Reflux.createStore({
 	,getEditing:function() {
 		return this.editing;
 	}
+	,getNext:function() {
+		if (!this.editing) return;
+		return markupNav.next(this.editing.markup);
+	}
+	,getPrev:function() {
+		if (!this.editing) return;
+		return markupNav.prev(this.editing.markup);
+	}
 	,cancelEdit:function() {
 		this.editing=null;
 		this.ctrl_m_handler=null;
@@ -28,7 +37,7 @@ var markupStore=Reflux.createStore({
 		if (!this.editing) return;
 		this.editing.doc=null;//to notify markupselector shouldComponentUpdate
 	}
-	,onEditing:function(markup,handler) {
+	,setEditing:function(markup,handler) {
 		this.cancelEdit();
 		this.editing=markup;
 		this.ctrl_m_handler=handler;

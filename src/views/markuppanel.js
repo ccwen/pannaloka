@@ -8,6 +8,7 @@ var selectionstore=require("../stores/selection");
 var docfilestore=require("../stores/docfile");
 var CreateMarkup=require("./createmarkup");
 var MarkupSelector=require("../components/markupselector");
+var MarkupNavigator=require("./markupnav");
 var util=require("./util");
 
 module.exports = class MarkupPanel extends PureComponent {
@@ -50,6 +51,13 @@ module.exports = class MarkupPanel extends PureComponent {
 		util.gotoRangeOrMarkupID(file,mid,this.state.wid);
 	}
 
+	goMarkupByKey = (mid) => {
+		var editing=markupstore.getEditing();
+		if (!editing)return;
+		var file=docfilestore.fileOf(editing.doc);
+		this.onHyperlinkClick(file,mid);
+	}
+
 	onChanged = (doc) => {
 		doc.getEditor().react.setDirty();
 	}
@@ -68,7 +76,7 @@ module.exports = class MarkupPanel extends PureComponent {
 	}
 
 	onEditing = (m,handler) => {
-		markupaction.editing(m,handler);
+		markupstore.setEditing(m,handler);
 	}
 
 	render () {		
@@ -76,6 +84,7 @@ module.exports = class MarkupPanel extends PureComponent {
 		var ranges=selectionstore.getRanges();
 
 		return (<span><span style={{fontSize:"130%"}}>|</span>
+			 <MarkupNavigator goMarkupByKey={this.goMarkupByKey}/>
 			<CreateMarkup editing={!this.state.markups.length}/>
 			<MarkupSelector onHyperlinkClick={this.onHyperlinkClick}
 			 getOther={this.state.getOther} 
@@ -85,6 +94,7 @@ module.exports = class MarkupPanel extends PureComponent {
 			 ranges={ranges}
 			 editing={this.state.editing} deletable={this.state.deletable}/>
 			</span>
+
 		)
 	}
 }

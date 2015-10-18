@@ -3,7 +3,6 @@ var ReactDOM=require("react-dom");
 var CodeMirror=require("ksana-codemirror").Component;
 var TextViewMenu=require("../components/textviewmenu");
 
-var ktxfileaction=require("../actions/ktxfile");
 var markupstore=require("../stores/markup"),markupaction=require("../actions/markup");
 var selectionstore=require("../stores/selection");
 var transclude=require("./transclude");
@@ -54,8 +53,14 @@ module.exports = class DefaultTextView extends React.Component {
 	  	,"Ctrl-K":"text2markup"
 	  	,"Shift-Ctrl-K":"markup2text"
 	  	,"Ctrl-I":charinfo.run
+	  	,"Ctrl-D":charinfo.run
 	  	//,"Ctrl-B": search markup with same type, jump to first markup if no editing markup
 	  	//,"Ctrl-E": //dangerous, beside ctrl+W
+	  	//,"Ctrl-J":
+	  	//,"Ctrl-U" , Ctrl-O , Ctrl+P , Ctrl+D
+	  	//,"Ctrl-R"
+	  	//,
+
 	  	,"Ctrl-Q":this.onClose.bind(this)
 		});
 	}
@@ -148,7 +153,7 @@ module.exports = class DefaultTextView extends React.Component {
 	}
 
 	onMarkupReady = () => {
-		return	this.rebuildMilestone(this.state.markups);
+		markupmethod.markupReady.call(this,this.state.markups);
 	}
 
 
