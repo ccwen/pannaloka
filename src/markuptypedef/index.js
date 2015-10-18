@@ -45,22 +45,26 @@ var types={
 	,"quote":{validate:vs.dualone,label:"出處", mark:mark.oneway, editor:require("./quote")}
   ,"causeeffect":{validate:vs.singletwo,label:"因果",mark:mark.singletwo,editor:require("./simple")}
   ,"part":{validate:vs.singletwomore,label:"部份",mark:mark.singletwo,editor:require("./simple")}
+  ,"individual":{validate:vs.singletwomore,label:"總別",mark:mark.singletwo,editor:require("./simple")}
   ,"synonym":{validate:vs.singletwomore,label:"同義",mark:mark.singletwo,editor:require("./simple")}
   ,"signifier":{validate:vs.singletwo,label:"能所",mark:mark.singletwo,editor:require("./simple")}
   ,"extsignifier":{validate:vs.dualone,label:"能所",mark:mark.dualone,editor:require("./simple"),
 		isDeletable: isIntertextDeletable,onDelete:deletIntertext}
 	,"milestone":{validate:vsmilestone.milestone,label:"界石",editor:require("./simple"), mark:mark.milestone}
-	,"explain":{validate:vs.singletwomore,label:"內釋",mark:mark.singletwo,editor:require("./simple")}
-	,"extexplain":{validate:vs.dualonemore,label:"外釋",mark:mark.dualonemore,editor:require("./simple"),
+	,"explaination":{validate:vs.singletwomore,label:"說明",mark:mark.singletwo,editor:require("./simple")}
+	,"definition":{validate:vs.singletwomore,label:"內釋",mark:mark.singletwo,editor:require("./simple")}
+	,"extdefinition":{validate:vs.dualonemore,label:"外釋",mark:mark.dualonemore,editor:require("./simple"),
 		isDeletable: isIntertextDeletable,onDelete:deletIntertext}
 	,"causeeffect2":{label:"因：",hidden:true}
 	,"intertext2":{label:"互文：",hidden:true}
 	,"part2":{label:"部份：",hidden:true}
 	,"signifier2":{label:"能指：",hidden:true}
-	,"synonym2":{label:"基詞",hidden:true}
-  ,"explain2"	:{label:"所解釋的名相：",hidden:true}
-  ,"extexplain2"	:{label:"所解釋的名相：",hidden:true}
+	,"synonym2":{label:"本詞",hidden:true}
+  ,"definition2"	:{label:"所定義的名相：",hidden:true}
+  ,"extdefinition2"	:{label:"所定義的名相：",hidden:true}
+  ,"explaination2"	:{label:"所說明的名相：",hidden:true}
   ,"extsignifier2"	:{label:"能指：",hidden:true}
+  ,"individual2":{label:"總相：",hidden:true}
 }
 
 var getAvailableType=function(selections) {
