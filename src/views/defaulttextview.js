@@ -11,6 +11,9 @@ var cursoractivity=require("./cursoractivity");
 var filemethod=require("./filemethod");
 var markupmethod=require("./markupmethod");
 var charinfo=require("./charinfo");
+var ListMarkup=require("./listmarkup");
+var CloseTextButton=require("./closetextbutton");
+
 module.exports = class DefaultTextView extends React.Component {
 	constructor (props) {
 		super(props);
@@ -170,11 +173,14 @@ module.exports = class DefaultTextView extends React.Component {
 		if (!this.state.value) return <div>loading {this.props.filename}</div>
 
 		return <div>
+			<CloseTextButton onClose={this.onClose}/>
 			<TextViewMenu ref="menu" {...this.props}  dirty={this.state.dirty}  generation={this.state.generation}
 				title={this.state.meta.title}
 				readOnly={this.state.meta.readOnly}
 				onClose={this.onClose} onSave={this.onSave}
 				onSetTitle={this.onSetTitle}/>
+			<ListMarkup markups={this.state.markups} filename={this.props.filename} doc={this.doc}/>
+			
 			<CodeMirror ref="cm" value={this.state.value} history={this.state.history} 
 				markups={this.state.markups} 
 				onMarkupReady={this.onMarkupReady}

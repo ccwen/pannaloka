@@ -21,7 +21,7 @@ module.exports = class StackWidgetList extends Component {
 	}
 
 	setWidgetHeight (props,widgets) {
-		var widgetheight=(props.height / widgets.length)-2 ;
+		var widgetheight=(props.height / widgets.length)-4;
 		if (widgetheight<MINWIDGETHEIGHT) widgetheight=MINWIDGETHEIGHT;
 		if (this.state.widgetheight!==widgetheight) this.setState({widgetheight});
 	}

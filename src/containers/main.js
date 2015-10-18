@@ -20,7 +20,7 @@ module.exports = class Main extends Component {
 	}
 
 	setHeight = () => {
-		var height=window.innerHeight-ReactDOM.findDOMNode(this.refs.mainmenu).style.height; //
+		var height=window.innerHeight-ReactDOM.findDOMNode(this.refs.mainmenu).style.height-30; //
 		this.refs.leftpanel.style.height=height;
 		this.refs.rightpanel.style.height=height;
 		this.setState({height});
