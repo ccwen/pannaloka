@@ -34,5 +34,15 @@ a:visited {color:darkblue;}
 
 .synonym {border-bottom:2px solid blue;}
 .synonym2 {border-bottom:2px dotted blue;}
-.synonym.editingMarker:after {font-size:50%;content:"釋";vertical-align:text-top}
+.synonym.editingMarker:after {font-size:50%;content:"基";vertical-align:text-top}
 .synonym2.editingMarker:after {font-size:50%;content:"義";vertical-align:text-top}
+
+.explain {border-bottom:2px solid green;}
+.explain2 {border-bottom:2px dotted green;}
+.explain.editingMarker:after {font-size:50%;content:"名";vertical-align:text-top}
+.explain2.editingMarker:after {font-size:50%;content:"義";vertical-align:text-top}
+
+.extexplain {border-bottom:2px solid lightgreen;}
+.extexplain2 {border-bottom:2px dotted lightgreen;}
+.extexplain.editingMarker:after {font-size:50%;content:"名";vertical-align:text-top}
+.extexplain2.editingMarker:after {font-size:50%;content:"義";vertical-align:text-top}

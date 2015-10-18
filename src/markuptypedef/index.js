@@ -31,13 +31,21 @@ var types={
   ,"synonym":{validate:vs.singletwomore,label:"同義",mark:mark.singletwo,editor:require("./simple")}
   ,"signifier":{validate:vs.singletwo,label:"能所",mark:mark.singletwo,editor:require("./simple")}
 	,"milestone":{validate:vsmilestone.milestone,label:"界石",editor:require("./simple"), mark:mark.milestone}
-
+	,"explain":{validate:vs.singletwomore,label:"內釋",mark:mark.singletwo,editor:require("./simple")}
+	,"extexplain":{validate:vs.dualonemore,label:"外釋",mark:mark.dualonemore,editor:require("./simple")}
+	,"causeeffect2":{label:"因：",hidden:true}
+	,"intertext2":{label:"互文：",hidden:true}
+	,"part2":{label:"部份：",hidden:true}
+	,"signifier2":{label:"能指：",hidden:true}
+	,"synonym2":{label:"基詞",hidden:true}
+  ,"explain2"	:{label:"所解釋的名相：",hidden:true}
+  ,"extexplain2"	:{label:"所解釋的名相：",hidden:true}
 }
 
 var getAvailableType=function(selections) {
 	var out=[];
 	for (var i in types) {
-		if (types[i].validate(selections) && !types[i].hidden){
+		if (types[i].validate && types[i].validate(selections) && !types[i].hidden){
 			out.push(i);
 		}
 	}

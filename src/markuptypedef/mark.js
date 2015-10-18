@@ -65,7 +65,6 @@ var dualone=function(mark,docOf, cb) {
 				,{markup:mrk2, doc:doc2, key:key2}] );
 }
 
-
 var oneway=function(mark,docOf, cb) {
 	var selections=validate.dualone(mark.selections);
 	if (!selections) return ;
@@ -118,5 +117,41 @@ var singletwo=function(mark,docOf,cb) {
 	cb(0, markups);
 }
 
-module.exports={singleone:singleone,dualone:dualone,singletwo:singletwo,
+
+
+var dualonemore=function(mark,docOf, cb) {
+	var selections=validate.dualonemore(mark.selections);
+	if (!selections) return ;
+
+	var files=Object.keys(selections);
+	var range1=selections[files[0]][0];
+	var key=uuid();
+
+	var doc1=docOf(files[0]);
+	var doc2=docOf(files[1]);
+
+	var text1=util.getRangeText(doc1,range1);
+	if (text1.length>MAX_LABEL) text1=text1.substr(0,MAX_LABEL)+"…";
+
+	var mrk1={className:mark.typename, from:range1[0], to:range1[1], target:[] };
+
+	var ranges=selections[files[1]];
+
+	var markups=[{markup:mrk1,doc:doc1,key:key}],master=[files[0],key,text1];
+	for (var i=0;i<ranges.length;i++) {
+
+		var text2=util.getRangeText(doc2,ranges[i]);
+		if (text2.length>MAX_LABEL) text2=text2.substr(0,MAX_LABEL)+"…";
+
+		var cls=mark.typename+"2", newkey=uuid();
+
+		var obj={className:cls, from:ranges[i][0],to:ranges[i][1] ,target:master};
+		mrk1.target.push([files[1],newkey,text2]);
+		markups.push({markup:obj,doc:doc2,key:newkey});
+	}	
+
+	cb(0, markups );
+}
+
+module.exports={singleone:singleone,dualone:dualone,singletwo:singletwo,dualonemore:dualonemore,
 	milestone:milestone,milestone_novalidate:milestone_novalidate,oneway};
