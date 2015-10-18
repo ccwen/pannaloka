@@ -3,10 +3,10 @@ var stackwidgetaction=require("../actions/stackwidget");
 var overlayaction=require("../actions/overlay");
 var milestones=require("ksana-codemirror").milestones;
 var ktxfilestore=require("../stores/ktxfile");
-var gotoRangeOrMarkupID=function(file,range_mid,wid) {
+var gotoRangeOrMarkupID=function(file,range_mid,wid,opts) {
 	var targetdoc=docfilestore.docOf(file);
 	if (targetdoc) {
-		scrollAndHighlight(targetdoc,range_mid);
+		scrollAndHighlight(targetdoc,range_mid,opts);
 	} else {
 		var target=ktxfilestore.findFile(file);
 		if (target) {
@@ -57,7 +57,7 @@ var	scrollAndHighlight=function (doc,range_markupid,opts) {
 				var pos=markup.handle.find();
 				var from=pos.from, to=pos.to;
 				var scrollto={line:from.line,ch:from.ch};
-				doc.setCursor(from);
+				if (opts.moveCursor) doc.setCursor(from);
 			} else {//array format
 				var newhl=milestones.unpack.call(doc,hl);
 				var from={line:newhl[0][1],ch:newhl[0][0]},to={line:newhl[1][1],ch:newhl[1][0]};
