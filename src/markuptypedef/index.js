@@ -6,11 +6,28 @@ var markupstore=require("../stores/markup");
 
 var isIntertextDeletable=function(markup) {
 	var file=markup.target[0];
-	return !!docfilestore.docOf(file);
+	if (Array.isArray(file)) {
+		for (var i in markup.target) {
+			var m=markup.target[i];
+			if (!docfilestore.docOf(m[0]))return false;
+		}
+		return true;
+	} else {
+		return !!docfilestore.docOf(file);	
+	}
 }
 
 var deletIntertext=function(markup) {
-	markupstore.removeByMid(markup.target[1],markup.target[0]);
+
+	var file=markup.target[0];
+	if (Array.isArray(markup.target[0])) {
+		for (var i in markup.target) {
+			var m=markup.target[i];
+			markupstore.removeByMid(m[1],m[0]);
+		}
+	} else {
+		markupstore.removeByMid(markup.target[1],markup.target[0]);
+	}
 }
 
 
@@ -32,7 +49,8 @@ var types={
   ,"signifier":{validate:vs.singletwo,label:"能所",mark:mark.singletwo,editor:require("./simple")}
 	,"milestone":{validate:vsmilestone.milestone,label:"界石",editor:require("./simple"), mark:mark.milestone}
 	,"explain":{validate:vs.singletwomore,label:"內釋",mark:mark.singletwo,editor:require("./simple")}
-	,"extexplain":{validate:vs.dualonemore,label:"外釋",mark:mark.dualonemore,editor:require("./simple")}
+	,"extexplain":{validate:vs.dualonemore,label:"外釋",mark:mark.dualonemore,editor:require("./simple"),
+		isDeletable: isIntertextDeletable,onDelete:deletIntertext}
 	,"causeeffect2":{label:"因：",hidden:true}
 	,"intertext2":{label:"互文：",hidden:true}
 	,"part2":{label:"部份：",hidden:true}
