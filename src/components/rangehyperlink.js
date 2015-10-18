@@ -11,7 +11,7 @@ module.exports = class RangeHyperlink extends PureComponent {
 	}
 	/* range format : file, mid_range , text */
 	renderRange = (item,idx) => {
-		return <span key={idx}> | <span style={styles.hyperlink} data-idx={idx} 
+		return <span key={idx} > | <span className="rangehyperlink" style={styles.hyperlink} data-idx={idx} 
 			title={item[3]||item[0]} onClick={this.onClick}>{item[2]}</span></span>
 	}
 
