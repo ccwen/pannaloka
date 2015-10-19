@@ -19,6 +19,9 @@ var selectionStore=Reflux.createStore({
 		this.selections=sels;
 		this.trigger(this.selections,cursorchar);
 	}
+	,getSelection:function(filename) {
+		return this.selections[filename];
+	}
 	,getCursorChar:function() {
 		return this.cursorchar;
 	}

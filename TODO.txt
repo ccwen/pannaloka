@@ -1,0 +1,22 @@
+try jiangkangyur
+
+build reverse index for transclusion
+
+error message in notification
+
+embedded ccg
+
+save immediately is not required
+warn user when closing a dirty file
+
+delete orphan target (target without master)
+
+auto save opened file in workspace.json
+set widget height with flex number, when changing document Title 
+
+
+bug , delete markup2 , click on master markup has error
+TypeError: Cannot read property 'from' of undefined
+Object.getMarkupText
+DefaultTextView.getOther
+Object.DefaultTextView.getOther

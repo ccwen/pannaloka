@@ -2,6 +2,7 @@ var kcm=require("ksana-codemirror");
 var getSelections=kcm.getSelections, getCharAtCursor=kcm.getCharAtCursor;
 var selectionaction=require("../actions/selection");
 var markupstore=require("../stores/markup");
+var selectionstore=require("../stores/selection");
 var markupaction=require("../actions/markup");
 var util=require("./util");
 var	autoGoMarkup = function(m) {
@@ -17,7 +18,8 @@ var cursorActivity=function(){
 	this.hasMarkupUnderCursor=false;
 	this.timer1=setTimeout(function(){
 		var cursorch=getCharAtCursor(this.doc);
-		var selections=getSelections(this.doc);
+		var prevsel=selectionstore.getSelection(this.props.filename);
+		var selections=getSelections(this.doc,prevsel); //push new selection to bottom
 		selectionaction.setSelection(this.props.filename,selections,cursorch);
 
 		var marks=this.doc.findMarksAt(this.doc.getCursor());
