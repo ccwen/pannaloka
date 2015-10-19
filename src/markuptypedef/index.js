@@ -55,16 +55,16 @@ var types={
 	,"definition":{validate:vs.singletwomore,label:"內釋",mark:mark.singletwo,editor:require("./simple")}
 	,"extdefinition":{validate:vs.dualonemore,label:"外釋",mark:mark.dualonemore,editor:require("./simple"),
 		isDeletable: isIntertextDeletable,onDelete:deletIntertext}
-	,"causeeffect2":{label:"因：",hidden:true}
+	,"causeeffect2":{label:"果：",hidden:true}
 	,"intertext2":{label:"互文：",hidden:true}
 	,"part2":{label:"部份：",hidden:true}
-	,"signifier2":{label:"能指：",hidden:true}
-	,"synonym2":{label:"本詞",hidden:true}
-  ,"definition2"	:{label:"所定義的名相：",hidden:true}
-  ,"extdefinition2"	:{label:"所定義的名相：",hidden:true}
-  ,"explaination2"	:{label:"所說明的名相：",hidden:true}
-  ,"extsignifier2"	:{label:"能指：",hidden:true}
-  ,"individual2":{label:"總相：",hidden:true}
+	,"signifier2":{label:"所指：",hidden:true}
+	,"synonym2":{label:"同義詞",hidden:true}
+  ,"definition2"	:{label:"定義：",hidden:true}
+  ,"extdefinition2"	:{label:"定義：",hidden:true}
+  ,"explaination2"	:{label:"說明：",hidden:true}
+  ,"extsignifier2"	:{label:"所指：",hidden:true}
+  ,"individual2":{label:"別相：",hidden:true}
 }
 
 var getAvailableType=function(selections) {

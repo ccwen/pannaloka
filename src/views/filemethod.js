@@ -1,5 +1,6 @@
 var util=require("./util");
 var docfileaction=require("../actions/docfile");
+var ktxfileaction=require("../actions/ktxfile");
 var selectionaction=require("../actions/selection");
 var cmfileio=require("../cmfileio");
 var stackwidgetaction=require("../actions/stackwidget");
