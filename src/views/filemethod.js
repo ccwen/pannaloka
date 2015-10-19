@@ -9,7 +9,6 @@ var markupstore=require("../stores/markup");
 var	loaded = function() {
 	this.cm=this.refs.cm.getCodeMirror();
 	this.cm.react=this;
-	this.cm.setOption("theme", "ambiance");
 	this.generation=this.cm.changeGeneration(true);
 	this.doc=this.cm.getDoc();	
 	docfileaction.openFile(this.doc,this.props.filename);

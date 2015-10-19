@@ -19,6 +19,11 @@ var docFileStore=Reflux.createStore({
 		});
 		this.trigger(this.docfile);
 	}
+	,getDocs:function() {
+		return this.docfile.map(function(df){
+			return df[0];
+		});
+	}
 	,fileOf:function(doc) {
 		var remain=this.docfile.filter(function(df){
 			return  df[0]===doc;

@@ -1,5 +1,6 @@
-body {margin:0px;height:100%;overflow-y:hidden;overflow-x:hidden;background: gray}
+body {margin:0px;height:100%;overflow-y:hidden;overflow-x:hidden}
 button {cursor:pointer;}
+.darktheme {background:gray;}
 
 .CodeMirror { line-height: 1.6;}
 .cm-s-ambiance.CodeMirror { line-height: 1.6em;}
