@@ -11,7 +11,7 @@ module.exports = class SimpleView extends PureComponent {
 	render () {
 		return <div>
 			<StackWidgetMenu onClose={this.onClose}/>	
-			hello {this.props.text} {this.props.wid}
+			hello {this.props.trait.text} {this.props.wid}
 		</div>
 	}
 }

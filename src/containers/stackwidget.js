@@ -13,7 +13,7 @@ module.exports = class StackWidget extends PureComponent {
 	}
 
 	updateHeight () {
-		ReactDOM.findDOMNode(this).style.height=this.height;
+		ReactDOM.findDOMNode(this).style.height=this.props.height;
 	}
 	componentDidMount () {
 		this.updateHeight();
@@ -23,7 +23,7 @@ module.exports = class StackWidget extends PureComponent {
 	}
 
 	renderWidget() {
-		var widgetclass=this.props.widgetClass||"SimpleWidget";
+		var widgetclass=this.props.widgetClass||"SimpleView";
 		var widget=WidgetClasses[widgetclass];
 		if (!widget){
 			throw "cannot load widget "+widgetclass;

@@ -25,22 +25,23 @@ a:visited {color:darkblue;}
 .quote   {border-bottom:2px dotted gray;}
 .transclusion {color:#3366FF;cursor:pointer;}
 .highlight {background:#3366FF;}
+
 .editingMarker  {background:#A80000 ;color:yellow;cursor:pointer;}
 
 .causeeffect {border-bottom:2px solid red;}
 .causeeffect2 {border-bottom:2px dotted red;}
-.causeeffect.editingMarker:after {font-size:50%;content:"因";vertical-align:text-top}
-.causeeffect2.editingMarker:after {font-size:50%;content:"果";vertical-align:text-top}
+.causeeffect.samegroup:after {font-size:50%;content:"因";vertical-align:text-top}
+.causeeffect2.samegroup:after {font-size:50%;content:"果";vertical-align:text-top}
 
 .signifier {border-bottom:2px solid purple;}
 .signifier2 {border-bottom:2px dotted purple;}
-.signifier.editingMarker:after {font-size:50%;content:"能";vertical-align:text-top}
-.signifier2.editingMarker:after {font-size:50%;content:"所";vertical-align:text-top}
+.signifier.samegroup:after {font-size:50%;content:"能";vertical-align:text-top}
+.signifier2.samegroup:after {font-size:50%;content:"所";vertical-align:text-top}
 
 .extsignifier {border-bottom:2px solid purple;}
 .extsignifier2 {border-bottom:2px dotted purple;}
-.extsignifier.editingMarker:after {font-size:50%;content:"能";vertical-align:text-top}
-.extsignifier2.editingMarker:after {font-size:50%;content:"所";vertical-align:text-top}
+.extsignifier.samegroup:after {font-size:50%;content:"能";vertical-align:text-top}
+.extsignifier2.samegroup:after {font-size:50%;content:"所";vertical-align:text-top}
 
 
 .part {border-bottom:2px solid yellow;}
@@ -49,26 +50,26 @@ a:visited {color:darkblue;}
 
 .synonym {border-bottom:2px solid blue;}
 .synonym2 {border-bottom:2px dotted blue;}
-.synonym.editingMarker:after {font-size:50%;content:"本";vertical-align:text-top}
-.synonym2.editingMarker:after {font-size:50%;content:"另";vertical-align:text-top}
+.synonym.samegroup:after {font-size:50%;content:"本";vertical-align:text-top}
+.synonym2.samegroup:after {font-size:50%;content:"另";vertical-align:text-top}
 
 .definition {border-bottom:2px solid green;}
 .definition2 {border-bottom:2px dotted green;}
-.definition.editingMarker:after {font-size:50%;content:"名";vertical-align:text-top}
-.definition2.editingMarker:after {font-size:50%;content:"義";vertical-align:text-top}
+.definition.samegroup:after {font-size:50%;content:"名";vertical-align:text-top}
+.definition2.samegroup:after {font-size:50%;content:"義";vertical-align:text-top}
 
 .extdefinition {border-bottom:2px solid lightgreen;}
 .extdefinition2 {border-bottom:2px dotted lightgreen;}
-.extdefinition.editingMarker:after {font-size:50%;content:"名";vertical-align:text-top}
-.extdefinition2.editingMarker:after {font-size:50%;content:"義";vertical-align:text-top}
+.extdefinition.samegroup:after {font-size:50%;content:"名";vertical-align:text-top}
+.extdefinition2.samegroup:after {font-size:50%;content:"義";vertical-align:text-top}
 
 .explaination {border-bottom:2px solid orange;}
 .explaination2 {border-bottom:2px dotted orange;}
-.explaination.editingMarker:after {font-size:50%;content:"名";vertical-align:text-top}
-.explaination2.editingMarker:after {font-size:50%;content:"說明";vertical-align:text-top}
+.explaination.samegroup:after {font-size:50%;content:"名";vertical-align:text-top}
+.explaination2.samegroup:after {font-size:50%;content:"說明";vertical-align:text-top}
 
 .individual {border-bottom:2px solid brown;}
 .individual2 {border-bottom:2px dotted brown;}
-.individual.editingMarker:after {font-size:50%;content:"總";vertical-align:text-top}
-.individual2.editingMarker:after {font-size:50%;content:"別";vertical-align:text-top}
+.individual.samegroup:after {font-size:50%;content:"總";vertical-align:text-top}
+.individual2.samegroup:after {font-size:50%;content:"別";vertical-align:text-top}
 

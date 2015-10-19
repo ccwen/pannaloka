@@ -7,11 +7,15 @@ var styles={
 	menu : {background:"silver"}
 }
 module.exports = class TextViewMenu extends PureComponent {
+
   render () {
   	return <span style={styles.menu}>
-  		<SaveButton {...this.props} />
-  		<DocumentTitle title={this.props.title} onSetTitle={this.props.onSetTitle} />
-  		{this.props.readOnly?"(fixed text)":""}
+  		
+  		<DocumentTitle title={this.props.trait.title} onSetTitle={this.props.onSetTitle}
+  		onSetFlexHeight={this.props.onSetFlexHeight} flex={this.props.trait.flex}/>
+  		 {this.props.readOnly?"(fixed text)":""}
+
+  			<SaveButton {...this.props} />
   	</span>
   }
 }

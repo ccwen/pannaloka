@@ -15,8 +15,8 @@ auto save opened file in workspace.json
 set widget height with flex number, when changing document Title 
 
 
-bug , delete markup2 , click on master markup has error
-TypeError: Cannot read property 'from' of undefined
+bug , delete markup2 , click on master markup has errorTy
+peError: Cannot read property 'from' of undefined
 Object.getMarkupText
 DefaultTextView.getOther
 Object.DefaultTextView.getOther

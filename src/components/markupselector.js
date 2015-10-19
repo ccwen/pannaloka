@@ -14,19 +14,20 @@ module.exports = class MarkupSelector extends React.Component {
 	highlightMarkup (markups,idx) {
 		
 		this.clearMarker();
-		this.setMarker(markups[idx].doc,markups[idx].markup.handle);
+		this.setMarker(markups[idx].doc,markups[idx].markup.handle,"editingMarker samegroup");
 		if (!this.props.getOther) return;
 		var others=this.props.getOther(markups[idx].markup);
 		others.map(function(m){
 			if (!m.handle)return;
-			this.setMarker(m.handle.doc,m.handle);
+			this.setMarker(m.handle.doc,m.handle,"samegroup");
 		}.bind(this));
 	}
 
 	
-	setMarker (doc,textmarker) {
+	setMarker (doc,textmarker,clsname) {
+		clsname=clsname||"editingMarker";
 		var pos=textmarker.find();
-		this.editingMarker.push(doc.markText(pos.from,pos.to,{className:"editingMarker",clearOnEnter:true}));
+		this.editingMarker.push(doc.markText(pos.from,pos.to,{className:clsname,clearOnEnter:true}));
 	}	
 
 	getEditor (markups,idx) {

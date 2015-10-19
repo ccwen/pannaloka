@@ -18,9 +18,9 @@ var cursorActivity=function(){
 	this.hasMarkupUnderCursor=false;
 	this.timer1=setTimeout(function(){
 		var cursorch=getCharAtCursor(this.doc);
-		var prevsel=selectionstore.getSelection(this.props.filename);
+		var prevsel=selectionstore.getSelection(this.props.trait.filename);
 		var selections=getSelections(this.doc,prevsel); //push new selection to bottom
-		selectionaction.setSelection(this.props.filename,selections,cursorch);
+		selectionaction.setSelection(this.props.trait.filename,selections,cursorch);
 
 		var marks=this.doc.findMarksAt(this.doc.getCursor());
 		var markups=[], doc=this.doc;

@@ -16,7 +16,7 @@ var gotoRangeOrMarkupID=function(file,range_mid,wid,opts) {
 	}
 }
 var getLinkedBy=function(m){
-	var others=m.source||m.by;
+	var others=m.target;
 	if (!others)return;
 	if (typeof others[0]==="string"){
 		var file=others[0];

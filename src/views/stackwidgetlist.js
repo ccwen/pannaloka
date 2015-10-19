@@ -9,7 +9,7 @@ var MINWIDGETHEIGHT = 150;
 module.exports = class StackWidgetList extends Component {
 	 constructor(props) {
     super(props);
-    this.state = { widgets:[], widgetheight:100};
+    this.state = { widgets:[], widgetheights:[]};
   }
 
 	componentDidMount () {
@@ -20,10 +20,24 @@ module.exports = class StackWidgetList extends Component {
 		this.unsubscribe();
 	}
 
-	setWidgetHeight (props,widgets) {
-		var widgetheight=(props.height / widgets.length)-4;
-		if (widgetheight<MINWIDGETHEIGHT) widgetheight=MINWIDGETHEIGHT;
-		if (this.state.widgetheight!==widgetheight) this.setState({widgetheight});
+	totalFlex (widgets) {
+		return widgets.reduce(function(prev,w){ 
+			return (w.trait.flex||1)+prev } 
+		,0);
+	}
+	setWidgetHeight = (props,widgets) => {
+		if (!props) props=this.props;
+		if (!widgets) widgets=this.state.widgets;
+		var totalheight=props.height;
+		var total=this.totalFlex(widgets);
+
+		var widgetheights=widgets.map(function(w){
+			var widgetheight=totalheight*((w.trait.flex||1)/total) - 4;
+			if (widgetheight<MINWIDGETHEIGHT) widgetheight=MINWIDGETHEIGHT;
+			return widgetheight;
+		}.bind(this));
+
+		this.setState({widgetheights});
 	}
 
 	componentWillReceiveProps (nextProps) {
@@ -36,8 +50,8 @@ module.exports = class StackWidgetList extends Component {
 	}
 
 	renderItem (item,idx) {
-		return <StackWidget height={this.state.widgetheight} key={item.wid} 
-		wid={item.wid} widgetClass={item.widgetClass} {...item.trait} />
+		return <StackWidget height={this.state.widgetheights[idx]} key={item.wid}
+		resize={this.setWidgetHeight} wid={item.wid} widgetClass={item.widgetClass} trait={item.trait} />
 	}
 
   render () {

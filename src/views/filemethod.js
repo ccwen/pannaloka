@@ -11,24 +11,26 @@ var	loaded = function() {
 	this.cm.react=this;
 	this.generation=this.cm.changeGeneration(true);
 	this.doc=this.cm.getDoc();	
-	docfileaction.openFile(this.doc,this.props.filename);
+	docfileaction.openFile(this.doc,this.props.trait.filename);
 	this.setsize();
 	this.keymap();
-	if (this.state.meta.top) {
-		this.cm.scrollTo(0,this.state.meta.top);
+	if (this.props.trait.top) {
+		this.cm.scrollTo(0,this.props.trait.top);
 	}
-	if (this.props.scrollTo) {
-		util.scrollAndHighlight(this.doc,this.props.scrollTo);
+	if (this.props.trait.scrollTo) {
+		util.scrollAndHighlight(this.doc,this.props.trait.scrollTo);
 	}
 }
 var load = function(fn) {
-	cmfileio.readFile(this.props.filename,function(err,data){
+	cmfileio.readFile(this.props.trait.filename,function(err,data){
 			this.setState(data,this.loaded);
 	}.bind(this));
 }
 
 var save = function(fn) {
-  	var meta=this.state.meta;
+  	var meta=JSON.parse(JSON.stringify(this.props.trait));
+  	delete meta.stat;
+
   	meta.top=this.cm.getScrollInfo().top;
   	cmfileio.writeFile(meta,this.cm,fn,function(err,newmeta){
       if (err) console.log(err);
@@ -36,13 +38,17 @@ var save = function(fn) {
       	if (this.state.titlechanged) ktxfileaction.reload();
 				this.generation=this.cm.changeGeneration(true);
 				this.setState({dirty:false,titlechange:false,meta:newmeta,generation:this.generation});
+
+				for (var i in meta){
+					this.props.trait[i]=meta[i];	
+				}
       }
     }.bind(this));
 }
 
 var close = function() {
 		stackwidgetaction.closeWidget(this.props.wid);
-		selectionaction.clearSelectionOf(this.props.filename);
+		selectionaction.clearSelectionOf(this.props.trait.filename);
 		docfileaction.closeFile(this.doc);
 
 		var editing=markupstore.getEditing();

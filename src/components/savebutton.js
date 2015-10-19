@@ -2,7 +2,8 @@ var React=require("react");
 var Component=React.Component;
 
 var styles={
-	saved:{background:"green",color:"yellow"}
+	savebutton :{fontSize:"75%"}
+	,saved:{background:"green",color:"yellow"}
 }
 module.exports = class SaveButton extends Component {
 
@@ -43,7 +44,7 @@ module.exports = class SaveButton extends Component {
 			var countdown=this.state.countdown;
 			if (countdown>10) countdown=Math.round(countdown/10)*10;
 			return (<span>
-					<button onClick={this.props.onSave}>Save in {countdown+"s"}</button>
+					<button style={styles.savebutton} onClick={this.props.onSave}>Save in {countdown+"s"}</button>
 				</span>);
 		} else {
 			return <span></span>

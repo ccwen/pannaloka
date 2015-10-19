@@ -23,10 +23,9 @@ module.exports = class DefaultTextView extends React.Component {
 
 	componentDidMount() {
 		if (this.props.newfile) {
-			this.setState({dirty:true,titlechanged:true,value:"new file",meta:{title:this.props.title}}
-										,this.loaded);
+			this.setState({dirty:true,titlechanged:true,value:"new file"},this.loaded);
 		} else {
-			filemethod.load.call(this,this.props.filename);
+			filemethod.load.call(this,this.props.trait.filename);
 		}
 		this.unsubscribeMarkup = markupstore.listen(this.onMarkup);
 		this.unsubscribeSelection = selectionstore.listen(this.onSelection);
@@ -99,7 +98,7 @@ module.exports = class DefaultTextView extends React.Component {
 	}
 
 	onSelection = (fileselections) => {
-		var selections=fileselections[this.props.filename];
+		var selections=fileselections[this.props.trait.filename];
 		if (!selections) return;
 		if (selections.length==0) {
 			var cursor=this.doc.getCursor();
@@ -135,8 +134,13 @@ module.exports = class DefaultTextView extends React.Component {
 	}
 
 	onSetTitle = (title) => {
-		this.state.meta.title=title;
+		this.props.trait.title=title; //bad practice
 		this.setState({dirty:true,titlechanged:true});
+	}
+
+	onSetFlexHeight = (flex) => {
+		this.props.trait.flex=flex; //bad practice
+		this.props.resize();
 	}
 
 	setDirty(cb) {
@@ -152,7 +156,7 @@ module.exports = class DefaultTextView extends React.Component {
   }
 
 	onSave = () => {	
-		return this.writefile(this.props.filename); 
+		return this.writefile(this.props.trait.filename); 
 	}
 
 	onMarkupReady = () => {
@@ -170,21 +174,21 @@ module.exports = class DefaultTextView extends React.Component {
 	}
 
 	render () {
-		if (!this.state.value) return <div>loading {this.props.filename}</div>
+		if (!this.state.value) return <div>loading {this.props.trait.filename}</div>
 
 		return <div>
 			<CloseTextButton onClose={this.onClose}/>
 			<TextViewMenu ref="menu" {...this.props}  dirty={this.state.dirty}  generation={this.state.generation}
-				title={this.state.meta.title}
-				readOnly={this.state.meta.readOnly}
+				readOnly={this.props.trait.readOnly}
 				onClose={this.onClose} onSave={this.onSave}
-				onSetTitle={this.onSetTitle}/>
-			<ListMarkup markups={this.state.markups} filename={this.props.filename} doc={this.doc}/>
+				onSetTitle={this.onSetTitle}
+				onSetFlexHeight={this.onSetFlexHeight}/>
+			<ListMarkup markups={this.state.markups} filename={this.props.trait.filename} doc={this.doc}/>
 			
 			<CodeMirror ref="cm" value={this.state.value} history={this.state.history} 
 				markups={this.state.markups} 
 				onMarkupReady={this.onMarkupReady}
-				readOnly={this.state.meta.readOnly}
+				readOnly={this.props.trait.readOnly}
 				onCursorActivity={this.onCursorActivity}
 				onMouseDown={this.onMouseDown}
 				onChange={this.onChange}/>
