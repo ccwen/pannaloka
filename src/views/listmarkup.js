@@ -33,6 +33,8 @@ module.exports = class ListMarkup extends React.Component {
 			}.bind(this));
 			if (this.props.filename==ranges[0][0]) {
 				links.unshift([this.props.filename, ranges[0][1], rangetext,"back to selection" ]);//for link back to selection
+			} else {
+				links.unshift([this.props.filename, null, rangetext,null ]);//not clickable , label only
 			}
 			this.setState({links});
 	}	

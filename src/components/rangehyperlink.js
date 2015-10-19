@@ -1,7 +1,8 @@
 var React=require("react");
 var E=React.createElement;
 var PureComponent=require('react-pure-render').PureComponent;
-var styles={hyperlink:{color:"blue",cursor:"pointer",fontSize:"75%"}};
+var styles={hyperlink:{cursor:"pointer",color:"blue",fontSize:"75%"},label:{fontSize:"75%"}};
+
 module.exports = class RangeHyperlink extends PureComponent {
 
 	onClick =(e) => {
@@ -11,8 +12,12 @@ module.exports = class RangeHyperlink extends PureComponent {
 	}
 	/* range format : file, mid_range , text */
 	renderRange = (item,idx) => {
-		return <span key={idx} > | <span className="rangehyperlink" style={styles.hyperlink} data-idx={idx} 
-			title={item[3]||item[0]} onClick={this.onClick}>{item[2]}</span></span>
+		if (item[1]) {
+			return <span key={idx} > | <span className="rangehyperlink" style={styles.hyperlink} data-idx={idx} 
+				title={item[3]||item[0]} onClick={this.onClick}>{item[2]}</span></span>
+		} else {
+			return <span key={idx}> | <span style={styles.label}>{item[2]}</span></span>
+		}
 	}
 
 	render () {
