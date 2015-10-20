@@ -47,15 +47,15 @@ module.exports = class MarkupPanel extends PureComponent {
 		this.unsubscribe2();
 	}
 
-	onHyperlinkClick = (file,mid) => {
-		util.gotoRangeOrMarkupID(file,mid,this.state.wid);
+	onHyperlinkClick = (file,mid,opts) => {
+		util.gotoRangeOrMarkupID(file,mid,this.state.wid,opts);
 	}
 
 	goMarkupByKey = (mid) => {
 		var editing=markupstore.getEditing();
 		if (!editing)return;
 		var file=docfilestore.fileOf(editing.doc);
-		this.onHyperlinkClick(file,mid);
+		this.onHyperlinkClick(file,mid,{moveCursor:true});
 	}
 
 	onChanged = (doc) => {
