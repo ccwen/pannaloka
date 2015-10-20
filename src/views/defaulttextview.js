@@ -7,9 +7,11 @@ var markupstore=require("../stores/markup"),markupaction=require("../actions/mar
 var selectionstore=require("../stores/selection");
 var transclude=require("./transclude");
 
-var cursoractivity=require("./cursoractivity");
+var cursormethod=require("./cursormethod");
 var filemethod=require("./filemethod");
 var markupmethod=require("./markupmethod");
+var traitmethod=require("./traitmethod");
+
 var charinfo=require("./charinfo");
 var ListMarkup=require("./listmarkup");
 var CloseTextButton=require("./closetextbutton");
@@ -134,13 +136,11 @@ module.exports = class DefaultTextView extends React.Component {
 	}
 
 	onSetTitle = (title) => {
-		this.props.trait.title=title; //bad practice
-		this.setState({dirty:true,titlechanged:true});
+		return traitmethod.setTitle.call(this,title); 
 	}
 
 	onSetFlexHeight = (flex) => {
-		this.props.trait.flex=flex; //bad practice
-		this.props.resize();
+		return traitmethod.setFlexHeight.call(this,flex); 
 	}
 
 	setDirty(cb) {
@@ -165,12 +165,12 @@ module.exports = class DefaultTextView extends React.Component {
 
 
 	onCursorActivity = (cm) => {
-		cursoractivity.cursorActivity.call(this,cm);
+		cursormethod.cursorActivity.call(this,cm);
 	}
 
 	onMouseDown =(cm,e) =>{//double click on a markup
 			//make sure getCursor() get updated
-			cursoractivity.mouseDown.call(this,cm,e);	
+			cursormethod.mouseDown.call(this,cm,e);	
 	}
 
 	render () {

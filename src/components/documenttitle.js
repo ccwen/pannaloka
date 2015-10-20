@@ -55,7 +55,8 @@ module.exports = class DocumentTitle extends PureComponent {
 
   render () {
   	if (this.state.editing) {
-  		return <span style={styles.container}><input ref="titleinput" style={styles.input} autofocus onKeyUp={this.onKeyUp} 
+  		return <span style={styles.container}><input ref="titleinput" style={styles.input} 
+  					autofocus onKeyUp={this.onKeyUp} 
   									onBlur={this.onBlur} 
   									onChange={this.onChange} value={this.state.title}/>
   									<button onClick={this.cancelEdit}>cancel</button>

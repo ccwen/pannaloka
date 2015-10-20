@@ -11,7 +11,7 @@ var	loaded = function() {
 	this.cm.react=this;
 	this.generation=this.cm.changeGeneration(true);
 	this.doc=this.cm.getDoc();	
-	docfileaction.openFile(this.doc,this.props.trait.filename);
+	docfileaction.openFile(this.doc,this.props.trait.filename,this.props.trait);
 	this.setsize();
 	this.keymap();
 	if (this.props.trait.top) {
@@ -49,7 +49,7 @@ var save = function(fn) {
 var close = function() {
 		stackwidgetaction.closeWidget(this.props.wid);
 		selectionaction.clearSelectionOf(this.props.trait.filename);
-		docfileaction.closeFile(this.doc);
+		docfileaction.closeFile(this.props.trait.filename);
 
 		var editing=markupstore.getEditing();
 		if (editing && editing.doc===this.doc) {
