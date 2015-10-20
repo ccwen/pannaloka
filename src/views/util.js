@@ -85,6 +85,7 @@ var	scrollAndHighlight=function (doc,range_markupid,opts) {
 
 var getMarkupText=function(doc,m) {
 	var pos=m.find();
+	if (!pos) return;
 	return doc.getRange(pos.from,pos.to);
 }	
 
