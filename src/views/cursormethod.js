@@ -63,6 +63,9 @@ var mouseDown=function(cm,e){
 
 	if (markup.doc!==cm.doc) return false;
 	setTimeout(function(){
+		var markup=markupstore.getEditing();
+		if (!markup || !markup.markup) return;
+		if (markup.doc!==cm.doc) return false;
 		var cursor=cm.getCursor();
 		var range=markup.markup.handle.find();
 		if(util.posInRange(cursor,range)){
