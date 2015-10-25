@@ -1,5 +1,6 @@
 var vs=require("./validateselection");
 var vsmilestone=require("./validatemilestone");
+var vscontext=require("./validatecontext");
 var mark=require("./mark");
 var docfilestore=require("../stores/docfile");
 var markupstore=require("../stores/markup");
@@ -32,7 +33,9 @@ var deletIntertext=function(markup) {
 
 
 var types={
-	"important":{validate:vs.singleone,label:"重點",
+	"context":{validate:vscontext.validate,label:"情境",editor:require("./context")}
+	,"definition":{validate:vs.singletwomore,label:"釋義",mark:mark.singletwo,editor:require("./simple")}
+	,"important":{validate:vs.singleone,label:"重點",
 							editor:require("./simple"), mark:mark.singleone}
 	,"insight":{validate:vs.singleone,label:"創見",mark:mark.singleone,editor:require("./simple")}
 	,"intertext":{validate:vs.multi,label:"互文", mark:mark.dualone, editor:require("./quote"),
@@ -56,9 +59,8 @@ var types={
   ,"extauthorbg":{validate:vs.dualone,label:"作者背景",mark:mark.dualone,editor:require("./simple"),
 		isDeletable: isIntertextDeletable,onDelete:deletIntertext}
 
-	,"milestone":{validate:vsmilestone.milestone,label:"界石",editor:require("./simple"), mark:mark.milestone}
-	,"definition":{validate:vs.singletwomore,label:"內釋",mark:mark.singletwo,editor:require("./simple")}
-	,"extdefinition":{validate:vs.dualonemore,label:"外釋",mark:mark.dualonemore,editor:require("./simple"),
+	,"milestone":{validate:vsmilestone.validate,label:"界石",editor:require("./simple"), mark:mark.milestone}
+	,"extdefinition":{validate:vs.dualonemore,label:"外部釋義",mark:mark.dualonemore,editor:require("./simple"),
 		isDeletable: isIntertextDeletable,onDelete:deletIntertext}
 	,"causeeffect2":{label:"果：",hidden:true}
 	,"intertext2":{label:"互文：",hidden:true}

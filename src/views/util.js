@@ -27,6 +27,23 @@ var getLinkedBy=function(m){
 	}
 }
 
+var getMarkupsInRange=function(doc,from,to) {
+	if (!to) {
+		var marks=doc.findMarksAt(from);
+	} else {
+		var marks=doc.findMarks(from,to);
+	}
+		
+	var markups=[],getMarkup=doc.getEditor().react.getMarkup;
+	marks.forEach(function(m){
+		if (m.type!=="bookmark" && !m.clearOnEnter) {
+			var markup=getMarkup(m.key);
+			markups.push({markup:markup,key:m.key,doc:doc});
+		}
+	});
+	return markups;
+}
+
 var getMarkupRect=function(m){
 	var cm=m.handle.doc.getEditor();
 	var pos=m.handle.find();
@@ -102,4 +119,4 @@ var posInRange=function(pos,range) { //check if a pos in range, cm format
 	return false;
 }
 module.exports={gotoRangeOrMarkupID:gotoRangeOrMarkupID,scrollAndHighlight:scrollAndHighlight
-,getMarkupText:getMarkupText,posInRange:posInRange};
+,getMarkupText:getMarkupText,posInRange:posInRange,getMarkupsInRange:getMarkupsInRange};

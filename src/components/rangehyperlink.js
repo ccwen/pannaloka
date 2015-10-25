@@ -14,9 +14,9 @@ module.exports = class RangeHyperlink extends PureComponent {
 	renderRange = (item,idx) => {
 		if (item[1]) {
 			return <span key={idx} > | <span className="rangehyperlink" style={styles.hyperlink} data-idx={idx} 
-				title={item[3]||item[0]} onClick={this.onClick}>{item[2]}</span></span>
+				title={item[3]||item[0]} onClick={this.onClick}>{item[2].substring(0,10)}</span></span>
 		} else {
-			return <span key={idx}> | <span style={styles.label} title={item[3]||item[0]}>{item[2]}</span></span>
+			return <span key={idx}> | <span style={styles.label} title={item[3]||item[0]}>{item[2].substring(0,10)}</span></span>
 		}
 	}
 
