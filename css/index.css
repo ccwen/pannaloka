@@ -23,7 +23,7 @@ a:visited {color:darkblue;}
 
 
 .quote   {border-bottom:2px dotted gray;}
-.transclusion {color:#3366FF;cursor:pointer;}
+.transclusion {color:brown;cursor:pointer;font-family: "DFKai-SB"}
 .highlight {background:#3366FF;}
 
 .editingMarker  {background:#A80000 ;color:yellow;cursor:pointer;}

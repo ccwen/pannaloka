@@ -74,7 +74,7 @@ var transclude=function(bm,mrk) {
 	var cursor=doc.getCursor();
   var marker = document.createElement('span');
   ReactDOM.render(  React.createElement(transclusion,
-  	{mid:bm.key,text:bm.target[2],onClick:transclude_onclick.bind(this)})
+  	{title:bm.target[0],mid:bm.key,text:bm.target[2],onClick:transclude_onclick.bind(this)})
   ,marker);
   var textmarker=doc.markText(cursor,cursor,{
   	  //need codemirror after 5.7.1 https://github.com/codemirror/CodeMirror/commit/bc5a4939b2603f587c2358a8b13063862660bcdf

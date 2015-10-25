@@ -4,7 +4,8 @@ var PureComponent=require('react-pure-render').PureComponent;
 
 class Transclusion extends PureComponent {
 	render () {
-		return <span data-mid={this.props.mid} className="transclusion" onClick={this.props.onClick}>{this.props.text}</span>
+		return <span data-mid={this.props.mid} title={this.props.title}
+			className="transclusion" onClick={this.props.onClick}>{this.props.text}</span>
 	}
 }
 module.exports=Transclusion;
