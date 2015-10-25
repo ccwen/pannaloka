@@ -32,12 +32,9 @@ var deletIntertext=function(markup) {
 
 
 var types={
-
 	"important":{validate:vs.singleone,label:"重點",
 							editor:require("./simple"), mark:mark.singleone}
-	,"title":{validate:vs.singleone,label:"大標",editor:require("./simple"),mark:mark.singleone}
-	,"dictionary":{validate:vs.singleone,label:"字典"}
-	,"partofspeech":{validate:vs.singleone,label:"詞性"}
+	,"explaination":{validate:vs.singleone,label:"創見",mark:mark.singleone,editor:require("./simple")}
 	,"intertext":{validate:vs.multi,label:"互文", mark:mark.dualone, editor:require("./quote"),
 						isDeletable: isIntertextDeletable,onDelete:deletIntertext}
 	,"quote":{validate:vs.dualone,label:"出處", mark:mark.oneway, editor:require("./quote")}
@@ -59,7 +56,6 @@ var types={
 		isDeletable: isIntertextDeletable,onDelete:deletIntertext}
 
 	,"milestone":{validate:vsmilestone.milestone,label:"界石",editor:require("./simple"), mark:mark.milestone}
-	,"explaination":{validate:vs.singletwomore,label:"創見",mark:mark.singletwo,editor:require("./simple")}
 	,"definition":{validate:vs.singletwomore,label:"內釋",mark:mark.singletwo,editor:require("./simple")}
 	,"extdefinition":{validate:vs.dualonemore,label:"外釋",mark:mark.dualonemore,editor:require("./simple"),
 		isDeletable: isIntertextDeletable,onDelete:deletIntertext}
@@ -70,7 +66,6 @@ var types={
 	,"synonym2":{label:"同義詞",hidden:true}
   ,"definition2"	:{label:"定義：",hidden:true}
   ,"extdefinition2"	:{label:"定義：",hidden:true}
-  ,"explaination2"	:{label:"說明：",hidden:true}
   ,"extsignifier2"	:{label:"所指：",hidden:true}
   ,"historyculture2"	:{label:"歷史文化：",hidden:true}
   ,"individual2":{label:"別相：",hidden:true}
