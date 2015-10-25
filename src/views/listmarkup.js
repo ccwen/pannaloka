@@ -23,18 +23,21 @@ module.exports = class ListMarkup extends React.Component {
 	findMarkup = () => {
 			var ranges=selectionstore.getRanges({textLength:20});
 			if (!ranges || ranges.length!==1)return ;
-			var rangetext=ranges[0][2];
+
+			var rangetext=ranges[0][2],links=[];
 			var markups=findmarkup.byMasterText(rangetext,this.props.markups);
-			if (!markups|| !markups.length) return;
-			var links=markups.map(function(key){
-				var clsname=this.props.markups[key].className;
-				var typelabel="~"+types[clsname].label;
-				return [this.props.filename, key, typelabel ];
-			}.bind(this));
+			if (markups && markups.length) {
+				links=markups.map(function(key){
+					var clsname=this.props.markups[key].className;
+					var typelabel="~"+types[clsname].label;
+					return [this.props.filename, key, typelabel ];
+				}.bind(this));				
+			}
+
 			if (this.props.filename==ranges[0][0]) {
-				links.unshift([this.props.filename, ranges[0][1], rangetext,"back to selection" ]);//for link back to selection
+				links.unshift([this.props.filename, ranges[0][1], rangetext,"跳回選取區" ]);//for link back to selection
 			} else {
-				links.unshift([this.props.filename, null, rangetext,null ]);//not clickable , label only
+				links.unshift([this.props.filename, null, rangetext,markups.length?"":"無搜尋結果" ]);//not clickable , label only
 			}
 			this.setState({links});
 	}	
