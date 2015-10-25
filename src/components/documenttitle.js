@@ -8,6 +8,7 @@ var FlexHeight=require("./flexheight");
 var styles={
 	container:{cursor:"pointer"}
 	,input:{fontSize:"75%",border:"0px solid",outline:0}
+	,cancelbutton:{fontSize:"75%"}
 }
 module.exports = class DocumentTitle extends PureComponent {
 	constructor (props) {
@@ -58,8 +59,8 @@ module.exports = class DocumentTitle extends PureComponent {
   		return <span style={styles.container}><input ref="titleinput" style={styles.input} 
   					autofocus onKeyUp={this.onKeyUp} 
   									onBlur={this.onBlur} 
-  									onChange={this.onChange} value={this.state.title}/>
-  									<button onClick={this.cancelEdit}>cancel</button>
+  									onChange={this.onChange}  value={this.state.title}/>
+  									<button style={styles.cancelbutton} title="ESC" onClick={this.cancelEdit}>cancel</button>
   								<FlexHeight flex={this.state.flex} setValue={this.setFlexHeight}/>
   						</span>
   	} else {

@@ -21,18 +21,24 @@ var cursorActivity=function(){
 		var prevsel=selectionstore.getSelection(this.props.trait.filename);
 		var selections=getSelections(this.doc,prevsel); //push new selection to bottom
 		selectionaction.setSelection(this.props.trait.filename,selections,cursorch);
-
-		var marks=this.doc.findMarksAt(this.doc.getCursor());
-		var markups=[], doc=this.doc;
-		marks.forEach(function(m){
-			if (m.type!=="bookmark" && !m.clearOnEnter) {
-				var markup=this.state.markups[m.key];
-				markups.push({markup:markup,key:m.key,doc:doc});
-			}
-		}.bind(this));
-		this.markups=markups;
-		markupaction.markupsUnderCursor(markups);
-		this.hasMarkupUnderCursor=markups.length>0;
+		if (selections.length>2 || (selections.length>0&&selections[0].length>1)){
+			this.markups=null;
+			markupaction.markupsUnderCursor([]);
+			this.hasMarkupUnderCursor=false;
+			//has range
+		} else {
+			var marks=this.doc.findMarksAt(this.doc.getCursor());
+			var markups=[], doc=this.doc;
+			marks.forEach(function(m){
+				if (m.type!=="bookmark" && !m.clearOnEnter) {
+					var markup=this.state.markups[m.key];
+					markups.push({markup:markup,key:m.key,doc:doc});
+				}
+			}.bind(this));
+			this.markups=markups;
+			markupaction.markupsUnderCursor(markups);
+			this.hasMarkupUnderCursor=markups.length>0;
+		}
 	}.bind(this),150);//cursor throttle
 }
 

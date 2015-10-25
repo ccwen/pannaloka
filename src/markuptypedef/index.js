@@ -36,8 +36,6 @@ var types={
 	"important":{validate:vs.singleone,label:"重點",
 							editor:require("./simple"), mark:mark.singleone}
 	,"title":{validate:vs.singleone,label:"大標",editor:require("./simple"),mark:mark.singleone}
-	,"title2":{validate:vs.singleone,label:"中標",editor:require("./simple"),mark:mark.singleone}
-	,"title3":{validate:vs.singleone,label:"小標",editor:require("./simple"),mark:mark.singleone}	
 	,"dictionary":{validate:vs.singleone,label:"字典"}
 	,"partofspeech":{validate:vs.singleone,label:"詞性"}
 	,"intertext":{validate:vs.multi,label:"互文", mark:mark.dualone, editor:require("./quote"),
@@ -51,7 +49,7 @@ var types={
   ,"extsignifier":{validate:vs.dualone,label:"能所",mark:mark.dualone,editor:require("./simple"),
 		isDeletable: isIntertextDeletable,onDelete:deletIntertext}
 	,"milestone":{validate:vsmilestone.milestone,label:"界石",editor:require("./simple"), mark:mark.milestone}
-	,"explaination":{validate:vs.singletwomore,label:"說明",mark:mark.singletwo,editor:require("./simple")}
+	,"explaination":{validate:vs.singletwomore,label:"創見",mark:mark.singletwo,editor:require("./simple")}
 	,"definition":{validate:vs.singletwomore,label:"內釋",mark:mark.singletwo,editor:require("./simple")}
 	,"extdefinition":{validate:vs.dualonemore,label:"外釋",mark:mark.dualonemore,editor:require("./simple"),
 		isDeletable: isIntertextDeletable,onDelete:deletIntertext}

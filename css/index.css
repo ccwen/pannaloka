@@ -11,7 +11,7 @@ button {cursor:pointer;}
 .rangehyperlink:hover {text-decoration: underline}
 
 .mymark {background:yellow;}
-.important {border-bottom :2px dotted red }
+.important {color:red;}
 .milestone {border-radius:10px;background :lightblue ;color:black;padding-top:8px;padding-bottom:8px;}
 a:visited {color:darkblue;}
 .title {border-bottom:3px solid blue}
@@ -30,18 +30,12 @@ a:visited {color:darkblue;}
 
 .causeeffect {border-bottom:2px solid red;}
 .causeeffect2 {border-bottom:2px dotted red;}
-.causeeffect.samegroup:after {font-size:50%;content:"因";vertical-align:text-top}
-.causeeffect2.samegroup:after {font-size:50%;content:"果";vertical-align:text-top}
 
 .signifier {border-bottom:2px solid purple;}
 .signifier2 {border-bottom:2px dotted purple;}
-.signifier.samegroup:after {font-size:50%;content:"能";vertical-align:text-top}
-.signifier2.samegroup:after {font-size:50%;content:"所";vertical-align:text-top}
 
 .extsignifier {border-bottom:2px solid purple;}
 .extsignifier2 {border-bottom:2px dotted purple;}
-.extsignifier.samegroup:after {font-size:50%;content:"能";vertical-align:text-top}
-.extsignifier2.samegroup:after {font-size:50%;content:"所";vertical-align:text-top}
 
 
 .part {border-bottom:2px solid yellow;}
@@ -50,26 +44,16 @@ a:visited {color:darkblue;}
 
 .synonym {border-bottom:2px solid blue;}
 .synonym2 {border-bottom:2px dotted blue;}
-.synonym.samegroup:after {font-size:50%;content:"本";vertical-align:text-top}
-.synonym2.samegroup:after {font-size:50%;content:"另";vertical-align:text-top}
 
 .definition {border-bottom:2px solid green;}
 .definition2 {border-bottom:2px dotted green;}
-.definition.samegroup:after {font-size:50%;content:"名";vertical-align:text-top}
-.definition2.samegroup:after {font-size:50%;content:"義";vertical-align:text-top}
 
 .extdefinition {border-bottom:2px solid lightgreen;}
 .extdefinition2 {border-bottom:2px dotted lightgreen;}
-.extdefinition.samegroup:after {font-size:50%;content:"名";vertical-align:text-top}
-.extdefinition2.samegroup:after {font-size:50%;content:"義";vertical-align:text-top}
 
 .explaination {border-bottom:2px solid orange;}
 .explaination2 {border-bottom:2px dotted orange;}
-.explaination.samegroup:after {font-size:50%;content:"名";vertical-align:text-top}
-.explaination2.samegroup:after {font-size:50%;content:"說明";vertical-align:text-top}
 
 .individual {border-bottom:2px solid brown;}
 .individual2 {border-bottom:2px dotted brown;}
-.individual.samegroup:after {font-size:50%;content:"總";vertical-align:text-top}
-.individual2.samegroup:after {font-size:50%;content:"別";vertical-align:text-top}
 
