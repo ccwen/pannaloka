@@ -37,6 +37,17 @@ a:visited {color:darkblue;}
 .extsignifier {border-bottom:2px solid purple;}
 .extsignifier2 {border-bottom:2px dotted purple;}
 
+.ritual {border-bottom:1px solid purple;}
+.ritual2 {border-bottom:1px dotted purple;}
+
+.extritual {border-bottom:1px solid purple;}
+.extritual2 {border-bottom:1px dotted purple;}
+
+.authorbg {border-bottom:1px solid blue;}
+.authorbg2 {border-bottom:1px dotted blue;}
+
+.extauthorbg {border-bottom:1px solid blue;}
+.extauthorbg2 {border-bottom:1px dotted blue;}
 
 .part {border-bottom:2px solid yellow;}
 .part2 {border-bottom:2px dotted yellow;}

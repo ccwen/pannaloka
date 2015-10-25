@@ -49,6 +49,15 @@ var types={
   ,"signifier":{validate:vs.singletwo,label:"能所",mark:mark.singletwo,editor:require("./simple")}
   ,"extsignifier":{validate:vs.dualone,label:"能所",mark:mark.dualone,editor:require("./simple"),
 		isDeletable: isIntertextDeletable,onDelete:deletIntertext}
+
+  ,"ritual":{validate:vs.singletwo,label:"儀軌",mark:mark.singletwo,editor:require("./simple")}
+  ,"extritual":{validate:vs.dualone,label:"儀軌",mark:mark.dualone,editor:require("./simple"),
+		isDeletable: isIntertextDeletable,onDelete:deletIntertext}
+
+  ,"authorbg":{validate:vs.singletwo,label:"作者背景",mark:mark.singletwo,editor:require("./simple")}
+  ,"extauthorbg":{validate:vs.dualone,label:"作者背景",mark:mark.dualone,editor:require("./simple"),
+		isDeletable: isIntertextDeletable,onDelete:deletIntertext}
+
 	,"milestone":{validate:vsmilestone.milestone,label:"界石",editor:require("./simple"), mark:mark.milestone}
 	,"explaination":{validate:vs.singletwomore,label:"創見",mark:mark.singletwo,editor:require("./simple")}
 	,"definition":{validate:vs.singletwomore,label:"內釋",mark:mark.singletwo,editor:require("./simple")}
@@ -65,6 +74,10 @@ var types={
   ,"extsignifier2"	:{label:"所指：",hidden:true}
   ,"historyculture2"	:{label:"歷史文化：",hidden:true}
   ,"individual2":{label:"別相：",hidden:true}
+  ,"ritual2":{label:"儀軌：",hidden:true}
+  ,"extritual2":{label:"儀軌：",hidden:true}
+  ,"authorbg2":{label:"作者背景：",hidden:true}
+  ,"extauthorbg2":{label:"作者背景：",hidden:true}
 }
 
 var getAvailableType=function(selections) {
