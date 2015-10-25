@@ -16,8 +16,14 @@ module.exports =class MainMenu extends Component {
 		docs.map(function(d){
 			d.getEditor().setOption("theme", dark?"ambiance":"");
 		});
-	}
 
+		localStorage.setItem("lighttheme",!dark);
+	}
+	componentDidMount () {
+		if (localStorage.getItem("lighttheme")=="true"){
+			this.changeTheme();
+		}
+	}
   render () {
   	return <div><span style={styles.banner} title="2015.10.17">智慧
   	<span style={{cursor:"pointer"}} onClick={this.changeTheme}>光</span></span><MarkupPanel/></div>

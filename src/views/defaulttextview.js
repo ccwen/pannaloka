@@ -173,6 +173,10 @@ module.exports = class DefaultTextView extends React.Component {
 			cursormethod.mouseDown.call(this,cm,e);	
 	}
 
+	getTheme = () => {
+		return localStorage.getItem("lighttheme")=="true"?"":"ambiance";
+	}
+
 	render () {
 		if (!this.state.value) return <div>loading {this.props.trait.filename}</div>
 
@@ -190,6 +194,7 @@ module.exports = class DefaultTextView extends React.Component {
 				onMarkupReady={this.onMarkupReady}
 				readOnly={this.props.trait.readOnly}
 				onCursorActivity={this.onCursorActivity}
+				theme={this.getTheme()}
 				onMouseDown={this.onMouseDown}
 				onChange={this.onChange}/>
 		</div>
