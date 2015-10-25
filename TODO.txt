@@ -1,4 +1,6 @@
 try jiangkangyur
+auto save opened file in workspace.json
+
 
 build reverse index for transclusion
 
@@ -11,12 +13,4 @@ warn user when closing a dirty file
 
 delete orphan target (target without master)
 
-auto save opened file in workspace.json
-set widget height with flex number, when changing document Title 
 
-
-bug , delete markup2 , click on master markup has errorTy
-peError: Cannot read property 'from' of undefined
-Object.getMarkupText
-DefaultTextView.getOther
-Object.DefaultTextView.getOther

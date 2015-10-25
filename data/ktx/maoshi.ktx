@@ -1,4 +1,4 @@
-{"title":"毛詩","textsize":"0x0000e3c7"}
+{"title":"毛詩","textsize":"0x0000e3c7","top":600}
 毛詩
 
 <章>國風</章>
@@ -3589,6 +3589,8 @@
 "1cb14412-8f7a-428d-bcd7-097d309b0be6":{"from":[0,4],"to":2,"className":"milestone","automic":true,"readOnly":true},
 "f1f1f2fd-d25a-42cb-961d-c7e7b5d629ad":{"from":[0,4],"to":2,"className":"milestone","automic":true,"readOnly":true},
 "8e035bdb-78bf-4539-862f-6a7aa3d9b545":{"from":[0,4],"to":2,"className":"milestone","automic":true,"readOnly":true},
+"52093b03-d5c0-47a4-85e4-e6b6300477c4":{"from":[9,8],"to":13,"className":"intertext2","target":["ktx/09760638.ktx","8f77256b-b9c7-4751-9028-70266657e568","overl…"]},
+"c82abcc6-ea03-4f00-b4f5-dfe673dfdfca":{"from":[25,8],"to":31,"className":"intertext2","target":["ktx/09760638.ktx","5048a9f2-40ee-4ac3-ad98-c9cff37179f0","apove…"]},
 "a8387fc5-6319-4bc1-a4ea-efb935af23fd":{"from":[0,27],"to":2,"className":"milestone","automic":true,"readOnly":true},
 "992b5acb-539d-4ae1-9ad4-ff45fc87d2f0":{"from":[0,37],"to":2,"className":"milestone","automic":true,"readOnly":true},
 "7e3776b3-97b1-4caa-9d3a-24b511b28079":{"from":[0,47],"to":2,"className":"milestone","automic":true,"readOnly":true},

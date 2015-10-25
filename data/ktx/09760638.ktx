@@ -1,10 +1,25 @@
-{"title":"test automarkup","textsize":"0x00000045","top":0}
+{"title":"test automarkup","textsize":"0x000000f4","top":0,"filename":"ktx/09760638.ktx","flex":1}
 因果  因因因      果果果
 同義  本詞  義一  義二 義三
 能所  能指  所指
+部份 部1 部2 部3
 互文 互文連結 
-引用 《麟之趾》 
-嵌用  {"markups":{
+引用 《麟之趾》  
+嵌用  
+名相  釋義一   釋義二
+<a>xx</a>
+<a>yy</a>asdfsadf
+名相
+overlapover
+如是
+adsfafd asd a k asfd;a sfasdfa  
+
+總 別一 別二 別三
+asdfasdfafs   adsfasfdads  
+
+如是    釋義
+如是    釋義二
+如是    說明{"markups":{
 "bf340b6b-c3f4-46ab-807e-c650a418b55e":{"from":[4,0],"to":7,"className":"causeeffect","others":["42f4cea6-a24b-42ad-9deb-2fed83c135e2"]},
 "42f4cea6-a24b-42ad-9deb-2fed83c135e2":{"from":[13,0],"to":16,"className":"causeeffect2","master":"bf340b6b-c3f4-46ab-807e-c650a418b55e"},
 "d7d697eb-4b17-44a3-a536-7b46bb676ecb":{"from":[4,1],"to":6,"className":"synonym","others":["0fa24992-193b-4377-a812-0f02bcfdcec9","33674ebf-06d6-4ea0-a92c-df7b6ec4592a","5894dca1-1d8d-4e8b-a5cd-d7c0283b0e3f"]},
@@ -13,8 +28,32 @@
 "5894dca1-1d8d-4e8b-a5cd-d7c0283b0e3f":{"from":[15,1],"to":17,"className":"synonym2","master":"d7d697eb-4b17-44a3-a536-7b46bb676ecb"},
 "bf5316a5-ab77-43d7-a3bd-10a00b6b71e5":{"from":[4,2],"to":6,"className":"signifier","others":["8db3e348-45e5-4d87-811e-37b2b41df9fb"]},
 "8db3e348-45e5-4d87-811e-37b2b41df9fb":{"from":[8,2],"to":10,"className":"signifier2","master":"bf5316a5-ab77-43d7-a3bd-10a00b6b71e5"},
-"e06ddae9-19f2-4b55-88b5-e3fe05a37d75":{"from":[3,3],"to":7,"className":"intertext","trait":{"note":""},"target":["ktx/maoshi.ktx","b2d465bd-fe90-49d1-bb6a-2d42ee3a8189","惄如調飢"]},
-"210304b5-da8d-4a12-babb-53bff054fbcf":{"from":[4,4],"to":7,"className":"quote","trait":{"note":""},"target":["ktx/maoshi.ktx",[[0,2,"麟之趾"],[46,4,"麟之趾"]],"麟之趾．關…"]},
-"3536e37f-b72b-46b8-8c16-256b7b298e20":{"from":[3,5],"target":["ktx/maoshi.ktx",[[22,17,"關雎"],[26]],"參差荇菜"],"className":"transclusion"}
+"cd81373d-11e2-4537-a947-3877bae85e9c":{"from":[3,3],"to":5,"className":"part","others":["6df10e55-d3c2-49a3-ac06-ca47aa9ef266","db17d0e9-00bc-488a-9bd2-4ae43a21e3c2"]},
+"6df10e55-d3c2-49a3-ac06-ca47aa9ef266":{"from":[6,3],"to":8,"className":"part2","master":"cd81373d-11e2-4537-a947-3877bae85e9c"},
+"db17d0e9-00bc-488a-9bd2-4ae43a21e3c2":{"from":[9,3],"to":11,"className":"part2","master":"cd81373d-11e2-4537-a947-3877bae85e9c"},
+"e06ddae9-19f2-4b55-88b5-e3fe05a37d75":{"from":[3,4],"to":7,"className":"intertext","trait":{"note":""},"target":["ktx/maoshi.ktx","b2d465bd-fe90-49d1-bb6a-2d42ee3a8189","惄如調飢"]},
+"210304b5-da8d-4a12-babb-53bff054fbcf":{"from":[4,5],"to":7,"className":"quote","trait":{"note":""},"target":["ktx/maoshi.ktx",[[0,2,"麟之趾"],[46,4,"麟之趾"]],"麟之趾．關…"]},
+"ebe7978a-fcf2-4465-8eb1-c008089ce2e7":{"from":[9,5],"target":["ktx/ds.ktx",[[19,13],31],"濕生、若化生，若有色、若"],"className":"transclusion"},
+"c157b517-f865-4196-a8a8-41af3876d472":{"from":[10,5],"target":["ktx/sunzhi.ktx",[[9,2,"謀攻6"],[13]],"而謂之進"],"className":"transclusion"},
+"3536e37f-b72b-46b8-8c16-256b7b298e20":{"from":[3,6],"target":["ktx/maoshi.ktx",[[22,17,"關雎"],[26]],"參差荇菜"],"className":"transclusion"},
+"166dd4a1-4c11-46b9-bf55-0394b474f080":{"from":[9,7],"to":13,"className":"extritual","trait":{"attr1":""},"target":["ktx/49919417.ktx","a0afb800-77da-4801-9650-865ec401a0ec"," 因"]},
+"0aea2aac-d7dc-4071-8d07-a20bbb3a825a":{"from":[10,9],"to":15,"className":"historyculture","others":["f10b5b11-c17e-4e75-8020-d9498e5d7da3"]},
+"8f77256b-b9c7-4751-9028-70266657e568":{"from":[0,11],"to":7,"className":"intertext","trait":{"note":"ss"},"target":["ktx/maoshi.ktx","52093b03-d5c0-47a4-85e4-e6b6300477c4","風之始也"]},
+"5048a9f2-40ee-4ac3-ad98-c9cff37179f0":{"from":[5,11],"to":11,"className":"intertext","trait":{"note":"aa"},"target":["ktx/maoshi.ktx","c82abcc6-ea03-4f00-b4f5-dfe673dfdfca","故用之鄉人…"]},
+"04b7ee64-4506-42da-9610-82f107007ef6":{"from":[3,13],"to":10,"className":"explaination","others":["979ea661-1872-4837-97d7-8f47dae11ba7"]},
+"979ea661-1872-4837-97d7-8f47dae11ba7":{"from":[19,13],"to":25,"className":"explaination2","master":"04b7ee64-4506-42da-9610-82f107007ef6"},
+"f10b5b11-c17e-4e75-8020-d9498e5d7da3":{"from":[26,13],"to":28,"className":"historyculture2","master":"0aea2aac-d7dc-4071-8d07-a20bbb3a825a"},
+"29f244f1-0623-4dcf-b777-8408c1d6ccb5":{"from":[0,15],"to":1,"className":"individual","others":["7688ec50-c218-4670-a755-9635fb0a82a5","2f5d36ec-996b-4018-ba19-32ca57934b55","ed82210c-9477-4f7d-90ab-557ce392a0a7"]},
+"7688ec50-c218-4670-a755-9635fb0a82a5":{"from":[2,15],"to":4,"className":"individual2","master":"29f244f1-0623-4dcf-b777-8408c1d6ccb5"},
+"2f5d36ec-996b-4018-ba19-32ca57934b55":{"from":[5,15],"to":7,"className":"individual2","master":"29f244f1-0623-4dcf-b777-8408c1d6ccb5"},
+"ed82210c-9477-4f7d-90ab-557ce392a0a7":{"from":[8,15],"to":10,"className":"individual2","master":"29f244f1-0623-4dcf-b777-8408c1d6ccb5"},
+"2e35644b-3c33-44e5-b627-ccd4ca1c646d":{"from":[5,16],"to":8,"className":"definition","others":["f271a509-1bad-49e4-be8f-952cc68d6ab4"]},
+"f271a509-1bad-49e4-be8f-952cc68d6ab4":{"from":[20,16],"to":23,"className":"definition2","master":"2e35644b-3c33-44e5-b627-ccd4ca1c646d"},
+"6a37fb75-6a72-4a1e-8ab4-ef86d510dc66":{"from":[0,18],"to":2,"className":"definition","others":["8caffe5c-44a5-4d69-adbc-459c192ec728"]},
+"8caffe5c-44a5-4d69-adbc-459c192ec728":{"from":[6,18],"to":8,"className":"definition2","master":"6a37fb75-6a72-4a1e-8ab4-ef86d510dc66"},
+"09e1f878-68ac-4c77-82ae-66b7c0bfb793":{"from":[0,19],"to":2,"className":"definition","others":["1b458b55-ec6c-43c6-92d6-a1652fefa74f"]},
+"1b458b55-ec6c-43c6-92d6-a1652fefa74f":{"from":[6,19],"to":9,"className":"definition2","master":"09e1f878-68ac-4c77-82ae-66b7c0bfb793"},
+"a05a30ef-5956-457e-95fe-9ccf737c5fd1":{"from":[0,20],"to":2,"className":"explaination","others":["7bf85f7d-39d7-4ef6-8f04-12ceb1d3a975"]},
+"7bf85f7d-39d7-4ef6-8f04-12ceb1d3a975":{"from":[6,20],"to":8,"className":"explaination2","master":"a05a30ef-5956-457e-95fe-9ccf737c5fd1"}
 }
 }

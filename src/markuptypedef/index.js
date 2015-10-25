@@ -34,7 +34,7 @@ var deletIntertext=function(markup) {
 var types={
 	"important":{validate:vs.singleone,label:"重點",
 							editor:require("./simple"), mark:mark.singleone}
-	,"explaination":{validate:vs.singleone,label:"創見",mark:mark.singleone,editor:require("./simple")}
+	,"insight":{validate:vs.singleone,label:"創見",mark:mark.singleone,editor:require("./simple")}
 	,"intertext":{validate:vs.multi,label:"互文", mark:mark.dualone, editor:require("./quote"),
 						isDeletable: isIntertextDeletable,onDelete:deletIntertext}
 	,"quote":{validate:vs.dualone,label:"出處", mark:mark.oneway, editor:require("./quote")}
