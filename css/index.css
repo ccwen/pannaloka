@@ -62,7 +62,10 @@ a:visited {color:darkblue;}
 .extdefinition {border-bottom:2px solid lightgreen;}
 .extdefinition2 {border-bottom:2px dotted lightgreen;}
 
-.insight {border-bottom:2px solid orange;}
+.insight {border-bottom:1px solid orange;}
+
+.explaination {border-bottom:2px solid orange;}
+.explaination2 {border-bottom:2px dotted orange;}
 
 .individual {border-bottom:2px solid brown;}
 .individual2 {border-bottom:2px dotted brown;}
