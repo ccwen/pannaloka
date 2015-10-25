@@ -34,7 +34,8 @@ var	getOther = function(markup,opts) {
 	var out=[],markups=this.state.markups;
 	opts=opts||{};
 	if (markup.master) {
-		out.push(markups[markup.master]);
+		var master=markups[markup.master];
+		if (master) out.push(master);
 	} else if (markup.others) {
 		for (var i=0;i<markup.others.length;i++) {
 			var key=markup.others[i];

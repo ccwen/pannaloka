@@ -13,6 +13,19 @@ var	autoGoMarkup = function(m) {
 	}
 }
 
+var sortByDistance=function(cursor,markups,doc) {
+	return markups.sort(function(m1,m2){
+		var p1=m1.markup.handle.find();
+		var p2=m2.markup.handle.find();
+
+		if (p1.line!==p2.line) {
+			return (cursor.line-p1.from.line) - (cursor.line-p2.from.line);
+		} else {
+			return (cursor.ch-p1.from.ch) - (cursor.ch-p2.from.ch);
+		}
+
+	});
+}
 var cursorActivity=function(){
 	clearTimeout(this.timer1);
 	this.hasMarkupUnderCursor=false;
@@ -35,6 +48,7 @@ var cursorActivity=function(){
 					markups.push({markup:markup,key:m.key,doc:doc});
 				}
 			}.bind(this));
+			markups=sortByDistance(this.doc.getCursor(),markups);
 			this.markups=markups;
 			markupaction.markupsUnderCursor(markups);
 			this.hasMarkupUnderCursor=markups.length>0;
