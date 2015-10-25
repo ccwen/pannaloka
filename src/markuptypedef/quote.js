@@ -28,12 +28,12 @@ var QuoteAttributeEditor=React.createClass({
 	}
 	,render:function() {
 		return E("span",null
-			,E("input",{ref:"note",style:styles.input,value:this.state.note,onChange:this.onNoteChange})
 			,<ActionButton deletable={this.props.deletable}
 			   editing={this.props.editing} dirty={this.state.dirty}
 				 onCreateMarkup={this.onCreateMarkup} 
 				 onDeleteMarkup={this.props.onDeleteMarkup}
 				 onUpdateMarkup={this.onUpdateMarkup}/>
+			,E("input",{ref:"note",style:styles.input,value:this.state.note,onChange:this.onNoteChange})
 			);
 	}
 })

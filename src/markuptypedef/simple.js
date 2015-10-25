@@ -23,8 +23,6 @@ var SimpleAttributeEditor=React.createClass({
 	}
 	,render:function() {
 		return E("span",null
-			,"note:"
-			,E("input",{ref:"attr1",style:styles.input,value:this.state.attr1,onChange:this.oAttr1Change})
 			,<ActionButton 
 				 deletable={this.props.deletable}
 			   editing={this.props.editing} 
@@ -33,6 +31,9 @@ var SimpleAttributeEditor=React.createClass({
 				 onCreateMarkup={this.onCreateMarkup} 
 				 onDeleteMarkup={this.props.onDeleteMarkup}
 				 onUpdateMarkup={this.onUpdateMarkup}/>
+			,"note:"
+			,E("input",{ref:"attr1",style:styles.input,value:this.state.attr1,onChange:this.oAttr1Change})
+			
 			);
 	}
 })

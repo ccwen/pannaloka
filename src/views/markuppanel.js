@@ -84,7 +84,7 @@ module.exports = class MarkupPanel extends PureComponent {
 		var ranges=selectionstore.getRanges();
 
 		return (<span><span style={{fontSize:"130%"}}>|</span>
-			 <MarkupNavigator goMarkupByKey={this.goMarkupByKey}/>
+			<MarkupNavigator goMarkupByKey={this.goMarkupByKey}/>
 			<CreateMarkup editing={!this.state.markups.length}/>
 			<MarkupSelector onHyperlinkClick={this.onHyperlinkClick}
 			 getOther={this.state.getOther} 
@@ -93,6 +93,8 @@ module.exports = class MarkupPanel extends PureComponent {
 			 onEditing={this.onEditing}
 			 ranges={ranges}
 			 editing={this.state.editing} deletable={this.state.deletable}/>
+
+			 
 			</span>
 
 		)
