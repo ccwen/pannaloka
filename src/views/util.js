@@ -102,9 +102,9 @@ var	highlightDoc=function (doc,range_markupid,opts) {
 		}
 		highlights=[];
 		for (var i=0;i<ranges.length;i++) {
-			var markup=doc.getEditor().react.getMarkup(range_markupid);
+			var markup=doc.getEditor().react.getMarkup(ranges[i]);
 			if (!markup) {
-				console.error("markup not found",range_markupid);
+				console.error("markup not found",ranges[i]);
 			} else {
 				var pos=markup.handle.find();
 				var from=pos.from, to=pos.to;
