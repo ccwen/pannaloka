@@ -159,7 +159,12 @@ module.exports = class DefaultTextView extends React.Component {
 		return this.writefile(this.props.trait.filename); 
 	}
 
+	markupReady = () => {
+		return !!this.state.markupReady;
+	}
+
 	onMarkupReady = () => {
+		this.setState({markupReady:true});
 		markupmethod.markupReady.call(this,this.state.markups);
 	}
 

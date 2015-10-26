@@ -51,6 +51,10 @@ module.exports = class MarkupPanel extends PureComponent {
 		util.gotoRangeOrMarkupID(file,mid,this.state.wid,opts);
 	}
 
+	onHyperlinkEnter = (file,mid) => {
+		util.gotoRangeOrMarkupID(file,mid,this.state.wid,{noScroll:true});
+	}
+
 	goMarkupByKey = (mid) => {
 		var editing=markupstore.getEditing();
 		if (!editing)return;
@@ -86,7 +90,9 @@ module.exports = class MarkupPanel extends PureComponent {
 		return (<span><span style={{fontSize:"130%"}}>|</span>
 			<MarkupNavigator goMarkupByKey={this.goMarkupByKey}/>
 			<CreateMarkup editing={!this.state.markups.length}/>
-			<MarkupSelector onHyperlinkClick={this.onHyperlinkClick}
+			<MarkupSelector 
+			 onHyperlinkClick={this.onHyperlinkClick}
+			 onHyperlinkEnter={this.onHyperlinkEnter}
 			 getOther={this.state.getOther} 
 			 markups={this.state.markups} onChanged={this.onChanged}
 			 onDelete={this.onDelete}

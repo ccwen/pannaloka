@@ -17,9 +17,11 @@ var	loaded = function() {
 	if (this.props.trait.top) {
 		this.cm.scrollTo(0,this.props.trait.top);
 	}
+	/*
 	if (this.props.trait.scrollTo) {
-		util.scrollAndHighlight(this.doc,this.props.trait.scrollTo);
+		util.highlightDoc(this.doc,this.props.trait.scrollTo);
 	}
+	*/
 }
 var load = function(fn) {
 	cmfileio.readFile(this.props.trait.filename,function(err,data){

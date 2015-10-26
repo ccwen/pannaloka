@@ -91,7 +91,8 @@ module.exports = class MarkupSelector extends React.Component {
 		var others=this.state.M.target;
 		if (!others)return;
 		if (!Array.isArray( others[0]) ) others=[others];
-		return E(RangeHyperlink,{ranges:others,onHyperlinkClick:this.props.onHyperlinkClick});		
+		return E(RangeHyperlink,{ranges:others,onHyperlinkClick:this.props.onHyperlinkClick
+			,onHyperlinkEnter:this.props.onHyperlinkEnter});
 	}
 
 
@@ -99,7 +100,8 @@ module.exports = class MarkupSelector extends React.Component {
 		if (!this.state.M) return;
 		if (!this.props.getOther) return;
 		var others=this.props.getOther(this.state.M,{format:"range"});
-		return E(RangeHyperlink,{ranges:others,onHyperlinkClick:this.props.onHyperlinkClick});
+		return E(RangeHyperlink,{ranges:others,onHyperlinkClick:this.props.onHyperlinkClick
+				,onHyperlinkEnter:this.props.onHyperlinkEnter});
 	}
 
 	componentWillUnmount () {
