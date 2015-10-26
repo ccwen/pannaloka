@@ -58,6 +58,10 @@ var drawLink=function(m1,m2) {
 	//console.log("drawlink",rect1,rect2)
 	overlayaction.connect(rect1,rect2);
 }
+var highlights=[];
+var clearHighlights=function(){
+	highlights.map(function(h){h.clear()});
+}
 var	scrollAndHighlight=function (doc,range_markupid,opts) {
 		if (!range_markupid) return;
 		setTimeout(function(){
@@ -84,15 +88,20 @@ var	scrollAndHighlight=function (doc,range_markupid,opts) {
 			doc.getEditor().focus();
 			var marker = document.createElement('span');
 			if (scrollto.line>0) scrollto.line--;//show one line on top;
+
+			clearHighlights();
+
 			setTimeout(function(){
-				var highlight=doc.markText(from,to,{className:"highlight",clearOnEnter:true});
+				highlights=[];
+				highlights.push(doc.markText(from,to,{className:"highlight",clearOnEnter:true}));
+
 				doc.getEditor().scrollIntoView(from,50);
 				if (by) drawLink(markup,by);
-
+				clearTimeout(this.timer);
 				if (!opts.keep) {
-					setTimeout(function(){
-						highlight.clear();
-					},1500);				
+					this.timer=setTimeout(function(){
+						clearHighlights();
+					},1500);
 				}
 			},100);			
 		}.bind(this),100);

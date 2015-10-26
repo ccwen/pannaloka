@@ -18,7 +18,9 @@ var validate=function(selections) {
 
 	for (var i=0;i<markups.length;i++) {
 		var m=markups[i].markup;
-		if (m.className==="explaination") definition_markup_count++;
+		if (m.className==="explaination") {
+			if (!m.contextKey) definition_markup_count++;
+		}
 		if (contextual.indexOf(m.className)>-1) contextual_markup_count++;
 	}
 	return (definition_markup_count && contextual_markup_count);
