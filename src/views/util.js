@@ -18,6 +18,7 @@ var gotoRangeOrMarkupID=function(file,range_mid,wid,opts) {
 	} else {
 		var target=ktxfilestore.findFile(file);
 		if (target) {
+			target.scrollTo=range_mid;
 			stackwidgetaction.openWidget(target,"TextWidget",{below:wid});	
 		}
 	}
@@ -76,6 +77,7 @@ var makeHighlights=function(doc,highlights,opts){
 		for (var i=0;i<highlights.length;i++) {
 			var from=highlights[i][0],to=highlights[i][1];
 			highlights_handles.push(doc.markText(from,to,{className:"highlight",clearOnEnter:true}));
+			////var by=getLinkedBy(markup);
 			//if (by) drawLink(markup,by);
 		}
 
@@ -92,23 +94,30 @@ var	highlightDoc=function (doc,range_markupid,opts) {
 	if (!range_markupid) return;
 	opts=opts||{};
 	var hl=range_markupid,highlights=[];
-	if (typeof range_markupid==="string") {
-		var markup=doc.getEditor().react.getMarkup(range_markupid);
-		if (!markup) {
-			console.error("markup not found",range_markupid);
-			return;
+	//one or more key
+	if (typeof range_markupid==="string" || typeof range_markupid[0]==="string") {
+		var ranges=range_markupid;
+		if (typeof range_markupid==="string") {
+			ranges=[range_markupid];
 		}
-		var by=getLinkedBy(markup);
-
-		var pos=markup.handle.find();
-		var from=pos.from, to=pos.to;
-		if (opts.moveCursor) doc.setCursor(from);
-		highlights=[[from,to]];
-	} else {
+		highlights=[];
+		for (var i=0;i<ranges.length;i++) {
+			var markup=doc.getEditor().react.getMarkup(range_markupid);
+			if (!markup) {
+				console.error("markup not found",range_markupid);
+			} else {
+				var pos=markup.handle.find();
+				var from=pos.from, to=pos.to;
+				if (opts.moveCursor && i===0) doc.setCursor(from);
+				highlights.push([from,to]);
+			}
+		}
+	} else { //array format
 		var newhl=milestones.unpack.call(doc,hl);
 		var from={line:newhl[0][1],ch:newhl[0][0]},to={line:newhl[1][1],ch:newhl[1][0]};
-		if (opts.moveCursor) doc.setCursor(from);
 		highlights=[[from,to]];
+
+		if (opts.moveCursor) doc.setCursor(from);
 	}
 	doc.getEditor().focus();
 	var marker = document.createElement('span');
