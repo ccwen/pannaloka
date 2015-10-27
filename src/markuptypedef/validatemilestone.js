@@ -2,7 +2,7 @@ var filterEmptyRange=require("./util").filterEmptyRange;
 var selectionstore=require("../stores/selection");
 var docfilestore=require("../stores/docfile");
 var milestones=require("ksana-codemirror").milestones;
-var milestone=function(selections) {
+var validate=function(selections) {
 	var sels=filterEmptyRange(selections);
 	var keys=Object.keys(sels);
 	if (keys.length!==1) return null;
@@ -41,4 +41,4 @@ var validTextRange=function(text,range) {
 	return null;
 }
 
-module.exports={milestone:milestone,validTextRange:validTextRange};
+module.exports={validate:validate,validTextRange:validTextRange};

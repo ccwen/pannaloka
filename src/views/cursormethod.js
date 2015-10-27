@@ -9,7 +9,7 @@ var	autoGoMarkup = function(m) {
 	var others=m.source||m.by||m.target;
 	if (!others)return;
 	if (typeof others[0]==="string"){
-		util.gotoRangeOrMarkupID(others[0],others[1],this.props.wid);
+		util.gotoRangeOrMarkupID(others[0],others[1],{below:this.props.wid});
 	}
 }
 
@@ -40,14 +40,7 @@ var cursorActivity=function(){
 			this.hasMarkupUnderCursor=false;
 			//has range
 		} else {
-			var marks=this.doc.findMarksAt(this.doc.getCursor());
-			var markups=[], doc=this.doc;
-			marks.forEach(function(m){
-				if (m.type!=="bookmark" && !m.clearOnEnter) {
-					var markup=this.state.markups[m.key];
-					markups.push({markup:markup,key:m.key,doc:doc});
-				}
-			}.bind(this));
+			var markups=util.getMarkupsInRange(this.doc,this.doc.getCursor());
 			markups=sortByDistance(this.doc.getCursor(),markups);
 			this.markups=markups;
 			markupaction.markupsUnderCursor(markups);

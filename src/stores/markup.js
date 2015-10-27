@@ -37,6 +37,12 @@ var markupStore=Reflux.createStore({
 		if (!this.editing) return;
 		this.editing.doc=null;//to notify markupselector shouldComponentUpdate
 	}
+	,onEditMarkup:function(markup) {
+		this.cancelEdit();
+		this.editing=markup;
+		this.ctrl_m_handler=null;
+		this.trigger([{doc:markup.handle.doc,key:markup.key,markup:markup}],{cursor:true});
+	}
 	,setEditing:function(markup,handler) {
 		this.cancelEdit();
 		this.editing=markup;

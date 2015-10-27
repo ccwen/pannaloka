@@ -3,15 +3,24 @@ var stackwidgetaction=require("../actions/stackwidget");
 var overlayaction=require("../actions/overlay");
 var milestones=require("ksana-codemirror").milestones;
 var ktxfilestore=require("../stores/ktxfile");
-var gotoRangeOrMarkupID=function(file,range_mid,wid,opts) {
+var gotoRangeOrMarkupID=function(file,range_mid,opts) {
+	opts=opts||{};
 	var targetdoc=docfilestore.docOf(file);
 	if (targetdoc) {
-		scrollAndHighlight(targetdoc,range_mid,opts);
+		if (!targetdoc.getEditor().react.markupReady()) {
+		//wait for this.state.markups ready, because markups is load later
+		//see ksana-codemirror/src/codemirror-react.js componentDidMount			
+			setTimeout(function(){
+				highlightDoc(targetdoc,range_mid,opts);
+			}.bind(this),500);//wait for markups to load
+		} else {
+			highlightDoc(targetdoc,range_mid,opts);
+		}
 	} else {
 		var target=ktxfilestore.findFile(file);
 		if (target) {
 			target.scrollTo=range_mid;
-			stackwidgetaction.openWidget(target,"TextWidget",{below:wid});	
+			stackwidgetaction.openWidget(target,"TextWidget",{below:opts.below});	
 		}
 	}
 }
@@ -25,6 +34,23 @@ var getLinkedBy=function(m){
 		var markup=doc.getEditor().react.getMarkup(mid);
 		return markup;
 	}
+}
+
+var getMarkupsInRange=function(doc,from,to) {
+	if (!to) {
+		var marks=doc.findMarksAt(from);
+	} else {
+		var marks=doc.findMarks(from,to);
+	}
+		
+	var markups=[],getMarkup=doc.getEditor().react.getMarkup;
+	marks.forEach(function(m){
+		if (m.type!=="bookmark" && !m.clearOnEnter) {
+			var markup=getMarkup(m.key);
+			markups.push({markup:markup,key:m.key,doc:doc});
+		}
+	});
+	return markups;
 }
 
 var getMarkupRect=function(m){
@@ -41,47 +67,69 @@ var drawLink=function(m1,m2) {
 	//console.log("drawlink",rect1,rect2)
 	overlayaction.connect(rect1,rect2);
 }
-var	scrollAndHighlight=function (doc,range_markupid,opts) {
-		if (!range_markupid) return;
-		setTimeout(function(){
-			opts=opts||{};
-			var hl=range_markupid;
-			if (typeof range_markupid==="string") {
-				var markup=doc.getEditor().react.getMarkup(range_markupid);
-				if (!markup) {
-					console.error("markup not found",range_markupid);
-					return;
-				}
-				var by=getLinkedBy(markup);
+var highlights_handles=[];
+var clearHighlights=function(){
+	highlights_handles.map(function(h){h.clear()});
+	highlights_handles=[];
+}
+var makeHighlights=function(doc,highlights,opts){
+	clearHighlights();
+	setTimeout(function(){
+		for (var i=0;i<highlights.length;i++) {
+			var from=highlights[i][0],to=highlights[i][1];
+			highlights_handles.push(doc.markText(from,to,{className:"highlight",clearOnEnter:true}));
+			////var by=getLinkedBy(markup);
+			//if (by) drawLink(markup,by);
+		}
 
+		clearTimeout(this.timer);
+		if (!opts.keep) {
+			this.timer=setTimeout(function(){
+				clearHighlights();
+			},1500);
+		}			
+
+	},100);	
+}
+var	highlightDoc=function (doc,range_markupid,opts) {
+	if (!range_markupid) return;
+	opts=opts||{};
+	var hl=range_markupid,highlights=[];
+	//one or more key
+	if (typeof range_markupid==="string" || typeof range_markupid[0]==="string") {
+		var ranges=range_markupid;
+		if (typeof range_markupid==="string") {
+			ranges=[range_markupid];
+		}
+		highlights=[];
+		for (var i=0;i<ranges.length;i++) {
+			var markup=doc.getEditor().react.getMarkup(ranges[i]);
+			if (!markup) {
+				console.error("markup not found",ranges[i]);
+			} else {
 				var pos=markup.handle.find();
 				var from=pos.from, to=pos.to;
-				var scrollto={line:from.line,ch:from.ch};
-				if (opts.moveCursor) doc.setCursor(from);
-			} else {//array format
-				var newhl=milestones.unpack.call(doc,hl);
-				var from={line:newhl[0][1],ch:newhl[0][0]},to={line:newhl[1][1],ch:newhl[1][0]};
-				var scrollto={line:newhl[0][1],ch:newhl[0][0]};
-				if (opts.moveCursor) doc.setCursor(from);
+				if (opts.moveCursor && i===0) doc.setCursor(from);
+				highlights.push([from,to]);
 			}
-			doc.getEditor().focus();
-			var marker = document.createElement('span');
-			if (scrollto.line>0) scrollto.line--;//show one line on top;
-			setTimeout(function(){
-				var highlight=doc.markText(from,to,{className:"highlight",clearOnEnter:true});
-				doc.getEditor().scrollIntoView(from,50);
-				if (by) drawLink(markup,by);
+		}
+	} else { //array format
+		var newhl=milestones.unpack.call(doc,hl);
+		var from={line:newhl[0][1],ch:newhl[0][0]},to={line:newhl[1][1],ch:newhl[1][0]};
+		highlights=[[from,to]];
 
-				if (!opts.keep) {
-					setTimeout(function(){
-						highlight.clear();
-					},1500);				
-				}
-			},100);			
-		}.bind(this),100);
-		//wait for this.state.markups ready, because markups is load later
-		//see ksana-codemirror/src/codemirror-react.js componentDidMount
+		if (opts.moveCursor) doc.setCursor(from);
 	}
+	doc.getEditor().focus();
+	var marker = document.createElement('span');
+
+	clearHighlights();
+	if (highlights.length && !opts.noScroll) {
+		doc.getEditor().scrollIntoView(highlights[0][0],50);
+	}
+
+	makeHighlights.call(this,doc,highlights,opts);
+}
 
 var getMarkupText=function(doc,m) {
 	var pos=m.find();
@@ -101,5 +149,7 @@ var posInRange=function(pos,range) { //check if a pos in range, cm format
 	}
 	return false;
 }
-module.exports={gotoRangeOrMarkupID:gotoRangeOrMarkupID,scrollAndHighlight:scrollAndHighlight
-,getMarkupText:getMarkupText,posInRange:posInRange};
+
+
+module.exports={gotoRangeOrMarkupID:gotoRangeOrMarkupID,highlightDoc:highlightDoc
+,getMarkupText:getMarkupText,posInRange:posInRange,getMarkupsInRange:getMarkupsInRange};

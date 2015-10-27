@@ -1,1 +1,2 @@
-module.exports=require("reflux").createActions(["setHotkey","markupsUnderCursor","createMarkup","toggleMarkup"]);
+module.exports=require("reflux").createActions(["setHotkey","markupsUnderCursor",
+	"createMarkup","toggleMarkup","editMarkup"]);
