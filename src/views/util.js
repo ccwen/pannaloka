@@ -5,7 +5,10 @@ var milestones=require("ksana-codemirror").milestones;
 var ktxfilestore=require("../stores/ktxfile");
 var gotoRangeOrMarkupID=function(file,range_mid,opts) {
 	opts=opts||{};
+	if (opts.below && !opts.autoOpen) opts.autoOpen=true;
+	
 	var targetdoc=docfilestore.docOf(file);
+	
 	if (targetdoc) {
 		if (!targetdoc.getEditor().react.markupReady()) {
 		//wait for this.state.markups ready, because markups is load later
@@ -17,6 +20,7 @@ var gotoRangeOrMarkupID=function(file,range_mid,opts) {
 			highlightDoc(targetdoc,range_mid,opts);
 		}
 	} else {
+		if (!opts.autoOpen) return;
 		var target=ktxfilestore.findFile(file);
 		if (target) {
 			target.scrollTo=range_mid;

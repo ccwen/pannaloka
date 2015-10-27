@@ -18,7 +18,7 @@ module.exports = class ListMarkup extends React.Component {
 	}
 
 	onHyperlinkClick = (file,key_range) => {
-		util.gotoRangeOrMarkupID(file,key_range,{moveCursor:true});
+		util.gotoRangeOrMarkupID(file,key_range,{moveCursor:true,autoOpen:true});
 	}
 
 	findMarkup = () => {

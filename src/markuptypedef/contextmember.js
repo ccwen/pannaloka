@@ -14,8 +14,8 @@ var ContextMember=React.createClass({
 		,"onSideButtonClick":PT.func
 		,"filename":PT.string.isRequired
 	}
-	,onHyperlinkClick:function(file,mid,opts) {
-		util.gotoRangeOrMarkupID(file,mid,opts);
+	,onHyperlinkClick:function(file,mid) {
+		util.gotoRangeOrMarkupID(file,mid,{autoOpen:true});
 	}
 	,onHyperlinkEnter:function(file,mid) {
 		var doc=docfilestore.docOf(file);

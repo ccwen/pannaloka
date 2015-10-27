@@ -56,7 +56,7 @@ module.exports = class OutlinePanel extends PureComponent {
 	}
 
 	onHyperlinkClick = (file,range) => {
-		util.gotoRangeOrMarkupID(file,range,{moveCursor:true});
+		util.gotoRangeOrMarkupID(file,range,{moveCursor:true,autoOpen:true});
 	}
 	onNode = (node,selected,n,editingcaption) => {
 		if (n==editingcaption) {
