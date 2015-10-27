@@ -95,9 +95,7 @@ module.exports = class CreateMarkup extends PureComponent {
 	}
 	msg () {
 		var s="選取文字，按Ctrl選多段";
-		if (markupstore.getEditing()) {
-			s="Ctrl+Q 嵌用此標記→";
-		}
+		if (markupstore.getEditing()) s="";//Ctrl+L 嵌用此標記→";
 		return s;
 	}
 

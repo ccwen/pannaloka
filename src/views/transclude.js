@@ -56,7 +56,7 @@ var transclude_onclick=function(e) {
 	var m=this.getMarkup(key);
 	var highlight= m.target[1];
 	this.doc.setCursor(m.handle.find());
-	util.gotoRangeOrMarkupID(m.target[0],m.target[1],this.props.wid,{moveCursor:true});
+	util.gotoRangeOrMarkupID(m.target[0],m.target[1],{below:this.props.wid,moveCursor:true});
 }	
 
 

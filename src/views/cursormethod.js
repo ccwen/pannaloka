@@ -9,7 +9,7 @@ var	autoGoMarkup = function(m) {
 	var others=m.source||m.by||m.target;
 	if (!others)return;
 	if (typeof others[0]==="string"){
-		util.gotoRangeOrMarkupID(others[0],others[1],this.props.wid);
+		util.gotoRangeOrMarkupID(others[0],others[1],{below:this.props.wid});
 	}
 }
 

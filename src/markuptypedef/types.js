@@ -31,7 +31,7 @@ var deletIntertext=function(markup) {
 }
 var types={
 	"context":{validate:vscontext.validate,label:"情境",editor:require("./context"),mark:vscontext.mark}
-	,"definition":{validate:vs.singletwomore,label:"釋義",mark:mark.singletwo,editor:require("./simple")}
+	,"definition":{validate:vs.singletwomore,label:"釋義",mark:mark.singletwo,editor:require("./definition")}
 	,"important":{validate:vs.singleone,label:"重點",
 							editor:require("./simple"), mark:mark.singleone}
 	,"insight":{validate:vs.singleone,label:"創見",mark:mark.singleone,editor:require("./simple")}

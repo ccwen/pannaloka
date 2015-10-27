@@ -23,13 +23,22 @@ var getMemberMarkup=function(selections) {
 	for (var i=0;i<markups.length;i++) {
 		var m=markups[i].markup;
 		if (isDefinition(m)) {
-			if (!m.contextKey && !definition) definition=m;
+			if ((!m.handle.member || !m.handle.member.length) && !definition) definition=m;
 		}
 		if (contextual.indexOf(m.className)>-1) {
 			member.push(m);
 		}
 	}	
 	if (definition) member.unshift(definition); //only one definition and on top
+	return member;
+}
+var getMember=function(markup) {
+	if (!markup.handle.member) return [];
+	var filename=docfilestore.fileOf(markup.handle.doc);
+	var getMarkup=markup.handle.doc.getEditor().react.getMarkup;
+	var member=markup.handle.member.map(function(key){
+		return getMarkup(key);
+	});
 	return member;
 }
 var validate=function(selections) {
@@ -41,4 +50,5 @@ var validate=function(selections) {
 var mark=function(m,docOf, cb) {
 	console.log('marking context',m);
 }
-module.exports={validate:validate,getMemberMarkup:getMemberMarkup,mark:mark};
+module.exports={validate:validate,getMemberMarkup:getMemberMarkup,getMember:getMember,mark:mark
+,isDefinition:isDefinition};

@@ -13,33 +13,34 @@ module.exports = class ListMarkup extends React.Component {
 		this.unsubscribe = selectionstore.listen(this.onSelection);
 	}
 	componentWillUnmount(){
+		clearTimeout(this.timer);
 		this.unsubscribe();
 	}
 
 	onHyperlinkClick = (file,key_range) => {
-		util.gotoRangeOrMarkupID(file,key_range,null,{moveCursor:true});
+		util.gotoRangeOrMarkupID(file,key_range,{moveCursor:true});
 	}
 
 	findMarkup = () => {
-			var ranges=selectionstore.getRanges({textLength:20});
-			if (!ranges || ranges.length!==1)return ;
+		var ranges=selectionstore.getRanges({textLength:20});
+		if (!ranges || ranges.length!==1)return ;
 
-			var rangetext=ranges[0][2],links=[];
-			var markups=findmarkup.byMasterText(rangetext,this.props.markups);
-			if (markups && markups.length) {
-				links=markups.map(function(key){
-					var clsname=this.props.markups[key].className;
-					var typelabel="~"+types[clsname].label;
-					return [this.props.filename, key, typelabel ];
-				}.bind(this));				
-			}
+		var rangetext=ranges[0][2],links=[];
+		var markups=findmarkup.byMasterText(rangetext,this.props.markups);
+		if (markups && markups.length) {
+			links=markups.map(function(key){
+				var clsname=this.props.markups[key].className;
+				var typelabel="~"+types[clsname].label;
+				return [this.props.filename, key, typelabel ];
+			}.bind(this));				
+		}
 
-			if (this.props.filename==ranges[0][0]) {
-				links.unshift([this.props.filename, ranges[0][1], rangetext,"跳回選取區" ]);//for link back to selection
-			} else {
-				links.unshift([this.props.filename, null, rangetext,markups.length?"":"無搜尋結果" ]);//not clickable , label only
-			}
-			this.setState({links});
+		if (this.props.filename==ranges[0][0]) {
+			links.unshift([this.props.filename, ranges[0][1], rangetext,"跳回選取區" ]);//for link back to selection
+		} else {
+			links.unshift([this.props.filename, null, rangetext,markups.length?"":"無搜尋結果" ]);//not clickable , label only
+		}
+		this.setState({links});
 	}	
 
 	onSelection = (fileselections) => {

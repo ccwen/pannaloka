@@ -48,11 +48,11 @@ module.exports = class MarkupPanel extends PureComponent {
 	}
 
 	onHyperlinkClick = (file,mid,opts) => {
-		util.gotoRangeOrMarkupID(file,mid,this.state.wid,opts);
+		util.gotoRangeOrMarkupID(file,mid,{...opts,below:this.state.wid});
 	}
 
 	onHyperlinkEnter = (file,mid) => {
-		util.gotoRangeOrMarkupID(file,mid,this.state.wid,{noScroll:true});
+		util.gotoRangeOrMarkupID(file,mid,{below:this.state.wid,noScroll:true});
 	}
 
 	goMarkupByKey = (mid) => {

@@ -3,7 +3,8 @@ var stackwidgetaction=require("../actions/stackwidget");
 var overlayaction=require("../actions/overlay");
 var milestones=require("ksana-codemirror").milestones;
 var ktxfilestore=require("../stores/ktxfile");
-var gotoRangeOrMarkupID=function(file,range_mid,wid,opts) {
+var gotoRangeOrMarkupID=function(file,range_mid,opts) {
+	opts=opts||{};
 	var targetdoc=docfilestore.docOf(file);
 	if (targetdoc) {
 		if (!targetdoc.getEditor().react.markupReady()) {
@@ -19,7 +20,7 @@ var gotoRangeOrMarkupID=function(file,range_mid,wid,opts) {
 		var target=ktxfilestore.findFile(file);
 		if (target) {
 			target.scrollTo=range_mid;
-			stackwidgetaction.openWidget(target,"TextWidget",{below:wid});	
+			stackwidgetaction.openWidget(target,"TextWidget",{below:opts.below});	
 		}
 	}
 }
