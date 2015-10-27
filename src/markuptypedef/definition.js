@@ -19,6 +19,7 @@ var DefinitionAttributeEditor=React.createClass({
 	}
 	,getFilename:function(markup) {
 		markup=markup||this.props.markup;
+		if (!markup || !markup.handle) return;
 		return docfilestore.fileOf(markup.handle.doc);
 	}
 	,componentWillReceiveProps:function(nextprops) {
@@ -29,6 +30,7 @@ var DefinitionAttributeEditor=React.createClass({
 		this.setState({attr1:e.target.value,dirty:true});
 	}
 	,renderMember:function(){
+		if (!this.props.markup)return;
 		var member=getMember(this.props.markup);
 		if (member.length) {
 			return <span>
