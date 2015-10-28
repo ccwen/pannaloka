@@ -11,7 +11,7 @@ button {cursor:pointer;}
 
 .closebutton { cursor:pointer}
 .closebutton:hover {background:#AF4040;color:white}
-.rangehyperlink:hover {text-decoration: underline}
+
 
 .mymark {background:yellow;}
 .important {color:red;}

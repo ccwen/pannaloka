@@ -4,11 +4,7 @@ var ActionButton=require("./actionbutton");
 var ContextMember=require("./contextmember");
 var getMemberMarkup=require("./validatecontext").getMemberMarkup;
 var markupaction=require("../actions/markup");
-var SideButton=React.createClass({
-	render:function(){
-		return <button onClick={this.props.onClick}>×</button>	
-	}
-});
+
 var ContextAttributeEditor=React.createClass({
 	getInitialState:function() {
 		var attr1=(this.props.markup&&this.props.markup.trait)?this.props.markup.trait.attr1:"";
@@ -44,7 +40,7 @@ var ContextAttributeEditor=React.createClass({
 			   dirty={this.state.dirty}
 				 onCreateMarkup={this.onCreateMarkup}/>
 			,<ContextMember member={this.state.member}
-				filename={this.state.filename} sideButton={SideButton}
+				filename={this.state.filename} removable={true}
 				setMember={this.setMember}/>
 			);
 	}

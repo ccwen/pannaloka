@@ -34,22 +34,24 @@ module.exports = class RangeHyperlink extends PureComponent {
 		this.props.onHyperlinkEnter && this.props.onHyperlinkEnter(item[0],item[1]);
 	}
 
-	renderSideButton = (idx) => {
-		return this.props.renderSideButton&& this.props.renderSideButton(idx,this.hovering);
+
+	renderItem = (item,idx) => {
+		var rendered=(this.props.renderItem)?this.props.renderItem(item,idx,this.hovering):null;
+		if (!rendered) {
+			var text=item[2];
+			if (text.length>8) text=item[2].substring(0,7)+"…";			
+			rendered=<span key={idx}> | <span className="rangehyperlink" style={styles.hyperlink} data-idx={idx} 
+				title={item[3]||item[0]} onMouseEnter={this.onMouseEnter}
+				onClick={this.onClick}><span>{text}</span></span>
+				</span>
+		}
+		return rendered;
 	}
 
 	/* range format : file, mid_range , text */
 	renderRange = (item,idx) => {
 		if (item[1]) {
-			var text=item[2];
-			if (text.length>8) text=item[2].substring(0,7)+"…";
-			return <span key={idx} > | 
-			  <span className="rangehyperlink" style={styles.hyperlink} data-idx={idx} 
-				title={item[3]||item[0]} onMouseEnter={this.onMouseEnter}
-				onClick={this.onClick}><span>{text}</span>
-				{this.renderSideButton(idx)}</span>
-
-				</span>
+			return this.renderItem(item,idx);
 		} else {
 			return <span key={idx}> | <span style={styles.label} title={item[3]||item[0]}>{item[2].substring(0,10)}</span></span>
 		}

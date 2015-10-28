@@ -5,13 +5,6 @@ var markupstore=require("../stores/markup");
 var selectionstore=require("../stores/selection");
 var markupaction=require("../actions/markup");
 var util=require("./util");
-var	autoGoMarkup = function(m) {
-	var others=m.source||m.by||m.target;
-	if (!others)return;
-	if (typeof others[0]==="string"){
-		util.gotoRangeOrMarkupID(others[0],others[1],{below:this.props.wid});
-	}
-}
 
 var sortByDistance=function(cursor,markups,doc) {
 	return markups.filter(function(m){
@@ -73,8 +66,8 @@ var mouseMove=function(cm,e) {//event captured by React, not Codemirror
 
 var mouseDown=function(cm,e){
 	var m=markupstore.getHovering();
-	if (m) autoGoMarkup.call(this,m);
+	if (m) util.autoGoMarkup.call(this,m);
 }
 
-module.exports={cursorActivity:cursorActivity, autoGoMarkup:autoGoMarkup, mouseDown:mouseDown
+module.exports={cursorActivity:cursorActivity, mouseDown:mouseDown
 ,mouseMove:mouseMove};

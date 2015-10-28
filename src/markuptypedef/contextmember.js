@@ -5,7 +5,8 @@ var util=require("../views/util");
 var docfilestore=require("../stores/docfile");
 var RangeHyperlink=require("../components/rangehyperlink");
 var isDefinition=require("./validatecontext").isDefinition;
-
+var styles={deletehyperlink:{cursor:"pointer",color:"yellow",background:"red",fontSize:"75%"
+,borderRadius:"5px",cursor:"no-drop"},label:{fontSize:"75%"}};
 var ContextMember=React.createClass({
 	propTypes:{
 		"member":PT.array.isRequired
@@ -15,33 +16,37 @@ var ContextMember=React.createClass({
 		,"filename":PT.string.isRequired
 	}
 	,onHyperlinkClick:function(file,mid) {
-		util.gotoRangeOrMarkupID(file,mid,{autoOpen:true});
+		var doc=docfilestore.docOf(file);
+		if (doc) { //already in view , open the target
+			var m=doc.getEditor().react.getMarkup(mid);
+			util.autoGoMarkup(m);
+		} else {
+			util.gotoRangeOrMarkupID(file,mid,{autoOpen:true});	
+		}
 	}
 	,onHyperlinkEnter:function(file,mid) {
 		var doc=docfilestore.docOf(file);
 		var m=doc.getEditor().react.getMarkup(mid);
 		util.highlightRelatedMarkup(m);
 	}
-	,onSideButtonClick:function(e) {
+	,onDeleteClick:function(e) {
 		var idx=parseInt(e.target.parentElement.dataset.idx);
 		if (!idx)return;
 		var member=this.props.member.filter(function(m,i){
 			return i!==idx;
 		});
 		this.props.setMember(member);
-		//this.setState({member:member});
 	}
-	,renderSideButton:function(idx,lastidx) {
-		if (this.props.member.length<3 || !this.props.sideButton)return;
-		if (idx && lastidx===idx) {
-			return E(this.props.sideButton,{idx:idx,onClick:this.onSideButtonClick});
-		}
-	}	
+	,renderItem:function(item,idx,hovering) {
+		if (!idx || idx!==hovering || !this.props.removable) return false; //hand over to default
+		return <span key={idx} data-idx={idx}> | <span title="從情境移除" 
+			className="rangehyperlink" style={styles.deletehyperlink} 
+			onClick={this.onDeleteClick}>{item[2]}</span></span>
+	}
 	,getMasterTerm:function(filename) {
 		var doc=docfilestore.docOf(filename);
 		return util.getMarkupText(doc,this.props.member[0].handle);
 	}
-
 	,render:function() {
 		var getTypeLabel=require("./types").getTypeLabel; //not available when this file is loaded
 		var ranges=this.props.member.map(function(m,idx){
@@ -52,7 +57,7 @@ var ContextMember=React.createClass({
 				,firstDef?"從情境移除":"設定情境"];
 		}.bind(this));
 
-		return <RangeHyperlink renderSideButton={this.renderSideButton} ranges={ranges}
+		return <RangeHyperlink ranges={ranges} renderItem={this.renderItem}
 			onHyperlinkClick={this.onHyperlinkClick}
 			onHyperlinkEnter={this.onHyperlinkEnter}/>
 	}	

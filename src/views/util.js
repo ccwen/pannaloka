@@ -186,7 +186,15 @@ var highlightRelatedMarkup=function(m) { //highlight markup and all related
 		if (doc) highlightDoc.call(this,doc,hilights[file],{noScroll:true,noClear:true});
 	}
 }
+var	autoGoMarkup = function(m) {
+	var others=m.source||m.by||m.target;
+	if (!others)return;
+	if (typeof others[0]==="string"){
+		var wid=m.handle.doc.getEditor().react.getWid();
+		gotoRangeOrMarkupID(others[0],others[1],{below:wid});
+	}
+}
 
 module.exports={gotoRangeOrMarkupID:gotoRangeOrMarkupID,highlightDoc:highlightDoc
 ,getMarkupText:getMarkupText,posInRange:posInRange,getMarkupsInRange:getMarkupsInRange
-,highlightRelatedMarkup:highlightRelatedMarkup};
+,highlightRelatedMarkup:highlightRelatedMarkup,autoGoMarkup:autoGoMarkup};
