@@ -3,7 +3,7 @@ var stackwidgetaction=require("../actions/stackwidget");
 var overlayaction=require("../actions/overlay");
 var milestones=require("ksana-codemirror").milestones;
 var ktxfilestore=require("../stores/ktxfile");
-
+var markupstore=require("../stores/markup");
 var gotoRangeOrMarkupID=function(file,range_mid,opts) {
 	opts=opts||{};
 	if (opts.below && !opts.autoOpen) opts.autoOpen=true;
@@ -86,10 +86,11 @@ var makeHighlights=function(doc,highlights,opts){
 		//if (by) drawLink(markup,by);
 	}
 
-	clearTimeout(this.timerMarker);
+	clearInterval(this.timerMarker);
 	if (!opts.keep) {
-		this.timerMarker=setTimeout(function(){
-			clearHighlights();
+		this.timerMarker=setInterval(function(){
+			
+			if (!markupstore.getHovering()) clearHighlights();
 		}.bind(this),1500);
 	}
 }
