@@ -25,7 +25,7 @@ a:visited {color:darkblue;}
 .intertext2   {border-bottom:2px dotted gray;}
 
 
-.quote   {border-bottom:2px dotted gray;}
+.quote   {font-family:DFKai-SB;}
 .transclusion {color:brown;cursor:pointer;font-family:DFKai-SB}
 
 .causeeffect {border-bottom:2px solid orange;}

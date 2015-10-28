@@ -116,10 +116,16 @@ var	highlightDoc=function (doc,range_markupid,opts) {
 			}
 		}
 	} else { //array format
-		var newhl=milestones.unpack.call(doc,hl);
-		var from={line:newhl[0][1],ch:newhl[0][0]},to={line:newhl[1][1],ch:newhl[1][0]};
+		if (hl[0][0] instanceof Array) {
+			//for quote , single range
+			var newhl=milestones.unpack.call(doc,hl[0]);
+			var from={line:newhl[0][1],ch:newhl[0][0]},to={line:newhl[1][1],ch:newhl[1][0]};
+		} else {
+			var newhl=milestones.unpack.call(doc,hl);	
+			var from={line:newhl[0][1],ch:newhl[0][0]},to={line:newhl[1][1],ch:newhl[1][0]};
+		}
+		
 		highlights=[[from,to]];
-
 		if (opts.moveCursor) doc.setCursor(from);
 	}
 	doc.getEditor().focus();
