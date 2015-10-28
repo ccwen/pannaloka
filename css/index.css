@@ -2,10 +2,10 @@ body {margin:0px;height:100%;overflow-y:hidden;overflow-x:hidden}
 button {cursor:pointer;}
 .darktheme {background:gray;}
 
-.CodeMirror { line-height: 1.6;}
+.CodeMirror { line-height: 1.6em;font-size:125%;}
 .cm-s-ambiance.CodeMirror { line-height: 1.6em;}
 .CodeMirror-cursor {border-left: 3px solid black;}
-.cm-s-ambiance .CodeMirror-cursor { border-left: 3px solid #7991E8; }
+.cm-s-ambiance.CodeMirror-cursor { border-left: 3px solid #7991E8; }
 
 .highlight {background:#6699FF;cursor:pointer;}
 
@@ -15,7 +15,9 @@ button {cursor:pointer;}
 .closebutton:hover {background:#AF4040;color:white}
 
 
-.mymark {background:yellow;}
+.definition ,.extdefinition {font-family: "Microsoft JhengHei";font-weight: bold;font-size:80%;}
+.definition2,.extdefinition2 {font-family: "Microsoft JhengHei";font-size:80%;}
+
 .important {color:red;}
 .milestone {border-radius:10px;background :lightblue ;color:black;padding-top:8px;padding-bottom:8px;}
 a:visited {color:darkblue;}
@@ -58,8 +60,7 @@ a:visited {color:darkblue;}
 .synonym {border-bottom:2px solid blue;}
 .synonym2 {border-bottom:2px dotted blue;}
 
-.definition ,.extdefinition {font-family: "Microsoft JhengHei";font-weight: bold}
-.definition2,.extdefinition2 {font-family: "Microsoft JhengHei";}
+
 
  
 .insight {border-bottom:1px solid lightgreen;}
