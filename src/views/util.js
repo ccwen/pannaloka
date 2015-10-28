@@ -50,7 +50,7 @@ var getMarkupsInRange=function(doc,from,to) {
 		
 	var markups=[],getMarkup=doc.getEditor().react.getMarkup;
 	marks.forEach(function(m){
-		if (m.type!=="bookmark" && !m.clearOnEnter) {
+		if (m.type!=="bookmark" && m.className.substring(0,13)!=="editingMarker" && !m.clearOnEnter) {
 			var markup=getMarkup(m.key);
 			markups.push({markup:markup,key:m.key,doc:doc});
 		}

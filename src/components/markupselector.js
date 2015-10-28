@@ -27,7 +27,7 @@ module.exports = class MarkupSelector extends React.Component {
 	setMarker (doc,textmarker,clsname) {
 		clsname=clsname||"editingMarker";
 		var pos=textmarker.find();
-		this.editingMarker.push(doc.markText(pos.from,pos.to,{className:clsname,clearOnEnter:true}));
+		this.editingMarker.push(doc.markText(pos.from,pos.to,{className:clsname}));
 	}	
 
 	getEditor (markups,idx) {

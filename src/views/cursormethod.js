@@ -14,7 +14,9 @@ var	autoGoMarkup = function(m) {
 }
 
 var sortByDistance=function(cursor,markups,doc) {
-	return markups.sort(function(m1,m2){
+	return markups.filter(function(m){
+		return m.markup;
+	}).sort(function(m1,m2){
 		var p1=m1.markup.handle.find();
 		var p2=m2.markup.handle.find();
 
@@ -23,7 +25,6 @@ var sortByDistance=function(cursor,markups,doc) {
 		} else {
 			return (cursor.ch-p1.from.ch) - (cursor.ch-p2.from.ch);
 		}
-
 	});
 }
 var showcursorcoords=function() {
@@ -60,7 +61,10 @@ var mouseMove=function(cm,e) {//event captured by React, not Codemirror
 	var pos=cm.coordsChar({left:e.clientX,top:e.clientY});
 	var markups=util.getMarkupsInRange(this.doc,pos);
 	markups=sortByDistance(this.doc.getCursor(),markups);
-	if (!markups.length)return;
+	if (!markups.length){
+		markupaction.hovering(null);
+		return;
+	}
 
 	var m=markups[0].markup;//only highlight first one
 	markupaction.hovering(m);
