@@ -78,7 +78,7 @@ var clearHighlights=function(){
 	highlights_handles=[];
 }
 var makeHighlights=function(doc,highlights,opts){
-	clearHighlights();
+	if (!opts.noClear) clearHighlights();
 	for (var i=0;i<highlights.length;i++) {
 		var from=highlights[i][0],to=highlights[i][1];
 		highlights_handles.push(doc.markText(from,to,{className:"highlight",clearOnEnter:true}));
@@ -178,10 +178,10 @@ var highlightRelatedMarkup=function(m) { //highlight markup and all related
 			hilights[t[0]].push(t[1]);
 		});		
 	}
-
+	clearHighlights();
 	for (var file in hilights) {
 		var doc=docfilestore.docOf(file);
-		if (doc) highlightDoc.call(this,doc,hilights[file],{noScroll:true});
+		if (doc) highlightDoc.call(this,doc,hilights[file],{noScroll:true,noClear:true});
 	}
 }
 
