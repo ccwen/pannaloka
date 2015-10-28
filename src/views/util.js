@@ -127,12 +127,13 @@ var	highlightDoc=function (doc,range_markupid,opts) {
 		}
 		
 		highlights=[[from,to]];
-		if (opts.moveCursor) doc.setCursor(from);
+		if (opts.moveCursor) {
+			doc.getEditor().focus();	
+			doc.setCursor(from);
+		} 
 	}
-	doc.getEditor().focus();
 	var marker = document.createElement('span');
 
-	
 	if (highlights.length && !opts.noScroll) {
 		doc.getEditor().scrollIntoView(highlights[0][0],50);
 	}
