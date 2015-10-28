@@ -15,10 +15,10 @@ var gotoRangeOrMarkupID=function(file,range_mid,opts) {
 		//wait for this.state.markups ready, because markups is load later
 		//see ksana-codemirror/src/codemirror-react.js componentDidMount			
 			setTimeout(function(){
-				highlightDoc(targetdoc,range_mid,opts);
+				highlightDoc.call(this,targetdoc,range_mid,opts);
 			}.bind(this),500);//wait for markups to load
 		} else {
-			highlightDoc(targetdoc,range_mid,opts);
+			highlightDoc.call(this,targetdoc,range_mid,opts);
 		}
 	} else {
 		if (!opts.autoOpen) return;
@@ -79,22 +79,19 @@ var clearHighlights=function(){
 }
 var makeHighlights=function(doc,highlights,opts){
 	clearHighlights();
-	setTimeout(function(){
-		for (var i=0;i<highlights.length;i++) {
-			var from=highlights[i][0],to=highlights[i][1];
-			highlights_handles.push(doc.markText(from,to,{className:"highlight",clearOnEnter:true}));
-			////var by=getLinkedBy(markup);
-			//if (by) drawLink(markup,by);
-		}
+	for (var i=0;i<highlights.length;i++) {
+		var from=highlights[i][0],to=highlights[i][1];
+		highlights_handles.push(doc.markText(from,to,{className:"highlight",clearOnEnter:true}));
+		////var by=getLinkedBy(markup);
+		//if (by) drawLink(markup,by);
+	}
 
-		clearTimeout(this.timer);
-		if (!opts.keep) {
-			this.timer=setTimeout(function(){
-				clearHighlights();
-			},1500);
-		}			
-
-	},100);	
+	clearTimeout(this.timerMarker);
+	if (!opts.keep) {
+		this.timerMarker=setTimeout(function(){
+			clearHighlights();
+		}.bind(this),1500);
+	}
 }
 var	highlightDoc=function (doc,range_markupid,opts) {
 	if (!range_markupid) return;
@@ -128,7 +125,7 @@ var	highlightDoc=function (doc,range_markupid,opts) {
 	doc.getEditor().focus();
 	var marker = document.createElement('span');
 
-	clearHighlights();
+	
 	if (highlights.length && !opts.noScroll) {
 		doc.getEditor().scrollIntoView(highlights[0][0],50);
 	}
@@ -178,7 +175,7 @@ var highlightRelatedMarkup=function(m) { //highlight markup and all related
 
 	for (var file in hilights) {
 		var doc=docfilestore.docOf(file);
-		if (doc) highlightDoc(doc,hilights[file],{noScroll:true});
+		if (doc) highlightDoc.call(this,doc,hilights[file],{noScroll:true});
 	}
 }
 
