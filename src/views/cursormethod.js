@@ -26,6 +26,10 @@ var sortByDistance=function(cursor,markups,doc) {
 
 	});
 }
+var showcursorcoords=function() {
+	var pos=this.doc.getCursor();
+	console.log(this.cm.cursorCoords(pos),pos.line,pos.ch);
+}
 var cursorActivity=function(){
 	clearTimeout(this.timer1);
 	this.hasMarkupUnderCursor=false;
@@ -45,8 +49,21 @@ var cursorActivity=function(){
 			this.markups=markups;
 			markupaction.markupsUnderCursor(markups);
 			this.hasMarkupUnderCursor=markups.length>0;
+			//showcursorcoords.call(this);
 		}
 	}.bind(this),150);//cursor throttle
+}
+
+
+var mouseMove=function(cm,e) {//event captured by React, not Codemirror
+	//console.log(e.clientX,e.clientY,e.pageX,e.pageY)
+	var pos=cm.coordsChar({left:e.clientX,top:e.clientY});
+	var markups=util.getMarkupsInRange(this.doc,pos);
+	markups=sortByDistance(this.doc.getCursor(),markups);
+	if (!markups.length)return;
+
+	var m=markups[0].markup;//only highlight first one	
+	util.highlightRelatedMarkup(m);
 }
 
 var mouseDown=function(cm,e){
@@ -66,4 +83,5 @@ var mouseDown=function(cm,e){
 		}
 	}.bind(this),100);
 }
-module.exports={cursorActivity:cursorActivity, autoGoMarkup:autoGoMarkup, mouseDown:mouseDown};
+module.exports={cursorActivity:cursorActivity, autoGoMarkup:autoGoMarkup, mouseDown:mouseDown
+,mouseMove:mouseMove};

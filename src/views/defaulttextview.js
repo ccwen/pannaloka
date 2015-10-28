@@ -178,6 +178,11 @@ module.exports = class DefaultTextView extends React.Component {
 			cursormethod.mouseDown.call(this,cm,e);	
 	}
 
+	onMouseMove = (e) => {
+		cursormethod.mouseMove.call(this,this.cm,e);
+	}
+
+
 	getTheme = () => {
 		return localStorage.getItem("lighttheme")=="true"?"":"ambiance";
 	}
@@ -201,6 +206,7 @@ module.exports = class DefaultTextView extends React.Component {
 				onCursorActivity={this.onCursorActivity}
 				theme={this.getTheme()}
 				onMouseDown={this.onMouseDown}
+				onMouseMove={this.onMouseMove}
 				onChange={this.onChange}/>
 		</div>
 	}

@@ -3,6 +3,7 @@ var stackwidgetaction=require("../actions/stackwidget");
 var overlayaction=require("../actions/overlay");
 var milestones=require("ksana-codemirror").milestones;
 var ktxfilestore=require("../stores/ktxfile");
+
 var gotoRangeOrMarkupID=function(file,range_mid,opts) {
 	opts=opts||{};
 	if (opts.below && !opts.autoOpen) opts.autoOpen=true;
@@ -153,7 +154,34 @@ var posInRange=function(pos,range) { //check if a pos in range, cm format
 	}
 	return false;
 }
+var highlightRelatedMarkup=function(m) { //highlight markup and all related 
+	var filename=docfilestore.fileOf(m.handle.doc);
+	if (!filename) return;
 
+	var hilights={};//group by filename
+	hilights[filename]=[];
+	hilights[filename].push(m.key);
+
+	if (m.master) hilights[filename].push(m.master);
+
+	if (m.handle.others && m.handle.others[0]) {
+		hilights[filename]=hilights[filename].concat(m.handle.others);
+	}
+	var targets=m.handle.target;
+	if (targets) {
+		if (!(targets[0] instanceof Array)) targets=[targets];
+		targets.forEach(function(t){
+			if (!hilights[t[0]]) hilights[t[0]]=[];
+			hilights[t[0]].push(t[1]);
+		});		
+	}
+
+	for (var file in hilights) {
+		var doc=docfilestore.docOf(file);
+		if (doc) highlightDoc(doc,hilights[file],{noScroll:true});
+	}
+}
 
 module.exports={gotoRangeOrMarkupID:gotoRangeOrMarkupID,highlightDoc:highlightDoc
-,getMarkupText:getMarkupText,posInRange:posInRange,getMarkupsInRange:getMarkupsInRange};
+,getMarkupText:getMarkupText,posInRange:posInRange,getMarkupsInRange:getMarkupsInRange
+,highlightRelatedMarkup:highlightRelatedMarkup};

@@ -23,13 +23,14 @@ a:visited {color:darkblue;}
 
 
 .quote   {border-bottom:2px dotted gray;}
-.transclusion {color:brown;cursor:pointer;font-family: "DFKai-SB"}
-.highlight {background:#3366FF;}
+.transclusion {color:brown;cursor:pointer;font-family:DFKai-SB}
+.highlight {background:#5588FF;color:white;}
 
-.editingMarker  {background:#A80000 ;color:yellow;cursor:pointer;}
+.editingMarker  {cursor:pointer;border-top:2px solid red;
+	border-left:1px solid red;border-right:1px solid red;border-radius: 5px}
 
-.causeeffect {border-bottom:2px solid red;}
-.causeeffect2 {border-bottom:2px dotted red;}
+.causeeffect {border-bottom:2px solid orange;}
+.causeeffect2 {border-bottom:2px dotted orange;}
 
 .signifier {border-bottom:2px solid purple;}
 .signifier2 {border-bottom:2px dotted purple;}
@@ -56,16 +57,14 @@ a:visited {color:darkblue;}
 .synonym {border-bottom:2px solid blue;}
 .synonym2 {border-bottom:2px dotted blue;}
 
-.definition {border-bottom:2px solid green;}
-.definition2 {border-bottom:2px dotted green;}
+.definition ,.extdefinition {font-family: "Microsoft JhengHei";font-weight: bold}
+.definition2,.extdefinition2 {font-family: "Microsoft JhengHei";}
 
-.extdefinition {border-bottom:2px solid lightgreen;}
-.extdefinition2 {border-bottom:2px dotted lightgreen;}
+ 
+.insight {border-bottom:1px solid lightgreen;}
 
-.insight {border-bottom:1px solid orange;}
-
-.explaination {border-bottom:2px solid orange;}
-.explaination2 {border-bottom:2px dotted orange;}
+.explaination {border-bottom:2px solid lightgreen;}
+.explaination2 {border-bottom:2px dotted lightgreen;}
 
 .individual {border-bottom:2px solid brown;}
 .individual2 {border-bottom:2px dotted brown;}
