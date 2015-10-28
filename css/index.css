@@ -4,6 +4,8 @@ button {cursor:pointer;}
 
 .CodeMirror { line-height: 1.6;}
 .cm-s-ambiance.CodeMirror { line-height: 1.6em;}
+.CodeMirror-cursor {border-left: 3px solid black;}
+.cm-s-ambiance .CodeMirror-cursor { border-left: 3px solid #7991E8; }
 
 .highlight {background:#6699FF;cursor:pointer;}
 
