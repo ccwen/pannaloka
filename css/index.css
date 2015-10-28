@@ -5,6 +5,9 @@ button {cursor:pointer;}
 .CodeMirror { line-height: 1.6;}
 .cm-s-ambiance.CodeMirror { line-height: 1.6em;}
 
+.highlight {background:#5588FF;color:white;}
+
+.editingMarker  {cursor:pointer;outline:1px solid red;}
 
 .closebutton { cursor:pointer}
 .closebutton:hover {background:#AF4040;color:white}
@@ -24,10 +27,6 @@ a:visited {color:darkblue;}
 
 .quote   {border-bottom:2px dotted gray;}
 .transclusion {color:brown;cursor:pointer;font-family:DFKai-SB}
-.highlight {background:#5588FF;color:white;}
-
-.editingMarker  {cursor:pointer;border-top:2px solid red;
-	border-left:1px solid red;border-right:1px solid red;border-radius: 5px}
 
 .causeeffect {border-bottom:2px solid orange;}
 .causeeffect2 {border-bottom:2px dotted orange;}
