@@ -20,11 +20,7 @@ var ContextMember=React.createClass({
 	,onHyperlinkEnter:function(file,mid) {
 		var doc=docfilestore.docOf(file);
 		var m=doc.getEditor().react.getMarkup(mid);
-		var keys=mid;
-		if (m.others) {
-			keys=[mid].concat(m.others);
-		}
-		util.gotoRangeOrMarkupID(file,keys,{noScroll:true});
+		util.highlightRelatedMarkup(m);
 	}
 	,onSideButtonClick:function(e) {
 		var idx=parseInt(e.target.parentElement.dataset.idx);
