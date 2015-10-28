@@ -5,7 +5,7 @@ button {cursor:pointer;}
 .CodeMirror { line-height: 1.6;}
 .cm-s-ambiance.CodeMirror { line-height: 1.6em;}
 
-.highlight {background:#5588FF;color:white;}
+.highlight {background:#5588FF;color:white;cursor:pointer;}
 
 .editingMarker  {cursor:pointer;outline:1px solid red;}
 

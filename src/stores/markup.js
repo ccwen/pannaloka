@@ -12,6 +12,7 @@ var markupStore=Reflux.createStore({
 	,markupsUnderCursor:[]
 	,ctrl_m_handler:null
 	,editing:null
+	,hovering:null
 	,onMarkupsUnderCursor:function(markupsUnderCursor) {
 		//this.editing=null;
 		if (this.markupsUnderCursor==markupsUnderCursor) return;
@@ -73,6 +74,13 @@ var markupStore=Reflux.createStore({
 				this.ctrl_m_handler();
 				this.ctrl_m_handler=null;//fire once
 		}
+	}
+	,getHovering:function() {
+		return this.hovering;
+	}
+	,onHovering:function(m) {
+		this.hovering=m;
+		this.trigger(m,{hovering:true});
 	}
 	,onCreateMarkup:function(obj,cb) {
 		if (!obj.typedef || !obj.typedef.mark) {

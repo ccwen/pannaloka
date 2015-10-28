@@ -62,26 +62,15 @@ var mouseMove=function(cm,e) {//event captured by React, not Codemirror
 	markups=sortByDistance(this.doc.getCursor(),markups);
 	if (!markups.length)return;
 
-	var m=markups[0].markup;//only highlight first one	
+	var m=markups[0].markup;//only highlight first one
+	markupaction.hovering(m);
 	util.highlightRelatedMarkup(m);
 }
 
 var mouseDown=function(cm,e){
-	if (!cm.react.markups||!cm.react.markups.length) return;
-	var markup=markupstore.getEditing();
-	if (!markup || !markup.markup) return;
-
-	if (markup.doc!==cm.doc) return false;
-	setTimeout(function(){
-		var markup=markupstore.getEditing();
-		if (!markup || !markup.markup) return;
-		if (markup.doc!==cm.doc) return false;
-		var cursor=cm.getCursor();
-		var range=markup.markup.handle.find();
-		if(util.posInRange(cursor,range)){
-			autoGoMarkup.call(this,markup.markup);
-		}
-	}.bind(this),100);
+	var m=markupstore.getHovering();
+	if (m) autoGoMarkup.call(this,m);
 }
+
 module.exports={cursorActivity:cursorActivity, autoGoMarkup:autoGoMarkup, mouseDown:mouseDown
 ,mouseMove:mouseMove};

@@ -174,8 +174,7 @@ module.exports = class DefaultTextView extends React.Component {
 	}
 
 	onMouseDown =(cm,e) =>{//double click on a markup
-			//make sure getCursor() get updated
-			cursormethod.mouseDown.call(this,cm,e);	
+		cursormethod.mouseDown.call(this,cm,e);	
 	}
 
 	onMouseMove = (e) => {
