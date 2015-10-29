@@ -191,7 +191,7 @@ var	autoGoMarkup = function(m) {
 	if (!others)return;
 	if (typeof others[0]==="string"){
 		var wid=m.handle.doc.getEditor().react.getWid();
-		gotoRangeOrMarkupID(others[0],others[1],{below:wid});
+		gotoRangeOrMarkupID.call(this,others[0],others[1],{below:wid});
 	}
 }
 
