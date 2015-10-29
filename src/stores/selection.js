@@ -7,13 +7,19 @@ var selectionStore=Reflux.createStore({
 	,selections:{}
 	,init:function() {
 	}
-	,copySel:function(selections) {
+	,copySel:function(selections,remove) {
 		var sels={};
-		for (var i in this.selections) sels[i]=this.selections[i];
+		for (var i in this.selections) {
+			if (remove && remove===i) continue;
+			sels[i]=this.selections[i];
+		}
 		return sels;		
 	}
 	,onSetSelection:function(filename,selections,cursorchar) {
-		var sels=this.copySel(selections);
+		//do not copy key==filename,
+		//file of newly set selection will be on the bottom of Object.keys() 
+		//to preserve the order of selection (for dualone , dualonemore)
+		var sels=this.copySel(selections,filename); 
 		sels[filename]=selections;
 		this.cursorchar=cursorchar;
 		this.selections=sels;
