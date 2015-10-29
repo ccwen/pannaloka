@@ -14,6 +14,7 @@ var	loaded = function() {
 	docfileaction.openFile(this.doc,this.props.trait.filename,this.props.trait);
 	this.setsize();
 	this.keymap();
+	this.cm.focus();
 	if (this.props.trait.top) {
 		this.cm.scrollTo(0,this.props.trait.top);
 	}
@@ -25,7 +26,11 @@ var	loaded = function() {
 }
 var load = function(fn) {
 	cmfileio.readFile(this.props.trait.filename,function(err,data){
+		if (err) {
+			this.setState({value:"File created on "+new Date()},this.loaded);
+		} else {
 			this.setState(data,this.loaded);
+		}
 	}.bind(this));
 }
 
