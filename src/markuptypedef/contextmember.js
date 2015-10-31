@@ -44,6 +44,7 @@ var ContextMember=React.createClass({
 			onClick={this.onDeleteClick}>{item[2]}</span></span>
 	}
 	,getMasterTerm:function(filename) {
+		if (!this.props.member || !this.props.member[0] ||  !this.props.member[0].handle) return;
 		var doc=docfilestore.docOf(filename);
 		return util.getMarkupText(doc,this.props.member[0].handle);
 	}
