@@ -64,6 +64,7 @@
     "react-addons-pure-render-mixin":"*",
     "ksana2015-treetoc": "git+https://github.com/ksanaforge/ksana2015-treetoc.git",
     "ksana-codemirror": "git+https://github.com/ksanaforge/ksana-codemirror.git",
+    "ksana-input": "git+https://github.com/ksanaforge/ksana-input.git",
     "codemirror": "^5.8.0"
   }
 }

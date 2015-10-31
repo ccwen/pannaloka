@@ -12,6 +12,10 @@ var styles={
 	//background:"-webkit-radial-gradient(center, ellipse cover, #f1da36 0%,gray 70%)"}
 }
 module.exports =class MainMenu extends Component {
+	constructor (props) {
+		super(props);
+		this.state={ime:0};
+	}
 	changeTheme = () => {
 		var docs=docfilestore.getDocs();
 		document.body.classList.toggle("darktheme");
@@ -23,19 +27,32 @@ module.exports =class MainMenu extends Component {
 
 		localStorage.setItem("lighttheme",!dark);
 	}
+	setIME = (ime) => {
+		localStorage.setItem("ime",ime);
+		this.setState({ime:ime});
+	}
 	componentDidMount () {
 		if (localStorage.getItem("lighttheme")=="true"){
 			this.changeTheme();
 		}
+		var ime=parseInt(localStorage.getItem("ime")||"1");
+		if (ime)this.setIME(ime);			
 	}
+	toggleIME = () => {
+		this.setIME(-this.state.ime);
+	}
+
   render () {
   	return <div style={styles.container}>
   	<div style={styles.left}>
-  	<span style={styles.banner} title="2015.10.17">智慧
+
+  	<span style={styles.banner} title="2015.10.31">智
+  	<span style={{cursor:"pointer"}} onClick={this.toggleIME}>慧</span>
   	<span style={{cursor:"pointer"}} onClick={this.changeTheme}>光</span></span>
   	</div>
   	<div style={styles.right}>
   	<MarkupPanel/>
+  	<InputMethod ime={this.state.ime} onSetIME={this.setIME}/>
   	</div>
 
   	</div>
