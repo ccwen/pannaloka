@@ -51,11 +51,9 @@ var dualone=function(mark,docOf, cb) {
 	var doc1=docOf(files[0]);
 	var doc2=docOf(files[1]);
 
-	var text1=util.getRangeText(doc1,range1); 
-	var text2=util.getRangeText(doc2,range2); 
+	var text1=getTrimedRangeText(doc1,range1); 
+	var text2=getTrimedRangeText(doc2,range2); 
 
-	if (text1.length>MAX_LABEL) text1=text1.substr(0,MAX_LABEL)+"…";
-	if (text2.length>MAX_LABEL) text2=text2.substr(0,MAX_LABEL)+"…";
 
 	var mrk1={className:mark.typename , trait:mark.trait, from:range1[0], to:range1[1], target:[files[1],key2,text2] };
 	var mrk2={className:mark.typename+"2", from:range2[0], to:range2[1], target:[files[0],key1,text1]};
@@ -80,8 +78,7 @@ var oneway=function(mark,docOf, cb) {
 	var doc1=docOf(files[0]);
 	var doc2=docOf(files[1]);
 
-	var text2=util.getRangeText(doc2,range2); 
-	if (text2.length>MAX_LABEL) text2=text2.substr(0,MAX_LABEL)+"…";
+	var text2=getTrimedRangeText(doc2,range2); 
 
 	var packed=milestones.pack.call(doc2,[range2[0],range2[1]]);
 	var mrk1={className:mark.typename, trait:mark.trait, from:range1[0], to:range1[1], 
@@ -130,8 +127,7 @@ var dualonemore=function(mark,docOf, cb) {
 	var doc1=docOf(files[0]);
 	var doc2=docOf(files[1]);
 
-	var text1=util.getRangeText(doc1,range1);
-	if (text1.length>MAX_LABEL) text1=text1.substr(0,MAX_LABEL)+"…";
+	var text1=getTrimedRangeText(doc1,range1);
 
 	var mrk1={className:mark.typename, from:range1[0], to:range1[1], target:[] };
 
@@ -140,9 +136,8 @@ var dualonemore=function(mark,docOf, cb) {
 	var markups=[{markup:mrk1,doc:doc1,key:key}],master=[files[0],key,text1];
 	for (var i=0;i<ranges.length;i++) {
 
-		var text2=util.getRangeText(doc2,ranges[i]);
-		if (text2.length>MAX_LABEL) text2=text2.substr(0,MAX_LABEL)+"…";
-
+		var text2=getTrimedRangeText(doc2,ranges[i]);
+		
 		var cls=mark.typename+"2", newkey=uuid();
 
 		var obj={className:cls, from:ranges[i][0],to:ranges[i][1] ,target:master};
@@ -153,5 +148,52 @@ var dualonemore=function(mark,docOf, cb) {
 	cb(0, markups );
 }
 
+var getTrimedRangeText=function(doc,range) {
+	var text=util.getRangeText(doc,range);
+	if (text.length>MAX_LABEL) text=text.substr(0,MAX_LABEL)+"…";	
+	return text;
+}
+
+var multi=function(mark,docOf, cb) {
+	var selections=validate.multi(mark.selections);
+	if (!selections) return ;
+
+	var files=Object.keys(selections);
+	var doc1_ranges=selections[files[0]];
+	var doc1_range1=selections[files[0]][0];
+	var key=uuid();
+	var doc1=docOf(files[0]);
+	var doc1_text1=getTrimedRangeText(doc1,doc1_range1);
+
+	var mastermrk={className:mark.typename, from:doc1_range1[0], to:doc1_range1[1], target:[] };
+	var markups=[{markup:mastermrk,doc:doc1,key:key}],master=[files[0],key,doc1_text1];
+
+	//same doc
+	for (var i=1;i<doc1_ranges.length;i++) {
+		var r=doc1_ranges[i];
+		var text=getTrimedRangeText(doc1,doc1_ranges[i]);
+		var mrk2={className:mark.typename+'2', from:r[0], to:r[1], target:[],target:master };
+		var newkey=uuid();
+		mastermrk.target.push([files[0],newkey,text]);
+		markups.push({markup:mrk2,doc:doc1,key:newkey})
+	}
+	
+	for (var i=1;i<files.length;i++) { //foreign doc
+		var ranges=selections[files[i]];
+		var fdoc=docOf(files[i]);
+		for (var j=0;j<ranges.length;j++) {
+			var ftext=getTrimedRangeText(fdoc,ranges[j]);
+			var newkey=uuid();
+			var cls=mark.typename+"2", newkey=uuid();
+			var obj={className:cls, from:ranges[j][0],to:ranges[j][1] ,target:master};
+			mastermrk.target.push([files[i],newkey,ftext]);
+			markups.push({markup:obj,doc:fdoc,key:newkey});
+		}	
+	}
+
+	cb(0, markups );
+}
+
+
 module.exports={singleone:singleone,dualone:dualone,singletwo:singletwo,dualonemore:dualonemore,
-	milestone:milestone,milestone_novalidate:milestone_novalidate,oneway};
+	milestone:milestone,milestone_novalidate:milestone_novalidate,oneway:oneway,multi:multi};

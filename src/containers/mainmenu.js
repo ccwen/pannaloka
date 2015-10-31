@@ -2,6 +2,7 @@ var React=require("react");
 var Component=React.Component;
 var StackWidgetMainMenu=require("../views/stackwidgetmainmenu");
 var MarkupPanel=require("../views/markuppanel");
+var InputMethod=require("../views/inputmethod");
 var docfilestore=require("../stores/docfile");
 var styles={
 	container:{display:"flex"}

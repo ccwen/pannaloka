@@ -35,8 +35,12 @@ var types={
 	,"important":{validate:vs.singleone,label:"重點",
 							editor:require("./simple"), mark:mark.singleone}
 	,"insight":{validate:vs.singleone,label:"創見",mark:mark.singleone,editor:require("./simple")}
-	,"intertext":{validate:vs.multi,label:"互文", mark:mark.dualone, editor:require("./quote"),
+	,"intertext":{validate:vs.dualonemore,label:"互文", mark:mark.dualonemore, editor:require("./quote"),
 						isDeletable: isIntertextDeletable,onDelete:deletIntertext}
+
+	,"parallel":{validate:vs.multi,label:"對映", mark:mark.multi, editor:require("./simple"),
+						isDeletable: isIntertextDeletable,onDelete:deletIntertext}
+
 	,"quote":{validate:vs.dualone,label:"出處", mark:mark.oneway, editor:require("./quote")}
   ,"causeeffect":{validate:vs.singletwo,label:"因果",mark:mark.singletwo,editor:require("./simple")}
   ,"historyculture":{validate:vs.singletwomore,label:"歷史文化",mark:mark.singletwo,editor:require("./simple")}

@@ -5,6 +5,7 @@ var Reflux=require("reflux");
 
 var docFileStore=Reflux.createStore({
 	docfile:[]
+	,cm:null
 	,listenables:[require("../actions/docfile")]
 	,onOpenFile:function(doc,filename,trait) {
 		this.docfile=this.docfile.filter(function(df){
@@ -14,6 +15,11 @@ var docFileStore=Reflux.createStore({
 		this.trigger(this.docfile,{action:"open"});
 	}
 	,onCloseFile:function(file) {
+		var doc=this.docOf(file);
+		if (this.cm && this.cm.getDoc()===doc) {
+			this.cm==null;
+		}
+		
 		this.docfile=this.docfile.filter(function(df){
 			return  df[1]!==file;
 		});
@@ -51,6 +57,12 @@ var docFileStore=Reflux.createStore({
 			return  df[1]===file;
 		});
 		if (remain.length) return remain[0][2];
+	}
+	,getActiveEditor() {
+		return this.cm;
+	}
+	,onSetActiveEditor:function(cm) {
+		this.cm=cm;
 	}
 });
 module.exports=docFileStore;

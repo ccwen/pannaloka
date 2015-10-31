@@ -28,6 +28,9 @@ a:visited {color:darkblue;}
 .intertext   {border-bottom:2px solid gray;}
 .intertext2   {border-bottom:2px dotted gray;}
 
+.parallel   {border-bottom:1px solid gray;}
+.parallel2   {border-bottom:1px dotted gray;}
+
 
 .quote   {font-family:標楷體,DFKai-SB;}
 .transclusion {color:brown;cursor:pointer;font-family:標楷體,DFKai-SB}

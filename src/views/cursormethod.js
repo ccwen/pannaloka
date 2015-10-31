@@ -1,6 +1,7 @@
 var kcm=require("ksana-codemirror");
 var getSelections=kcm.getSelections, getCharAtCursor=kcm.getCharAtCursor;
 var selectionaction=require("../actions/selection");
+var docfileaction=require("../actions/docfile");
 var markupstore=require("../stores/markup");
 var selectionstore=require("../stores/selection");
 var markupaction=require("../actions/markup");
@@ -43,6 +44,7 @@ var cursorActivity=function(){
 			this.markups=markups;
 			markupaction.markupsUnderCursor(markups);
 			this.hasMarkupUnderCursor=markups.length>0;
+			docfileaction.setActiveEditor(this.cm);
 			//showcursorcoords.call(this);
 		}
 	}.bind(this),150);//cursor throttle

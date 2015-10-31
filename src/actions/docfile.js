@@ -1,1 +1,1 @@
-module.exports=require("reflux").createActions(["openFile","closeFile","updateTrait"]);
+module.exports=require("reflux").createActions(["openFile","closeFile","updateTrait","setActiveEditor"]);
