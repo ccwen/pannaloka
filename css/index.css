@@ -15,8 +15,8 @@ button {cursor:pointer;}
 .closebutton:hover {background:#AF4040;color:white}
 
 
-.definition ,.extdefinition {font-family: "Microsoft JhengHei";font-weight: bold;font-size:80%;}
-.definition2,.extdefinition2 {font-family: "Microsoft JhengHei";font-size:80%;}
+.definition ,.extdefinition {font-family: 微軟正黑體,Microsoft JhengHei;font-weight: bold;font-size:80%;}
+.definition2,.extdefinition2 {font-family: 微軟正黑體,Microsoft JhengHei;font-size:80%;}
 
 .important {color:red;}
 .milestone {border-radius:10px;background :lightblue ;color:black;padding-top:8px;padding-bottom:8px;}
@@ -29,8 +29,8 @@ a:visited {color:darkblue;}
 .intertext2   {border-bottom:2px dotted gray;}
 
 
-.quote   {font-family:DFKai-SB;}
-.transclusion {color:brown;cursor:pointer;font-family:DFKai-SB}
+.quote   {font-family:標楷體,DFKai-SB;}
+.transclusion {color:brown;cursor:pointer;font-family:標楷體,DFKai-SB}
 
 .causeeffect {border-bottom:2px solid orange;}
 .causeeffect2 {border-bottom:2px dotted orange;}
