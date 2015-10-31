@@ -44,6 +44,7 @@ var types={
 	,"quote":{validate:vs.dualone,label:"出處", mark:mark.oneway, editor:require("./quote")}
   ,"causeeffect":{validate:vs.singletwo,label:"因果",mark:mark.singletwo,editor:require("./simple")}
   ,"historyculture":{validate:vs.singletwomore,label:"歷史文化",mark:mark.singletwo,editor:require("./simple")}
+  ,"exthistoryculture":{validate:vs.dualone,label:"歷史文化",mark:mark.dualone,editor:require("./simple")}
   ,"explaination":{validate:vs.singletwomore,label:"說明",mark:mark.singletwo,editor:require("./simple")}
   ,"part":{validate:vs.singletwomore,label:"部份",mark:mark.singletwo,editor:require("./simple")}
   ,"individual":{validate:vs.singletwomore,label:"總別",mark:mark.singletwo,editor:require("./simple")}
@@ -73,6 +74,7 @@ var types={
   ,"extdefinition2"	:{label:"定義：",hidden:true}
   ,"extsignifier2"	:{label:"所指：",hidden:true}
   ,"historyculture2"	:{label:"歷史文化：",hidden:true}
+  ,"exthistoryculture2"	:{label:"歷史文化：",hidden:true}
   ,"individual2":{label:"別相：",hidden:true}
   ,"ritual2":{label:"儀軌：",hidden:true}
   ,"extritual2":{label:"儀軌：",hidden:true}
