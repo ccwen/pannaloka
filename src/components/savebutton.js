@@ -37,6 +37,7 @@ module.exports = class SaveButton extends Component {
 	}
 
 	render () {
+		if (this.props.trait.host==="google") return <span></span>
 		if (this.state.saved) {
 			return <span style={styles.saved}>Saved!!</span>
 		}

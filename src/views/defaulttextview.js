@@ -27,7 +27,7 @@ module.exports = class DefaultTextView extends React.Component {
 		if (this.props.newfile) {
 			this.setState({dirty:true,titlechanged:true,value:"new file"},this.loaded);
 		} else {
-			filemethod.load.call(this,this.props.trait.filename);
+			filemethod.load.call(this,this.props.trait.filename,this.props.trait);
 		}
 		this.unsubscribeMarkup = markupstore.listen(this.onMarkup);
 		this.unsubscribeSelection = selectionstore.listen(this.onSelection);
@@ -37,6 +37,7 @@ module.exports = class DefaultTextView extends React.Component {
 		this.unsubscribeMarkup();
 		this.unsubscribeSelection();
 		this.cm.react=null;
+		filemethod.unmount();
 	}
 
 	componentDidUpdate() {
@@ -186,6 +187,10 @@ module.exports = class DefaultTextView extends React.Component {
 		return localStorage.getItem("lighttheme")=="true"?"":"ambiance";
 	}
 
+	onBeforeChange = (cm,changeObj) => {
+		filemethod.beforeChange.call(this,cm,changeObj);
+	}
+
 	render () {
 		if (!this.state.value) return <div>loading {this.props.trait.filename}</div>
 
@@ -203,6 +208,7 @@ module.exports = class DefaultTextView extends React.Component {
 				onMarkupReady={this.onMarkupReady}
 				readOnly={this.props.trait.readOnly}
 				onCursorActivity={this.onCursorActivity}
+				onBeforeChange={this.onBeforeChange}
 				theme={this.getTheme()}
 				onMouseDown={this.onMouseDown}
 				onMouseMove={this.onMouseMove}

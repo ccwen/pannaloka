@@ -6,6 +6,7 @@ var LeftPanel=require('./leftpanel');
 var RightPanel=require('./rightpanel');
 var StatusPanel=require('./statuspanel');
 var Overlay=require("../views/overlay");
+var socketfs=require("../socketfs");
 var styles={
 	Body:{fontSize:"150%"}
 	,Main:{display:"flex"}
@@ -42,7 +43,7 @@ module.exports = class Main extends Component {
   			<MainMenu ref="mainmenu"/>
   		<div ref="scrollstart" style={styles.Main}>
   			<div ref="leftpanel" style={styles.LeftPanel}>
-  				<LeftPanel height={this.state.height}/>
+  				<LeftPanel height={this.state.height} localfilesystem={socketfs.ready()}/>
   			</div>
   			<div ref="rightpanel" style={styles.RightPanel}>
   				<RightPanel height={this.state.height} />				

@@ -5,6 +5,12 @@ if (typeof fs.readFile=="undefined") {
 }
 
 var dataroot="data/";
+
+var ready=function() {
+	if (fs.readFile) return true;
+	if (window.host.rpchost) return true;
+	return false;
+}
 var readFile=function(fn,opts,cb) {
 	if (fs.readFile) fs.readFile(dataroot+fn,opts,cb);
 	else {
@@ -64,4 +70,4 @@ var readdirmeta=function(path,cb) {//read all meta in given path
 
 }
 module.exports={readFile:readFile,writeFile:writeFile,exists:exists,
-	unlink:unlink,mkdir:mkdir,readdir:readdir,readdirmeta:readdirmeta};
+	unlink:unlink,mkdir:mkdir,readdir:readdir,readdirmeta:readdirmeta,ready:ready};

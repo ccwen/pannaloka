@@ -6,6 +6,8 @@ var FileList=require('../views/filelist');
 var TreeList=require('../views/treelist');
 var OutlinePanel=require("../views/outlinepanel");
 
+var GoogleLogin=require("../google/googlelogin");
+
 var styles={key:{fontSize:"110%",color:"darkblue",fontFamily:"monospace",textAlign:"center"},
 section:{fontSize:"130%",textAlign:"center"},
 desc:{textAlign:"center"}};
@@ -39,6 +41,18 @@ module.exports = class LeftPanel extends Component {
     this.setState({selectedIndex:1});
   }
 
+  localFileList = () => {
+    if (this.props.localfilesystem) return <TabPanel>
+        <div style={this.panelstyle}>
+          <FileList/>
+          <TreeList onOpenTree={this.switchToTree}/>
+        </div>
+      </TabPanel>
+  }
+
+  localTab = () => {
+    if (this.props.localfilesystem)return  <Tab>Local File</Tab>
+  }
   render  () {
   	if (this.props.height<100) return <div>error height</div>
 
@@ -48,17 +62,19 @@ module.exports = class LeftPanel extends Component {
         forceRenderTabPanel={true}
       >
       <TabList>
-					<Tab>File</Tab>
+          <Tab>Cloud</Tab>
+          {this.localTab()}
           <Tab>Outline</Tab>
           <Tab>Help</Tab>
       </TabList>
 
       <TabPanel>
-	      <div style={this.panelstyle}>
-          <FileList/>
-          <TreeList onOpenTree={this.switchToTree}/>
-	  		</div>
+        <div style={this.panelstyle}>
+          <GoogleLogin/>
+        </div>
       </TabPanel>
+
+      {this.localFileList()}
 
       <TabPanel>
 	      <div style={this.panelstyle}>

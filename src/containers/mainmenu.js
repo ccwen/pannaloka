@@ -4,6 +4,7 @@ var StackWidgetMainMenu=require("../views/stackwidgetmainmenu");
 var MarkupPanel=require("../views/markuppanel");
 var InputMethod=require("../views/inputmethod");
 var docfilestore=require("../stores/docfile");
+
 var styles={
 	container:{display:"flex"}
 	,left:{flex:2}
@@ -53,6 +54,7 @@ module.exports =class MainMenu extends Component {
   	<div style={styles.right}>
   	<MarkupPanel/>
   	<InputMethod ime={this.state.ime} onSetIME={this.setIME}/>
+  	
   	</div>
 
   	</div>

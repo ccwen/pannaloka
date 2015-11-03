@@ -36,7 +36,8 @@ var returnfromserver=function(res) {
 }
 
 var pchost={
-	exec: function(successCB, errorCB, service, action, params) {
+	rpchost:true
+	,exec: function(successCB, errorCB, service, action, params) {
 		var fid=GUID();
 		//create a slot to hold
 		var slot={  fid:fid, successCB:successCB, errorCB:errorCB ,params:params, action:action, service:service};
