@@ -1,11 +1,11 @@
 var React=require("react");
 var E=React.createElement;
-var PureComponent=require('react-pure-render').PureComponent;
+var PureRender=require('react-addons-pure-render-mixin');
+
 var styles={hyperlink:{cursor:"pointer",color:"blue",fontSize:"75%"},label:{fontSize:"75%"}};
 
-module.exports = class RangeHyperlink extends PureComponent {
-
-	getIdx = (e) => {
+var RangeHyperlink = React.createClass({
+	getIdx :function (e) {
 		var domnode=e.target;
 		while (domnode && (!domnode.dataset || !domnode.dataset.idx)) {
 			domnode=domnode.parentElement;
@@ -16,13 +16,13 @@ module.exports = class RangeHyperlink extends PureComponent {
 		}
 	}
 
-	onClick =(e) => {
+	,onClick :function (e) {
 		var idx=this.getIdx(e);
 		var item=this.props.ranges[idx];
 		this.props.onHyperlinkClick && this.props.onHyperlinkClick(item[0],item[1]);
 	}
 
-	onMouseEnter = (e) => {
+	,onMouseEnter :function (e) {
 		var idx=this.getIdx(e);
 		var item=this.props.ranges[idx];
 		if (idx!==this.hovering) {
@@ -35,7 +35,7 @@ module.exports = class RangeHyperlink extends PureComponent {
 	}
 
 
-	renderItem = (item,idx) => {
+	,renderItem :function (item,idx)  {
 		var rendered=(this.props.renderItem)?this.props.renderItem(item,idx,this.hovering):null;
 		if (!rendered) {
 			var text=item[2];
@@ -49,7 +49,7 @@ module.exports = class RangeHyperlink extends PureComponent {
 	}
 
 	/* range format : file, mid_range , text */
-	renderRange = (item,idx) => {
+	,renderRange :function (item,idx) {
 		if (item[1]) {
 			return this.renderItem(item,idx);
 		} else {
@@ -57,7 +57,8 @@ module.exports = class RangeHyperlink extends PureComponent {
 		}
 	}
 
-	render () {
+	,render :function() {
 		return <span>{this.props.ranges.map(this.renderRange)}</span>
 	}
-}
+});
+module.exports=RangeHyperlink;

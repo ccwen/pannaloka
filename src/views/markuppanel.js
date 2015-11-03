@@ -1,6 +1,7 @@
 var React=require("react");
 var Component=React.Component;
-var PureComponent=require('react-pure-render').PureComponent;
+var PureRender=require('react-addons-pure-render-mixin');
+
 
 var markupstore=require("../stores/markup");
 var markupaction=require("../actions/markup");
@@ -11,16 +12,15 @@ var MarkupSelector=require("../components/markupselector");
 var MarkupNavigator=require("./markupnav");
 var util=require("./util");
 
-module.exports = class MarkupPanel extends PureComponent {
-	constructor (props) {
-		super(props);
-		this.state={editing:null,markups:[],hasSelection:false,deletable:false,getOther:null};
+var MarkupPanel = React.createClass({
+	getInitialState() {
+		return {editing:null,markups:[],hasSelection:false,deletable:false,getOther:null};
 	}
-	onClose = () => {
+	,onClose : function()  {
 		stackwidgetaction.closeWidget(this.props.wid)
 	}
 
-	onMarkup = (markups,action) => {
+	,onMarkup : function (markups,action)  {
 		if (action.cursor) {
 			var keys=Object.keys(markups);
 			var wid=null,cm=null,getOther=null;
@@ -33,40 +33,44 @@ module.exports = class MarkupPanel extends PureComponent {
 		}
 	}
 
-	onDocfile =() => {
+	,onDocfile : function()  {
 		this.forceUpdate();
 	}
 
-	componentDidMount () {
+	,componentDidMount : function() {
 		this.unsubscribe1 = markupstore.listen(this.onMarkup);
 		this.unsubscribe2 = docfilestore.listen(this.onDocfile);
 	}
 
-	componentWillUnmount () {
+	,componentWillUnmount : function() {
 		this.unsubscribe1();
 		this.unsubscribe2();
 	}
 
-	onHyperlinkClick = (file,mid,opts) => {
-		util.gotoRangeOrMarkupID(file,mid,{...opts,below:this.state.wid,autoopen:true});
+	,onHyperlinkClick : function (file,mid,opts)  {
+		var o={};
+		for (var i in opts)	o[i]=opts[i];
+		o.below=this.state.wid;
+		o.autoopen=true;
+		util.gotoRangeOrMarkupID(file,mid,o);
 	}
 
-	onHyperlinkEnter = (file,mid) => {
+	,onHyperlinkEnter : function (file,mid)  {
 		util.gotoRangeOrMarkupID(file,mid,{noScroll:true});
 	}
 
-	goMarkupByKey = (mid) => {
+	,goMarkupByKey : function (mid)  {
 		var editing=markupstore.getEditing();
 		if (!editing)return;
 		var file=docfilestore.fileOf(editing.doc);
 		this.onHyperlinkClick(file,mid,{moveCursor:true});
 	}
 
-	onChanged = (doc) => {
+	,onChanged : function (doc)  {
 		doc.getEditor().react.setDirty();
 	}
 
-	onDelete = (m,typedef) => {
+	,onDelete : function(m,typedef)  {
 		if (!m || !m.handle) {
 			throw "wrong markup"
 			return;
@@ -79,11 +83,11 @@ module.exports = class MarkupPanel extends PureComponent {
 		typedef.onDelete &&	typedef.onDelete(m);
 	}
 
-	onEditing = (m,handler) => {
+	,onEditing : function(m,handler)  {
 		markupstore.setEditing(m,handler);
 	}
 
-	render () {		
+	,render : function () {		
 
 		var ranges=selectionstore.getRanges();
 
@@ -105,4 +109,5 @@ module.exports = class MarkupPanel extends PureComponent {
 
 		)
 	}
-}
+});
+module.exports=MarkupPanel;

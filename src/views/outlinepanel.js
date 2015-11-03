@@ -1,7 +1,7 @@
 var React=require("react");
 var E=React.createElement;
 var Component=React.Component;
-var PureComponent=require('react-pure-render').PureComponent;
+var PureRender=require('react-addons-pure-render-mixin');
 
 var docfilestore=require("../stores/docfile");
 var ktcfilestore=require("../stores/ktcfile");
@@ -13,32 +13,31 @@ var SaveButton=require("../components/savebutton");
 var selectionstore=require("../stores/selection");
 var markupstore=require("../stores/markup");
 var docfilestore=require("../stores/docfile");
-module.exports = class OutlinePanel extends PureComponent {
-	constructor (props) {
-		super(props);
-		this.state={ toc:[{d:0,t:"test"},{d:1,t:"testchild"}] ,dirty:false};
+var OutlinePanel = React.createClass({
+	getInitialState:function() {		
+		return { toc:[{d:0,t:"test"},{d:1,t:"testchild"}] ,dirty:false};
 	}
 
-	onToc = ( allfiles, toc) => {
+	,onToc :function( allfiles, toc) {
 		if (!toc) return;
 		this.setState({toc});
 	}
 
-	componentDidMount () {
+	,componentDidMount :function() {
 		this.unsubscribe = ktcfilestore.listen(this.onToc);
 	}
-	componentWillUnmount () {
+	,componentWillUnmount :function() {
 		this.unsubscribe();
 	}
-	saveTree = () => {
+	,saveTree : function() {
 		ktcfileaction.writeTree(this.state.toc);
 		this.setState({dirty:false});
 	}
-	onChanged = () => {
+	,onChanged : function() {
 		this.setState({dirty:true});
 	}
 
-	setLink (node) {
+	,setLink :function(node) {
 		var m=markupstore.getEditing();
 
 		if (m) {
@@ -55,10 +54,10 @@ module.exports = class OutlinePanel extends PureComponent {
 
 	}
 
-	onHyperlinkClick = (file,range) => {
+	,onHyperlinkClick :function(file,range) {
 		util.gotoRangeOrMarkupID(file,range,{moveCursor:true,autoOpen:true});
 	}
-	onNode = (node,selected,n,editingcaption) => {
+	,onNode :function(node,selected,n,editingcaption) {
 		if (n==editingcaption) {
 			var label="🔗";
 			if (node.links) label="reset "+label;
@@ -68,7 +67,7 @@ module.exports = class OutlinePanel extends PureComponent {
 		}
 	}
 
-	render () {
+	,render :function() {
 		return <div>
 		<SaveButton dirty={this.state.dirty} onSave={this.saveTree}/>
 		<TreeToc opts={{editable:true,onNode:this.onNode}} 
@@ -76,4 +75,5 @@ module.exports = class OutlinePanel extends PureComponent {
 			toc={this.state.toc}/>
 		</div>
 	}
-}
+});
+module.exports = OutlinePanel;

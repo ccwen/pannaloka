@@ -1,21 +1,20 @@
 var React=require("react");
-var PureComponent=require('react-pure-render').PureComponent;
-
+var PureRender=require('react-addons-pure-render-mixin');
 var styles={
 	title:{fontSize:"100%"}
 }
-module.exports = class FlexHeight extends PureComponent {
-
-	onClick = () => {
+var FlexHeight=React.createClass({
+	onClick :function()  {
 		var newvalue=this.props.flex+0.5;
 		if (newvalue>2) newvalue=0.5;
 		this.props.setValue(newvalue);
 	}
 
-	getHeight = () => {
+	,getHeight :function()  {
 		return this.props.flex*100+"%";
 	}
-	render () {
+	,render:function() {
 		return <span onClick={this.onClick}> Height:{this.getHeight()}</span>
 	}
-}
+});
+module.exports=FlexHeight;

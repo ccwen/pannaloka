@@ -1,13 +1,13 @@
 var React=require("react");
 var Component=React.Component;
-var PureComponent=require('react-pure-render').PureComponent;
+var PureRender=require('react-addons-pure-render-mixin');
 
 var ktcfilestore=require("../stores/ktcfile");
 var FileItem=require("../components/fileitem");
 
 var ktcfileaction=require("../actions/ktcfile");
-class NewFileButton extends Component {
-	newfile = () => {
+var NewFileButton =React.createClass({
+	newfile : function(){
 		ktcfileaction.newTree();
 		setTimeout(function(){
 			this.props.onOpenTree();
@@ -15,40 +15,40 @@ class NewFileButton extends Component {
 		
 	}
 
-	render () {
+	,render :function() {
 		return <button onClick={this.newfile}>Create New Tree</button>
 	}
-}
-module.exports = class TreeList extends Component {
-	constructor (props) {
-		super(props);
-		this.state={files:[],selectedIndex:0};
+});
+
+var TreeList = React.createClass({
+	getInitialState:function(){
+		return {files:[],selectedIndex:0};
 	}
 
-	onData = (files) => {
+	, onData :function(files) {
 		this.setState({files});
 	}
 
-	componentDidMount () {
+	,componentDidMount :function() {
 		this.unsubscribe = ktcfilestore.listen(this.onData);
 	}
 
-	componentWillUnmount () {
+	,componentWillUnmount :function() {
 		this.unsubscribe();
 	}
 
-	opentree = (e) => {
+	,opentree :function(e) {
 		var file=this.state.files[this.state.selectedIndex];
 		ktcfileaction.openTree(file.filename);
 		this.props.onOpenTree && this.props.onOpenTree();
 	}
 
-	renderItem (item,idx) {
+	,renderItem :function(item,idx) {
 		return <div key={idx} data-idx={idx}>
 			<FileItem onClick={this.opentree} selected={this.state.selectedIndex==idx} {...item}/></div>
 	}
 
-	selectItem = (e) => {
+	,selectItem :function(e) {
 		var target=e.target;
 		while (target && !target.dataset.idx) {
 			target=target.parentElement;
@@ -57,10 +57,12 @@ module.exports = class TreeList extends Component {
 		if (!isNaN(selectedIndex)) this.setState({selectedIndex});
 	}
 
-	render () {
+	,render :function() {
 		return <div>
 				<NewFileButton onOpenTree={this.props.onOpenTree}/>
-				<div onClick={this.selectItem}>{this.state.files.map(this.renderItem.bind(this))}</div>
+				<div onClick={this.selectItem}>{this.state.files.map(this.renderItem)}</div>
 		</div>
 	}
-}
+});
+
+module.exports = TreeList ;

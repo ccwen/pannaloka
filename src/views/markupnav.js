@@ -1,15 +1,15 @@
 var React=require("react");
 var markupstore=require("../stores/markup");
-module.exports = class markupNav extends React.Component {
-	next = () => {
+var markupNav = React.createClass({
+	next :function() {
 		var next=markupstore.getNext();
 		this.props.goMarkupByKey(next);
 	}
-	prev = () => {
+	,prev :function() {
 		var prev=markupstore.getPrev();
 		this.props.goMarkupByKey(prev);
 	}
-	render () {
+	,render :function() {
 		var editing=markupstore.getEditing();
 		if (!editing) return <span></span>
 		return <span>
@@ -18,4 +18,5 @@ module.exports = class markupNav extends React.Component {
 
 		</span>
 	}
-}
+});
+module.exports=markupNav;

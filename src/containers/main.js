@@ -14,30 +14,29 @@ var styles={
 	,RightPanel:{flex:6,overflowY:"auto",background:"silver"}
 }
 
-module.exports = class Main extends Component {
-	constructor(props) {
-		super(props);
-		this.state= {height:0};
+var Main=React.createClass({
+	getInitialState:function(){
+		return {height:0};
 	}
-
-	setHeight = () => {
+	,componentDidMount :function() {
+		this.setHeight();
+		window.onresize = this.resize;
+	}
+	, setHeight :function(){
 		var height=window.innerHeight-ReactDOM.findDOMNode(this.refs.mainmenu).style.height-30; //
 		this.refs.leftpanel.style.height=height;
 		this.refs.rightpanel.style.height=height;
 		this.setState({height});
 	}
 
-	resize = () => {
+	,resize:function() {
 		clearTimeout(this.resizetimer);
 		this.resizetimer=setTimeout(function(){
 			this.setHeight();
 		}.bind(this),200);
 	}
-	componentDidMount () {
-		this.setHeight();
-		window.onresize = this.resize;
-	}
-  render () {
+
+  ,render:function () {
   	return   	<div>
   		<div style={styles.Body}>
   			<MainMenu ref="mainmenu"/>
@@ -53,5 +52,5 @@ module.exports = class Main extends Component {
   	<Overlay/>
   </div>
   }
-};
-//
+});
+module.exports=Main;

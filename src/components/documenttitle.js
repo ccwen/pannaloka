@@ -1,7 +1,7 @@
 var React=require("react");
 var ReactDOM=require("react-dom");
 var Component=React.Component;
-var PureComponent=require('react-pure-render').PureComponent;
+var PureRender=require('react-addons-pure-render-mixin');
 var FlexHeight=require("./flexheight");
 
 
@@ -10,16 +10,15 @@ var styles={
 	,input:{fontSize:"75%",border:"0px solid",outline:0}
 	,cancelbutton:{fontSize:"75%"}
 }
-module.exports = class DocumentTitle extends PureComponent {
-	constructor (props) {
-		super(props);
-		this.state={editing:false,title:props.title,flex:props.flex||1};
+var DocumentTitle = React.createClass({
+	getInitialState:function () {
+		return {editing:false,title:this.props.title,flex:this.props.flex||1};
 	}
-	onChange = (e) => {
+	,onChange :function (e) {
 		this.setState({title:e.target.value});
 	}
 
-	onKeyUp = (e) => {
+	,onKeyUp :function (e)  {
 		if (e.key==="Enter") {
 			this.cancelEdit();
 			if (this.props.title!==this.state.title) {
@@ -31,7 +30,7 @@ module.exports = class DocumentTitle extends PureComponent {
 		}
 	}
 
-	componentDidUpdate () {
+	,componentDidUpdate :function() {
 		var input=ReactDOM.findDOMNode(this.refs.titleinput);
 		if (!input) return;
 		if (document.activeElement!==input) {
@@ -41,20 +40,20 @@ module.exports = class DocumentTitle extends PureComponent {
 		}
 	}
 
-	edit = () => {
+	,edit :function(){
 		this.setState({editing:true});
 	}
 
-	setFlexHeight = (flex) => {
+	,setFlexHeight :function(flex) {
 		this.setState({flex});
 		this.props.onSetFlexHeight&&this.props.onSetFlexHeight(flex);
 	}
 
-	cancelEdit = () => {
+	,cancelEdit :function() {
 		this.setState({editing:false});
 	}
 
-  render () {
+  ,render :function() {
   	if (this.state.editing) {
   		return <span style={styles.container}><input ref="titleinput" style={styles.input} 
   					autofocus onKeyUp={this.onKeyUp} 
@@ -68,4 +67,5 @@ module.exports = class DocumentTitle extends PureComponent {
   	}
   	
   }
-}
+});
+module.exports=DocumentTitle;

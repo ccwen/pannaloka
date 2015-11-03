@@ -12,12 +12,11 @@ var styles={
 	,banner:{borderRadius:"0.25em"}
 	//background:"-webkit-radial-gradient(center, ellipse cover, #f1da36 0%,gray 70%)"}
 }
-module.exports =class MainMenu extends Component {
-	constructor (props) {
-		super(props);
-		this.state={ime:0};
+var MainMenu = React.createClass({
+	getInitialState:function(){
+		return {ime:0};
 	}
-	changeTheme = () => {
+	,changeTheme :function() {
 		var docs=docfilestore.getDocs();
 		document.body.classList.toggle("darktheme");
 		var dark=document.body.classList.contains("darktheme");
@@ -28,22 +27,22 @@ module.exports =class MainMenu extends Component {
 
 		localStorage.setItem("lighttheme",!dark);
 	}
-	setIME = (ime) => {
+	,setIME :function(ime) {
 		localStorage.setItem("ime",ime);
 		this.setState({ime:ime});
 	}
-	componentDidMount () {
+	,componentDidMount :function () {
 		if (localStorage.getItem("lighttheme")=="true"){
 			this.changeTheme();
 		}
 		var ime=parseInt(localStorage.getItem("ime")||"1");
 		if (ime)this.setIME(ime);			
 	}
-	toggleIME = () => {
+	,toggleIME :function () {
 		this.setIME(-this.state.ime);
 	}
 
-  render () {
+  ,render :function () {
   	return <div style={styles.container}>
   	<div style={styles.left}>
 
@@ -59,4 +58,5 @@ module.exports =class MainMenu extends Component {
 
   	</div>
   }
-}
+});
+module.exports=MainMenu;

@@ -1,17 +1,15 @@
 var React=require("react");
 var E=React.createElement;
-var PureComponent=require("react-pure-render").PureComponent;
 var RangeHyperlink=require("./rangehyperlink");
 var markuptypedef=require("../markuptypedef/");
 var styles={picker:{border:"2px solid silver",borderRadius:"25%",cursor:"pointer"}}
-module.exports = class MarkupSelector extends React.Component {
-	constructor (props) {
-		super(props);
+var MarkupSelector = React.createClass({
+	getInitialState:function(){
 		this.editingMarker=[];
-		this.state=this.getEditor(props.markups,0);
+		return this.getEditor(this.props.markups,0);
 	}
 	
-	highlightMarkup (markups,idx) {
+	,highlightMarkup :function(markups,idx) {
 		
 		this.clearMarker();
 		this.setMarker(markups[idx].doc,markups[idx].markup.handle,"editingMarker samegroup");
@@ -24,13 +22,13 @@ module.exports = class MarkupSelector extends React.Component {
 	}
 
 	
-	setMarker (doc,textmarker,clsname) {
+	,setMarker :function(doc,textmarker,clsname) {
 		clsname=clsname||"editingMarker";
 		var pos=textmarker.find();
 		this.editingMarker.push(doc.markText(pos.from,pos.to,{className:clsname}));
 	}	
 
-	getEditor (markups,idx) {
+	,getEditor :function(markups,idx) {
 		var markupeditor=null,M=null,deletable=false,typedef=null;
 		if (markups.length) {
 			M=(markups[idx]).markup;
@@ -50,43 +48,43 @@ module.exports = class MarkupSelector extends React.Component {
 		return {markupeditor,M,idx,deletable,typedef};
 	}
 
-	shouldComponentUpdate (nextProps) {
+	,shouldComponentUpdate :function(nextProps) {
 		return (nextProps.markups!==this.props.markups && nextProps.markups.length>0
 			||nextProps.ranges.length>0 || (this.props.markups.length && this.props.markups[0].doc==null)) ;
 	}
-	componentWillReceiveProps (nextProps) {
+	,componentWillReceiveProps :function(nextProps) {
 		if (nextProps.markups.length) {
 			this.setState(this.getEditor(nextProps.markups,0));	
 		}
 	}
 
-	clearMarker () {
+	,clearMarker :function() {
 		if (this.editingMarker) {
 			this.editingMarker.map(function(m){m.clear()});
 			this.editingMarker=[];
 		}
 	}
 
-	renderMarkupItem () {
+	,renderMarkupItem :function() {
 		var idx=this.state.idx;
 		var item=this.props.markups[idx];
 		return <span key={idx}>{(idx+1)+"/"+this.props.markups.length}</span>
 	}
 
-	onNextMarkup = (e) => {
+	,onNextMarkup :function(e) {
 		var i=this.state.idx+1;
 		if (i&& i===this.props.markups.length) i=0;
 		this.setState(this.getEditor(this.props.markups,i));
 		this.forceUpdate();
 	}
 
-	renderMarkupPicker () {
+	,renderMarkupPicker :function() {
 		if (this.props.markups.length>1) {
 			return <span style={styles.picker} onClick={this.onNextMarkup}>{this.renderMarkupItem()}</span>
 		}
 	}
 
-	renderTarget() {
+	,renderTarget :function() {
 		if (!this.state.M) return;
 		var others=this.state.M.target;
 		if (!others)return;
@@ -96,7 +94,7 @@ module.exports = class MarkupSelector extends React.Component {
 	}
 
 
-	renderOthers() { //same view
+	,renderOthers:function() { //same view
 		if (!this.state.M) return;
 		if (!this.props.getOther) return;
 		var others=this.props.getOther(this.state.M,{format:"range"});
@@ -104,11 +102,11 @@ module.exports = class MarkupSelector extends React.Component {
 				,onHyperlinkEnter:this.props.onHyperlinkEnter});
 	}
 
-	componentWillUnmount () {
+	,componentWillUnmount :function() {
 		this.clearMarker();
 	}
 
-	onUpdateMarkup = (trait) => {
+	,onUpdateMarkup :function (trait) {
 		var m=this.props.markups[this.state.idx];
 		var mtrait=m.markup.trait;
 		if (!mtrait) mtrait=m.markup.trait={};
@@ -118,7 +116,7 @@ module.exports = class MarkupSelector extends React.Component {
 		this.props.onChanged&&this.props.onChanged(m.doc);	
 	}
 
-	onDeleteMarkup = () => {
+	,onDeleteMarkup :function () {
 		var m=this.props.markups[this.state.idx].markup;
 		this.props.onDelete(m,this.state.typedef);
 		//this is a hack, because shouldComponentUpdate return false
@@ -126,10 +124,10 @@ module.exports = class MarkupSelector extends React.Component {
 		this.forceUpdate();
 	}
 
-	renderTypedef () {
+	,renderTypedef :function() {
 		return (this.state.typedef)?this.state.typedef.label:"";
 	}
-	render () {
+	,render :function() {
 		if (!this.props.markups.length || !this.props.getOther) {
 			this.clearMarker();
 			return <span></span>
@@ -148,4 +146,5 @@ module.exports = class MarkupSelector extends React.Component {
 				{this.renderOthers()}				
 		</span>
 	}
-}
+});
+module.exports=MarkupSelector;

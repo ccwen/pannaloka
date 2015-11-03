@@ -5,14 +5,14 @@ var styles={
 	savebutton :{fontSize:"75%"}
 	,saved:{background:"green",color:"yellow"}
 }
-module.exports = class SaveButton extends Component {
+var SaveButton = React.createClass({
 
-	constructor (props)	 {
-		super(props);
-		this.state={saved:false,countdown:60};
+	getInitialState :function()	 {
+		
+		return {saved:false,countdown:60};
 	}
 
-	componentWillReceiveProps (nextProps) {
+	,componentWillReceiveProps :function(nextProps) {
 		if (!nextProps.dirty && this.props.dirty) {
 			this.setState({saved:true});
 			setTimeout(function(){
@@ -32,12 +32,12 @@ module.exports = class SaveButton extends Component {
 		}
 	}
 
-	componentWillUnmount () {
+	,componentWillUnmount :function() {
 		clearInterval(this.countdowntimer);
 	}
 
-	render () {
-		if (this.props.trait.host==="google") return <span></span>
+	,render :function() {
+		if (this.props.trait && this.props.trait.host==="google") return <span></span>
 		if (this.state.saved) {
 			return <span style={styles.saved}>Saved!!</span>
 		}
@@ -51,4 +51,5 @@ module.exports = class SaveButton extends Component {
 			return <span></span>
 		}
 	}	
-}
+});
+module.exports = SaveButton;

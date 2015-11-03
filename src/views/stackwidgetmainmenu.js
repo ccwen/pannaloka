@@ -4,14 +4,15 @@ var Component=React.Component;
 var stackwidgetaction=require("../actions/stackwidget");
 var selectionaction=require("../actions/selection");
 
-module.exports = class StackWidgetMainMenu extends Component {
-	newWidget = () => {
+var StackWidgetMainMenu = React.createClass({
+	newWidget :function () {
 		stackwidgetaction.newWidget({text:"widget"});
 	}
 
-  render () {
+  ,render : function() {
   	return <span>
   		<button onClick={this.newWidget}>New widget</button>
   	</span>
   }
-}
+});
+module.exports=StackWidgetMainMenu;

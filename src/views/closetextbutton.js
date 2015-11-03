@@ -1,7 +1,8 @@
 var React=require("react");
 
-module.exports = class CloseTextButton extends React.Component {
-	render () {
+var CloseTextButton = React.createClass({
+	render : function() {
 		return <span title="Ctrl+Q" className="closebutton" onClick={this.props.onClose}>×</span>
 	}
-}
+});
+module.exports = CloseTextButton;

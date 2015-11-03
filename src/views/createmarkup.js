@@ -1,6 +1,7 @@
 var React=require("react");
 var Component=React.Component;
-var PureComponent=require('react-pure-render').PureComponent;
+var PureRender=require('react-addons-pure-render-mixin');
+
 var selectionstore=require("../stores/selection");
 var markupstore=require("../stores/markup");
 var markupaction=require("../actions/markup");
@@ -9,18 +10,16 @@ var getAvailableType=markuptypedef.getAvailableType;
 var types=markuptypedef.types;
 var DefaultMarkupAttrEditor=require("../markuptypedef/defmarkupattr");
 
-class UserPreference {
-	constructor () {
-		this.preferences=[];
-	}
-	setPrefer (type, others) {
+var UserPreference =function() {
+	this.preferences=[];
+	this.setPrefer=function(type, others) {
 		this.preferences=this.preferences.filter(function(pref){
 			return (others.indexOf(pref)===-1);
 		});
 		this.preferences.push(type);
 	} 
 
-	getPrefer (types) { //return first matching perference
+	this.getPrefer=function(types) { //return first matching perference
 		for (var i=0;i<types.length;i++) {
 			if (this.preferences.indexOf(types[i])>-1) {
 				return i;
@@ -30,32 +29,31 @@ class UserPreference {
 	}
 }
 
-module.exports = class CreateMarkup extends PureComponent {
-	constructor (props) {
-		super(props);
+var CreateMarkup = React.createClass({
+	getInitialState:function() {
 		var selections=selectionstore.selections;
-		var types=getAvailableType(selections);
 		this.user=new UserPreference();
-		var selectedIndex=this.user.getPrefer(types);
-		this.state={types:types,userselect:"",selectedIndex:0,selections:selections};
+		var T=getAvailableType(selections);
+		var selectedIndex=this.user.getPrefer(T);		
+		return {types:T,userselect:"",selectedIndex:0,selections:selectionstore.selections};
 	}
 
-	onData = (selections) => {
+	,onData :function(selections) {
 		var types=getAvailableType(selections);
 		var selectedIndex=this.user.getPrefer(types);
 		if (types.length) markupstore.cancelEdit();
 		this.setState({types,selectedIndex,selections});
 	}
 
-	componentDidMount () {
+	,componentDidMount :function() {
 		this.unsubscribe = selectionstore.listen(this.onData);
 	}
 
-	componentWillUnmount () {
+	,componentWillUnmount :function() {
 		this.unsubscribe();
 	}
 
-	selecttype =(e) => {
+	,selecttype :function(e) {
 		var target=e.target;
 		while (target && typeof target.dataset.idx==="undefined") target=target.parentElement;
 		if (!target) return;
@@ -65,24 +63,24 @@ module.exports = class CreateMarkup extends PureComponent {
 		this.setState({selectedIndex:idx});
 	}
 
-	renderType (item,idx) {
+	,renderType :function(item,idx) {
 		return <label className="markuptype" key={idx} data-idx={idx}><input checked={idx==this.state.selectedIndex} 
 				onChange={this.selecttype} 
 				type="radio" name="markuptype"></input>{types[item].label}</label>
 	}
 
-	onCreateMarkup = (trait) => {
+	,onCreateMarkup :function (trait) {
 		var selections=this.state.selections;
 		var typename=this.state.types[this.state.selectedIndex];
 		var typedef=types[typename];
 		markupaction.createMarkup({selections,trait,typename,typedef});
 	}
 
-	setHotkey = (handler) => {
+	,setHotkey :function (handler) {
 		markupaction.setHotkey(handler);
 	}
 
-	renderAttributeEditor () {
+	,renderAttributeEditor :function() {
 		if (this.state.types.length===0 || this.state.selectedIndex===-1) return;
 
 		var activetype=this.state.types[this.state.selectedIndex];
@@ -93,13 +91,13 @@ module.exports = class CreateMarkup extends PureComponent {
 				,onCreateMarkup:this.onCreateMarkup} );
 
 	}
-	msg () {
+	,msg :function() {
 		var s="選取文字，按Ctrl選多段";
 		if (markupstore.getEditing()) s="";//Ctrl+L 嵌用此標記→";
 		return s;
 	}
 
-	render () {//need 130% to prevent flickering when INPUT add to markup editor
+	,render :function() {//need 130% to prevent flickering when INPUT add to markup editor
 		if (!this.props.editing) {
 			markupaction.setHotkey(null);
 			return <span></span>
@@ -111,9 +109,10 @@ module.exports = class CreateMarkup extends PureComponent {
 
 		return <span>
 			{this.state.types.length?
-			this.state.types.map(this.renderType.bind(this)):this.msg()}
+			this.state.types.map(this.renderType):this.msg()}
 			|
 			{this.renderAttributeEditor()}
 		</span>
 	}
-}
+});
+module.exports=CreateMarkup;

@@ -1,28 +1,23 @@
 var React=require("react");
 var ReactDOM=require("react-dom");
 var Component=React.Component;
-var PureComponent=require("react-pure-render/component");
+var PureRender=require('react-addons-pure-render-mixin');
+
 var WidgetClasses=require("../views/widgetclasses");
 
 var style={borderBottom:"1px solid silver"};
 
-module.exports = class StackWidget extends PureComponent {
-
-	constructor (props) {
-		super(props);
-	}
-
-	updateHeight () {
+var StackWidget = React.createClass({
+	updateHeight : function() {
 		ReactDOM.findDOMNode(this).style.height=this.props.height;
 	}
-	componentDidMount () {
+	,componentDidMount :function() {
 		this.updateHeight();
 	}
-	componentDidUpdate () {
+	,componentDidUpdate :function() {
 		this.updateHeight();
 	}
-
-	renderWidget() {
+	,renderWidget:function() {
 		var widgetclass=this.props.widgetClass||"SimpleView";
 		var widget=WidgetClasses[widgetclass];
 		if (!widget){
@@ -31,9 +26,10 @@ module.exports = class StackWidget extends PureComponent {
 		return React.createElement(widget,this.props);
 	}
 
-	render () {
+	,render :function() {
 		return <div style={style}>
 			{this.renderWidget()}
 		</div>
 	}
-}
+});
+module.exports = StackWidget;

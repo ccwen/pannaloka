@@ -6,26 +6,26 @@ var StackWidget=require("../containers/stackwidget");
 
 var MINWIDGETHEIGHT = 150;
 
-module.exports = class StackWidgetList extends Component {
-	 constructor(props) {
-    super(props);
-    this.state = { widgets:[], widgetheights:[]};
+var StackWidgetList = React.createClass({
+	getInitialState:function(){
+    
+    return  { widgets:[], widgetheights:[]};
   }
 
-	componentDidMount () {
+	,componentDidMount :function() {
 		this.unsubscribe = stackwidgetstore.listen(this.onData);
 	}
 
-	componentWillUnmount () {
+	,componentWillUnmount :function() {
 		this.unsubscribe();
 	}
 
-	totalFlex (widgets) {
+	,totalFlex :function(widgets) {
 		return widgets.reduce(function(prev,w){ 
 			return (w.trait.flex||1)+prev } 
 		,0);
 	}
-	setWidgetHeight = (props,widgets) => {
+	,setWidgetHeight :function(props,widgets) {
 		if (!props) props=this.props;
 		if (!widgets) widgets=this.state.widgets;
 		var totalheight=props.height;
@@ -40,23 +40,24 @@ module.exports = class StackWidgetList extends Component {
 		this.setState({widgetheights});
 	}
 
-	componentWillReceiveProps (nextProps) {
+	,componentWillReceiveProps :function(nextProps) {
 		this.setWidgetHeight(nextProps,this.state.widgets);
 	}
 
-	onData = (widgets) => {
+	,onData :function(widgets) {
 		this.setWidgetHeight(this.props,widgets);
 		this.setState({widgets});
 	}
 
-	renderItem (item,idx) {
+	,renderItem :function(item,idx) {
 		return <StackWidget height={this.state.widgetheights[idx]} key={item.wid}
 		resize={this.setWidgetHeight} wid={item.wid} widgetClass={item.widgetClass} trait={item.trait} />
 	}
 
-  render () {
+  ,render :function() {
   	return <div>
-  		{this.state.widgets.map(this.renderItem.bind(this))}
+  		{this.state.widgets.map(this.renderItem)}
   	</div>
   }
-}
+});
+module.exports=StackWidgetList;

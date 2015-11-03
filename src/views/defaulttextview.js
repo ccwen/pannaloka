@@ -16,14 +16,14 @@ var charinfo=require("./charinfo");
 var ListMarkup=require("./listmarkup");
 var CloseTextButton=require("./closetextbutton");
 
-module.exports = class DefaultTextView extends React.Component {
-	constructor (props) {
-		super(props);
-		this.state={dirty:false,markups:{},value:"",history:[]};
+var DefaultTextView = React.createClass({
+
+	getInitialState:function() {
 		this.hasMarkupUnderCursor=false; //for second click on a markup
+		return {dirty:false,markups:{},value:"",history:[]};
 	}
 
-	componentDidMount() {
+	,componentDidMount :function() {
 		if (this.props.newfile) {
 			this.setState({dirty:true,titlechanged:true,value:"new file"},this.loaded);
 		} else {
@@ -33,18 +33,18 @@ module.exports = class DefaultTextView extends React.Component {
 		this.unsubscribeSelection = selectionstore.listen(this.onSelection);
 	}
 
-	componentWillUnmount () {
+	,componentWillUnmount:function() {
 		this.unsubscribeMarkup();
 		this.unsubscribeSelection();
 		this.cm.react=null;
 		filemethod.unmount();
 	}
 
-	componentDidUpdate() {
+	,componentDidUpdate:function() {
 		this.setsize();
 	}
 
-	keymap(){
+	,keymap:function(){
 		this.cm.setOption("extraKeys", {
 	  	"Ctrl-L": function(cm) {
 	  		var bookmark=cm.react.bookmark_transclusion(null,markupstore.getEditing());
@@ -70,37 +70,37 @@ module.exports = class DefaultTextView extends React.Component {
 		});
 	}
 
-	rebuildMilestone = (markups) => {
+	,rebuildMilestone :function (markups)  {
 		markupmethod.rebuildMilestone.call(this,markups);
 	}
 
  //uses by ksana-codemirror/automarkup.js
-	createMilestones = (ranges) => {	
+	,createMilestones :function(ranges) {	
 		return markupmethod.createMilestones.call(this,ranges);	
 	}
 
 	//just for lookup , not trigger redraw as markup.handle already exists.
-	addMarkup = (markup) => {	
+	,addMarkup :function (markup) {	
 		return markupmethod.addMarkup.call(this,markup);	
 	}
 
-	getMarkup = (key) => {
+	,getMarkup :function (key) {
 		return this.state.markups[key];	
 	}
 
-	getOther = (markup,opts) => {
+	,getOther :function (markup,opts) {
 		return markupmethod.getOther.call(this,markup,opts);
 	}
 
-	removeMarkup (key) {
+	,removeMarkup :function(key) {
 		return markupmethod.removeMarkup.call(this,key);
 	}
 
-	onMarkup = (M,action) => {		
+	,onMarkup :function (M,action) {		
 		return markupmethod.onMarkup.call(this,M,action);
 	}
 
-	onSelection = (fileselections) => {
+	,onSelection :function (fileselections) {
 		var selections=fileselections[this.props.trait.filename];
 		if (!selections) return;
 		if (selections.length==0) {
@@ -110,23 +110,23 @@ module.exports = class DefaultTextView extends React.Component {
 		}
 	}	
 
-	bookmark_transclusion (bookmark,editing_markup) { // bookmark.className="transclusion" , bookmark_ prefix (see markups.js applyBookmark)
+	,bookmark_transclusion :function(bookmark,editing_markup) { // bookmark.className="transclusion" , bookmark_ prefix (see markups.js applyBookmark)
 		return transclude.call(this,bookmark,editing_markup);
 	}
 
-	setsize () {
+	,setsize :function() {
 		var menu=ReactDOM.findDOMNode(this.refs.menu);
 		if (this.cm) this.cm.setSize("100%",this.props.height-menu.offsetHeight); 
 	}
 
-	getWid() {
+	,getWid:function() {
 		return this.props.wid;
 	}
-	onClose = () => {
+	,onClose :function () {
 		filemethod.close.call(this);
 	}
 
-	onChange = (doc,change) => {
+	,onChange :function (doc,change) {
 		this.setState({dirty:!this.doc.isClean(this.generation)});
 
 		if (doc.lineCount()!==this.state.lineCount) {
@@ -136,62 +136,62 @@ module.exports = class DefaultTextView extends React.Component {
 		}
 	}
 
-	onSetTitle = (title) => {
+	,onSetTitle :function (title) {
 		return traitmethod.setTitle.call(this,title); 
 	}
 
-	onSetFlexHeight = (flex) => {
+	,onSetFlexHeight :function (flex) {
 		return traitmethod.setFlexHeight.call(this,flex); 
 	}
 
-	setDirty(cb) {
+	,setDirty:function(cb) {
 		this.setState({dirty:true});
 	}
 
-	loaded = () => {
+	,loaded :function () {
 		return filemethod.loaded.call(this); 
 	}
 
-  writefile (fn) { 
+  ,writefile :function(fn) { 
   	return filemethod.save.call(this,fn); 
   }
 
-	onSave = () => {	
+	,onSave :function () {	
 		return this.writefile(this.props.trait.filename); 
 	}
 
-	markupReady = () => {
+	,markupReady :function() {
 		return !!this.state.markupReady;
 	}
 
-	onMarkupReady = () => {
+	,onMarkupReady :function () {
 		this.setState({markupReady:true});
 		markupmethod.markupReady.call(this,this.state.markups);
 	}
 
 
-	onCursorActivity = (cm) => {
+	,onCursorActivity :function (cm) {
 		cursormethod.cursorActivity.call(this,cm);
 	}
 
-	onMouseDown =(cm,e) =>{//double click on a markup
+	,onMouseDown :function (cm,e) {//double click on a markup
 		cursormethod.mouseDown.call(this,cm,e);	
 	}
 
-	onMouseMove = (e) => {
+	,onMouseMove :function(e) {
 		cursormethod.mouseMove.call(this,this.cm,e);
 	}
 
 
-	getTheme = () => {
+	,getTheme :function() {
 		return localStorage.getItem("lighttheme")=="true"?"":"ambiance";
 	}
 
-	onBeforeChange = (cm,changeObj) => {
+	,onBeforeChange :function(cm,changeObj) {
 		filemethod.beforeChange.call(this,cm,changeObj);
 	}
 
-	render () {
+	,render:function () {
 		if (!this.state.value) return <div>loading {this.props.trait.filename}</div>
 
 		return <div>
@@ -215,4 +215,5 @@ module.exports = class DefaultTextView extends React.Component {
 				onChange={this.onChange}/>
 		</div>
 	}
-}
+});
+module.exports=DefaultTextView;

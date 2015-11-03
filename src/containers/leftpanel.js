@@ -11,37 +11,36 @@ var GoogleLogin=require("../google/googlelogin");
 var styles={key:{fontSize:"110%",color:"darkblue",fontFamily:"monospace",textAlign:"center"},
 section:{fontSize:"130%",textAlign:"center"},
 desc:{textAlign:"center"}};
-class Key extends Component {
-  render () {
+var Key = React.createClass({
+  render :function() {
     return <span style={styles.key}><br/>{this.props.children+" "}</span>
   }
-}
-class Section extends Component {
-  render () {
+});
+var Section = React.createClass({
+  render :function() {
     return <div  style={styles.section}><br/>{this.props.children}</div>
   }
-}
-class Desc extends Component {
-  render () {
+});
+var Desc = React.createClass({
+  render :function () {
     return <span  style={styles.desc}>{this.props.children}</span>
   }
-}
-module.exports = class LeftPanel extends Component {
-  constructor (props) {
-    super(props);
-    this.state={selectedIndex:0};
+});
+var LeftPanel = React.createClass({
+  getInitialState:function(){
+    return {selectedIndex:0};
   }
 
-	componentWillReceiveProps (nextProps) {
+	,componentWillReceiveProps:function (nextProps) {
 		this.panelheight=nextProps.height-45;
 		this.panelstyle={height:this.panelheight,overflowY:"auto"};		
 	}
 
-  switchToTree = () => {
+  ,switchToTree : function(){ 
     this.setState({selectedIndex:1});
   }
 
-  localFileList = () => {
+  ,localFileList : function(){ 
     if (this.props.localfilesystem) return <TabPanel>
         <div style={this.panelstyle}>
           <FileList/>
@@ -50,10 +49,10 @@ module.exports = class LeftPanel extends Component {
       </TabPanel>
   }
 
-  localTab = () => {
+  ,localTab : function(){ 
     if (this.props.localfilesystem)return  <Tab>Local File</Tab>
   }
-  render  () {
+  ,render :function() {
   	if (this.props.height<100) return <div>error height</div>
 
   	return <Tabs
@@ -120,4 +119,5 @@ module.exports = class LeftPanel extends Component {
 
   	</Tabs>
   }
-};
+});
+module.exports = LeftPanel;

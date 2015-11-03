@@ -4,24 +4,23 @@ var findmarkup=require("../markup/find");
 var RangeHyperlink=require("../components/rangehyperlink");
 var util=require("./util");
 var types=require("../markuptypedef").types;
-module.exports = class ListMarkup extends React.Component {
-	constructor (props) {
-		super(props);
-		this.state={links:[]};
+var ListMarkup = React.createClass({
+	getInitialState:function(){
+		return {links:[]};
 	}
-	componentDidMount () {
+	,componentDidMount:function(){
 		this.unsubscribe = selectionstore.listen(this.onSelection);
 	}
-	componentWillUnmount(){
+	,componentWillUnmount:function(){
 		clearTimeout(this.timer);
 		this.unsubscribe();
 	}
 
-	onHyperlinkClick = (file,key_range) => {
+	,onHyperlinkClick:function(file,key_range) {
 		util.gotoRangeOrMarkupID(file,key_range,{moveCursor:true,autoOpen:true});
 	}
 
-	findMarkup = () => {
+	,findMarkup :function() {
 		var ranges=selectionstore.getRanges({textLength:20});
 		if (!ranges || ranges.length!==1)return ;
 
@@ -43,12 +42,13 @@ module.exports = class ListMarkup extends React.Component {
 		this.setState({links});
 	}	
 
-	onSelection = (fileselections) => {
+	,onSelection :function(fileselections)  {
 		clearTimeout(this.timer);
 		var delta=Math.round(Math.random()*200);
 		this.timer=setTimeout(this.findMarkup,800+delta);//different view get fired seperately
 	}
-	render () {
+	,render:function() {
 		return <span><RangeHyperlink onHyperlinkClick={this.onHyperlinkClick} ranges={this.state.links}/></span>
 	}
-}
+})
+module.exports=ListMarkup;
