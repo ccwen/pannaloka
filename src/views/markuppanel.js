@@ -10,7 +10,7 @@ var docfilestore=require("../stores/docfile");
 var CreateMarkup=require("./createmarkup");
 var MarkupSelector=require("../components/markupselector");
 var MarkupNavigator=require("./markupnav");
-var util=require("./util");
+var highlight=require("../textview/highlight");
 
 var MarkupPanel = React.createClass({
 	getInitialState() {
@@ -52,11 +52,11 @@ var MarkupPanel = React.createClass({
 		for (var i in opts)	o[i]=opts[i];
 		o.below=this.state.wid;
 		o.autoopen=true;
-		util.gotoRangeOrMarkupID(file,mid,o);
+		highlight.gotoRangeOrMarkupID(file,mid,o);
 	}
 
 	,onHyperlinkEnter : function (file,mid)  {
-		util.gotoRangeOrMarkupID(file,mid,{noScroll:true});
+		highlight.gotoRangeOrMarkupID(file,mid,{noScroll:true});
 	}
 
 	,goMarkupByKey : function (mid)  {

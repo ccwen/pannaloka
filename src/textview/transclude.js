@@ -7,7 +7,7 @@ var docfilestore=require("../stores/docfile");
 var uuid=require("../uuid");
 var transclusion = require("../components/transclusion");
 var milestones=require("ksana-codemirror").milestones;
-var util=require("./util");
+var highlight=require("./highlight");
 var bookmarkfromrange=function(doc) { //simulate bookmark format in file
 	var bookmark={}; 
 	var ranges=selectionstore.getRanges();
@@ -29,7 +29,7 @@ var bookmarkfromrange=function(doc) { //simulate bookmark format in file
 var bookmarkfrommarkup=function(mrk) {
 	var bookmark={};
 	var file=docfilestore.fileOf(mrk.markup.handle.doc);
-	var text="~"+util.getMarkupText(mrk.markup.handle.doc,mrk.markup.handle);
+	var text="~"+highlight.getMarkupText(mrk.markup.handle.doc,mrk.markup.handle);
 	bookmark.target=[file, mrk.key, text];
 	bookmark.key=uuid();
 	bookmark.className="transclusion";
@@ -56,7 +56,7 @@ var transclude_onclick=function(e) {
 	var m=this.getMarkup(key);
 	var highlight= m.target[1];
 	this.doc.setCursor(m.handle.find());
-	util.gotoRangeOrMarkupID(m.target[0],m.target[1],{below:this.props.wid,moveCursor:true});
+	highlight.gotoRangeOrMarkupID(m.target[0],m.target[1],{below:this.props.wid,moveCursor:true});
 }	
 
 

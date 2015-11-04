@@ -1,4 +1,4 @@
-var DefaultTextView=require("./defaulttextview");
+var DefaultTextView=require("../textview/defaulttextview");
 var SimpleView=require("./simpleview");
 
 module.exports = {

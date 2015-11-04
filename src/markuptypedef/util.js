@@ -1,4 +1,4 @@
-var getMarkupsInRange=require("../views/util").getMarkupsInRange;
+var getMarkupsInRange=require("../textview/highlight").getMarkupsInRange;
 
 var filterEmptyRange=function(selections) {
 	var out={};

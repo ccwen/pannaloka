@@ -6,7 +6,7 @@ var PureRender=require('react-addons-pure-render-mixin');
 var docfilestore=require("../stores/docfile");
 var ktcfilestore=require("../stores/ktcfile");
 var ktcfileaction=require("../actions/ktcfile");
-var util=require("./util");
+var highlight=require("../textview/highlight");
 var TreeToc=require("ksana2015-treetoc").Component;
 var RangeHyperlink=require("../components/rangehyperlink");
 var SaveButton=require("../components/savebutton");
@@ -41,7 +41,7 @@ var OutlinePanel = React.createClass({
 		var m=markupstore.getEditing();
 
 		if (m) {
-			var text=util.getMarkupText(m.doc,m.markup.handle);
+			var text=highlight.getMarkupText(m.doc,m.markup.handle);
 			node.links=[[docfilestore.fileOf(m.doc),m.key,text]];
 		} else { //try range
 			var ranges=selectionstore.getRanges({textLength:5,pack:true});
@@ -55,7 +55,7 @@ var OutlinePanel = React.createClass({
 	}
 
 	,onHyperlinkClick :function(file,range) {
-		util.gotoRangeOrMarkupID(file,range,{moveCursor:true,autoOpen:true});
+		highlight.gotoRangeOrMarkupID(file,range,{moveCursor:true,autoOpen:true});
 	}
 	,onNode :function(node,selected,n,editingcaption) {
 		if (n==editingcaption) {

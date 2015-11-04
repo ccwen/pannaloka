@@ -1,4 +1,4 @@
-var util=require("./util");
+var highlight=require("./highlight");
 var docfileaction=require("../actions/docfile");
 var ktxfileaction=require("../actions/ktxfile");
 var selectionaction=require("../actions/selection");
@@ -21,7 +21,7 @@ var	loaded = function() {
 	}
 	if (this.props.trait.scrollTo) {
 		setTimeout(function(){
-			util.highlightDoc(this.doc,this.props.trait.scrollTo);
+			highlight.highlightDoc(this.doc,this.props.trait.scrollTo);
 		}.bind(this),300);//wait for markup to load
 	}
 }
@@ -60,8 +60,8 @@ var beforeChange=function(cm,changeObj) {
 
 var unmount = function() {
 	if (this.state._text) {
-		this.state._text.removeEventListener(TEXT_INSERTED,_inserttexthandler);
-		this.state._text.removeEventListener(TEXT_DELETED,_deletetexthandler);
+		this.state._text.removeAllEventListeners();
+		this.state._text.removeAllEventListeners();
 	}
 }
 
@@ -77,10 +77,8 @@ var load = function(fn,opts) {
 
 		TEXT_INSERTED=gapi.drive.realtime.EventType.TEXT_INSERTED;
 		TEXT_DELETED=gapi.drive.realtime.EventType.TEXT_DELETED;
-		this._inserttexthandler=inserttext.bind(this);
-		this._deletetexthandler=deletetext.bind(this);
-		_text.addEventListener(TEXT_INSERTED,this._inserttexthandler);
-		_text.addEventListener(TEXT_DELETED,this._deletetexthandler);
+		_text.addEventListener(TEXT_INSERTED,tinserttext.bind(this));
+		_text.addEventListener(TEXT_DELETED,tdeletetext.bind(this));
 
 		this.setState(data,this.loaded);
 	} else {

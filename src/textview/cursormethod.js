@@ -5,7 +5,7 @@ var docfileaction=require("../actions/docfile");
 var markupstore=require("../stores/markup");
 var selectionstore=require("../stores/selection");
 var markupaction=require("../actions/markup");
-var util=require("./util");
+var highlight=require("./highlight");
 
 var sortByDistance=function(cursor,markups,doc) {
 	return markups.filter(function(m){
@@ -39,7 +39,7 @@ var cursorActivity=function(){
 			this.hasMarkupUnderCursor=false;
 			//has range
 		} else {
-			var markups=util.getMarkupsInRange(this.doc,this.doc.getCursor());
+			var markups=highlight.getMarkupsInRange(this.doc,this.doc.getCursor());
 			markups=sortByDistance(this.doc.getCursor(),markups);
 			this.markups=markups;
 			markupaction.markupsUnderCursor(markups);
@@ -54,7 +54,7 @@ var cursorActivity=function(){
 var mouseMove=function(cm,e) {//event captured by React, not Codemirror
 	//console.log(e.clientX,e.clientY,e.pageX,e.pageY)
 	var pos=cm.coordsChar({left:e.clientX,top:e.clientY});
-	var markups=util.getMarkupsInRange(this.doc,pos);
+	var markups=highlight.getMarkupsInRange(this.doc,pos);
 	markups=sortByDistance(this.doc.getCursor(),markups);
 	if (!markups.length){
 		markupaction.hovering(null);
@@ -63,12 +63,12 @@ var mouseMove=function(cm,e) {//event captured by React, not Codemirror
 
 	var m=markups[0].markup;//only highlight first one
 	markupaction.hovering(m);
-	util.highlightRelatedMarkup(m);
+	highlight.highlightRelatedMarkup(m);
 }
 
 var mouseDown=function(cm,e){
 	var m=markupstore.getHovering();
-	if (m) util.autoGoMarkup.call(this,m);
+	if (m) highlight.autoGoMarkup.call(this,m);
 }
 
 module.exports={cursorActivity:cursorActivity, mouseDown:mouseDown

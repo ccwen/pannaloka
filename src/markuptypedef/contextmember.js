@@ -1,7 +1,7 @@
 var React=require("react");
 var E=React.createElement;
 var PT=React.PropTypes;
-var util=require("../views/util");
+var highlight=require("../textview/highlight");
 var docfilestore=require("../stores/docfile");
 var RangeHyperlink=require("../components/rangehyperlink");
 var isDefinition=require("./validatecontext").isDefinition;
@@ -19,15 +19,15 @@ var ContextMember=React.createClass({
 		var doc=docfilestore.docOf(file);
 		if (doc) { //already in view , open the target
 			var m=doc.getEditor().react.getMarkup(mid);
-			util.autoGoMarkup(m);
+			highlight.autoGoMarkup(m);
 		} else {
-			util.gotoRangeOrMarkupID(file,mid,{autoOpen:true});	
+			highlight.gotoRangeOrMarkupID(file,mid,{autoOpen:true});	
 		}
 	}
 	,onHyperlinkEnter:function(file,mid) {
 		var doc=docfilestore.docOf(file);
 		var m=doc.getEditor().react.getMarkup(mid);
-		util.highlightRelatedMarkup(m);
+		highlight.highlightRelatedMarkup(m);
 	}
 	,onDeleteClick:function(e) {
 		var idx=parseInt(e.target.parentElement.dataset.idx);
@@ -46,7 +46,7 @@ var ContextMember=React.createClass({
 	,getMasterTerm:function(filename) {
 		if (!this.props.member || !this.props.member[0] ||  !this.props.member[0].handle) return;
 		var doc=docfilestore.docOf(filename);
-		return util.getMarkupText(doc,this.props.member[0].handle);
+		return highlight.getMarkupText(doc,this.props.member[0].handle);
 	}
 	,render:function() {
 		var getTypeLabel=require("./types").getTypeLabel; //not available when this file is loaded

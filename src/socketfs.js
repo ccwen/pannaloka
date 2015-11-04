@@ -4,7 +4,7 @@ if (typeof fs.readFile=="undefined") {
 	var rpcutil=require("./rpc/rpc_util");	
 }
 
-var dataroot="data/";
+var dataroot="pannaloka/data/";
 
 var ready=function() {
 	if (fs.readFile) return true;

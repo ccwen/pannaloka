@@ -2,7 +2,7 @@ var React=require("react");
 var selectionstore=require("../stores/selection");
 var findmarkup=require("../markup/find");
 var RangeHyperlink=require("../components/rangehyperlink");
-var util=require("./util");
+var highlight=require("./highlight");
 var types=require("../markuptypedef").types;
 var ListMarkup = React.createClass({
 	getInitialState:function(){
@@ -17,7 +17,7 @@ var ListMarkup = React.createClass({
 	}
 
 	,onHyperlinkClick:function(file,key_range) {
-		util.gotoRangeOrMarkupID(file,key_range,{moveCursor:true,autoOpen:true});
+		highlight.gotoRangeOrMarkupID(file,key_range,{moveCursor:true,autoOpen:true});
 	}
 
 	,findMarkup :function() {

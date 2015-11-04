@@ -1,4 +1,4 @@
-var util=require("./util");
+var highlight=require("./highlight");
 var docfilestore=require("../stores/docfile");
 var createmilestones=require("./createmilestones");
 var selectionaction=require("../actions/selection");
@@ -46,7 +46,7 @@ var	getOther = function(markup,opts) {
 	if (out.length && opts.format=="range") {
 		return out.map(function(m){
 			var file=docfilestore.fileOf(m.handle.doc);
-			var text=util.getMarkupText(m.handle.doc,m.handle);
+			var text=highlight.getMarkupText(m.handle.doc,m.handle);
 			return [file,m.key,text];
 		});
 	}
