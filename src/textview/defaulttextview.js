@@ -44,6 +44,9 @@ var DefaultTextView = React.createClass({
 		this.setsize();
 	}
 
+	,isGoogleDriveFile:function(){
+		return (this.props.trait && this.props.trait.host==="google");
+	}
 	,keymap:function(){
 		this.cm.setOption("extraKeys", {
 	  	"Ctrl-L": function(cm) {

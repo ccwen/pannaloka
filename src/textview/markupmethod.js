@@ -3,6 +3,7 @@ var docfilestore=require("../stores/docfile");
 var createmilestones=require("./createmilestones");
 var selectionaction=require("../actions/selection");
 var kcm=require("ksana-codemirror");
+var textMarker2json=kcm.textMarker2json;
 var markupNav=require("../markup/nav");
 var	createMilestones = function (ranges)  { //uses by ksana-codemirror/automarkup.js
 	createmilestones.call(this.cm,ranges,function(newmarkups){
@@ -20,15 +21,27 @@ var	createMilestones = function (ranges)  { //uses by ksana-codemirror/automarku
 	}.bind(this));
 }
 
-	//just for lookup , not trigger redraw as markup.handle already exists.
+var addremotemarkup=function(key,markup){//not in textview yet
+	this.state._markups.set(key,markup);
+}
+
+var removeremotemarkup=function(markup) {
+	console.log("removeremotemarkup",markup);
+	this.state._markups.delete(markup.key);
+}
+/*
+//just for lookup , not trigger redraw as markup.handle already exists.
 var	addMarkup = function (markup) {
 	if (!markup  || !markup.key) return;
 	this.state.markups[markup.key]=markup;
+
+	if (this.isGoogleDriveFile()) addremotemarkup(markup);
 	if (markup.className==="milestone") this.rebuildMilestone(this.state.markups);
 	var file=docfilestore.fileOf(markup.handle.doc);
 	markupNav.rebuild(file,markup.className);
 	this.setState({dirty:true});
 }
+*/
 
 var	getOther = function(markup,opts) {
 	var out=[],markups=this.state.markups;
@@ -58,7 +71,8 @@ var	removeMarkup =function(key) {
 
 	if (m) {
 		var clsname=m.className;
-		
+		if (this.isGoogleDriveFile()) removeremotemarkup(m);
+
 		m.handle.clear();
 		delete this.state.markups[key];
 		if (clsname==="milestone") this.rebuildMilestone(this.state.markups);
@@ -90,10 +104,12 @@ var onMarkup = function(M,action) {
 		if (m.doc===this.doc) {
 			if (!markups) markups=shallowCopyMarkups(this.state.markups);
 			markups[m.key]=m.markup;
+			if (this.isGoogleDriveFile()) addremotemarkup.call(this,m.key,m.markup);
 			if (!touched) touched={};
 			touched[m.markup.className]=true;
 		}
 	}
+
 	selectionaction.clearAllSelection();
 	if (markups) this.setState({dirty:true,markups},function(){
 		//console.log(Object.keys(markups).length,Object.keys(this.state.markups).length);
@@ -117,4 +133,4 @@ var rebuildMilestone = function (markups) {
 }
 
 module.exports={onMarkup:onMarkup,createMilestones:createMilestones,markupReady:markupReady,
-	getOther:getOther,addMarkup:addMarkup,removeMarkup:removeMarkup,rebuildMilestone:rebuildMilestone}
+	getOther:getOther,removeMarkup:removeMarkup,rebuildMilestone:rebuildMilestone}

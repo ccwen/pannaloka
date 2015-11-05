@@ -6,7 +6,7 @@ var cmfileio=require("../cmfileio");
 var stackwidgetaction=require("../actions/stackwidget");
 var markupaction=require("../actions/markup");
 var markupstore=require("../stores/markup");
-var TEXT_DELETED,TEXT_INSERTED;
+var TEXT_DELETED,TEXT_INSERTED,VALUES_ADDED,VALUES_REMOVED,VALUE_CHANGED;
 var	loaded = function() {
 	this.cm=this.refs.cm.getCodeMirror();
 	this.cm.react=this;
@@ -44,8 +44,20 @@ var deletetext=function(e) {
 	this.ignore_change = false ;
 }
 
+var markupadded=function(e){
+	console.log("markupadded",e);
+	if (e.isLocal) return;
+}
+var markupremoved=function(e){
+	console.log("markupremoved",e);
+	if (e.isLocal) return;
+}
+var markupchanged=function(e){
+	console.log("markupchanged",e);
+	if (e.isLocal) return;
+}
 var beforeChange=function(cm,changeObj) {
-	if (this.props.trait.host!=="google")return;
+	if (!this.isGoogleDriveFile())return;
 	if (this.ignore_change) return;
 
 	var coString=this.state._text;
@@ -59,27 +71,46 @@ var beforeChange=function(cm,changeObj) {
 }
 
 var unmount = function() {
-	if (this.state._text) {
-		this.state._text.removeAllEventListeners();
-		this.state._text.removeAllEventListeners();
-	}
+	if (this.state._text) this.state._text.removeAllEventListeners();
+	if (this.state._markups) this.state.markups.removeAllEventListeners();
 }
 
+var loadMarkupFromGoogleDrive=function(markups) {
+	var keys=markups.keys(),values=markups.values();
+	var out={};
+	for (var i=0;i<keys.length;i++) {
+		var k=keys[i]
+		var v=values[i];
+		out[k]={};
+		for (var key in v){
+			out[k][key]=v[key];
+		}
+	}
+	return out;
+}
 var load = function(fn,opts) {
 	opts=opts||{};
 	if (opts.host==="google") {
 		var doc=opts.doc;
 		var _markups=doc.getModel().getRoot().get('markups');
+		var markups=loadMarkupFromGoogleDrive.call(this,_markups);
 		var _text=doc.getModel().getRoot().get('text'); 
 		var title=opts.title;
-		var data={value:_text.text, meta:{title:title}, markups:JSON.parse(_markups.toString()) 
+		var data={value:_text.text, meta:{title:title}, markups:markups
 		, _markups:_markups, _text:_text };
 
 		TEXT_INSERTED=gapi.drive.realtime.EventType.TEXT_INSERTED;
 		TEXT_DELETED=gapi.drive.realtime.EventType.TEXT_DELETED;
-		_text.addEventListener(TEXT_INSERTED,tinserttext.bind(this));
-		_text.addEventListener(TEXT_DELETED,tdeletetext.bind(this));
+		VALUES_ADDED=gapi.drive.realtime.EventType.VALUES_ADDED;
+		VALUES_REMOVED=gapi.drive.realtime.EventType.VALUES_REMOVED;
+		VALUE_CHANGED=gapi.drive.realtime.EventType.VALUE_CHANGED;
 
+		_text.addEventListener(TEXT_INSERTED,inserttext.bind(this));
+		_text.addEventListener(TEXT_DELETED,deletetext.bind(this));
+
+		_markups.addEventListener(VALUES_ADDED,markupadded.bind(this));
+		_markups.addEventListener(VALUES_REMOVED,markupremoved.bind(this));
+		_markups.addEventListener(VALUE_CHANGED,markupchanged.bind(this));
 		this.setState(data,this.loaded);
 	} else {
 		cmfileio.readFile(this.props.trait.filename,function(err,data){
