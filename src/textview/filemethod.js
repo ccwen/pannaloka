@@ -6,6 +6,8 @@ var cmfileio=require("../cmfileio");
 var stackwidgetaction=require("../actions/stackwidget");
 var markupaction=require("../actions/markup");
 var markupstore=require("../stores/markup");
+var json2textMarker=require("ksana-codemirror").json2textMarker;
+
 var TEXT_DELETED,TEXT_INSERTED,VALUES_ADDED,VALUES_REMOVED,VALUE_CHANGED;
 var	loaded = function() {
 	this.cm=this.refs.cm.getCodeMirror();
@@ -45,16 +47,26 @@ var deletetext=function(e) {
 }
 
 var markupadded=function(e){
-	console.log("markupadded",e);
 	if (e.isLocal) return;
+	var m={};
+	for (var i in e.newValue) {
+		m[i]=e.newValue[i];
+	}
+	json2textMarker.call(this,this.cm,e.property,m);
+	this.state.markups[e.property]=m;
 }
-var markupremoved=function(e){
-	console.log("markupremoved",e);
+var markupdelete=function(e){
 	if (e.isLocal) return;
+
+	var m=this.getMarkup(e.property);
+	delete this.state.markups[e.property];//in this.state.markups
+	if (m && m.handle) m.handle.clear();
 }
 var markupchanged=function(e){
-	console.log("markupchanged",e);
 	if (e.isLocal) return;
+
+	if (e.oldValue===null && e.newValue) markupadded.call(this,e);
+	else if (e.newValue===null && e.oldValue) markupdelete.call(this,e);
 }
 var beforeChange=function(cm,changeObj) {
 	if (!this.isGoogleDriveFile())return;
@@ -108,8 +120,6 @@ var load = function(fn,opts) {
 		_text.addEventListener(TEXT_INSERTED,inserttext.bind(this));
 		_text.addEventListener(TEXT_DELETED,deletetext.bind(this));
 
-		_markups.addEventListener(VALUES_ADDED,markupadded.bind(this));
-		_markups.addEventListener(VALUES_REMOVED,markupremoved.bind(this));
 		_markups.addEventListener(VALUE_CHANGED,markupchanged.bind(this));
 		this.setState(data,this.loaded);
 	} else {

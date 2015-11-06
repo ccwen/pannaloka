@@ -26,7 +26,6 @@ var addremotemarkup=function(key,markup){//not in textview yet
 }
 
 var removeremotemarkup=function(markup) {
-	console.log("removeremotemarkup",markup);
 	this.state._markups.delete(markup.key);
 }
 /*
@@ -71,7 +70,7 @@ var	removeMarkup =function(key) {
 
 	if (m) {
 		var clsname=m.className;
-		if (this.isGoogleDriveFile()) removeremotemarkup(m);
+		if (this.isGoogleDriveFile()) removeremotemarkup.call(this,m);
 
 		m.handle.clear();
 		delete this.state.markups[key];
