@@ -15,7 +15,7 @@ var traitmethod=require("./traitmethod");
 var charinfo=require("./charinfo");
 var ListMarkup=require("./listmarkup");
 var CloseTextButton=require("./closetextbutton");
-
+var googledrive=require("./googledrive");
 var DefaultTextView = React.createClass({
 
 	getInitialState:function() {
@@ -37,7 +37,7 @@ var DefaultTextView = React.createClass({
 		this.unsubscribeMarkup();
 		this.unsubscribeSelection();
 		this.cm.react=null;
-		filemethod.unmount.call(this);
+		googledrive.unmount.call(this);
 	}
 
 	,componentDidUpdate:function() {
@@ -191,7 +191,7 @@ var DefaultTextView = React.createClass({
 	}
 
 	,onBeforeChange :function(cm,changeObj) {
-		filemethod.beforeChange.call(this,cm,changeObj);
+		googledrive.beforeChange.call(this,cm,changeObj);
 	}
 
 	,render:function () {

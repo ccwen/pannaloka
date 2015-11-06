@@ -2,6 +2,8 @@ var React=require("react");
 var realtimestore=require("./realtimestore");
 var AppId=require("./clientid").AppId;
 var stackwidgetaction=require("../actions/stackwidget");
+
+var styles={openButton:{fontSize:"125%"},createButton:{fontSize:"125%"}};
 var GooglePanel=React.createClass({
 	componentDidMount:function() {
 	  this.unsubscribe = realtimestore.listen(this.onLoggedIn);
@@ -70,8 +72,8 @@ var GooglePanel=React.createClass({
 	}
 	,render:function() {
 		return <span>
-		<button ref="openbutton" onClick={this.pickFile}>Open</button>
-		<button ref="createbutton" onClick={this.createFile}>Create</button>
+		<button style={styles.openButton} ref="openbutton" onClick={this.pickFile}>Open</button>
+		<button style={styles.createButton} ref="createbutton" onClick={this.createFile}>Create</button>
 		</span>
 	}
 });

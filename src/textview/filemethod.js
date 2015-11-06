@@ -6,9 +6,8 @@ var cmfileio=require("../cmfileio");
 var stackwidgetaction=require("../actions/stackwidget");
 var markupaction=require("../actions/markup");
 var markupstore=require("../stores/markup");
-var json2textMarker=require("ksana-codemirror").json2textMarker;
+var googledrive=require("./googledrive");
 
-var TEXT_DELETED,TEXT_INSERTED,VALUES_ADDED,VALUES_REMOVED,VALUE_CHANGED;
 var	loaded = function() {
 	this.cm=this.refs.cm.getCodeMirror();
 	this.cm.react=this;
@@ -28,100 +27,11 @@ var	loaded = function() {
 	}
 }
 
-var inserttext=function(e) {
-	if (e.isLocal) return;
-  var from  = this.cm.posFromIndex(e.index);
-  this.ignore_change = true ;
-  this.cm.replaceRange(e.text, from, from);
-	this.ignore_change = false ;
-}
 
-var deletetext=function(e) {
-	if (e.isLocal) return;
-  var from = this.cm.posFromIndex(e.index) ;
-	var to   = this.cm.posFromIndex(e.index + e.text.length) ;
-
-  this.ignore_change = true ;
-  this.cm.replaceRange("", from, to);
-	this.ignore_change = false ;
-}
-
-var markupadded=function(e){
-	if (e.isLocal) return;
-	var m={};
-	for (var i in e.newValue) {
-		m[i]=e.newValue[i];
-	}
-	json2textMarker.call(this,this.cm,e.property,m);
-	this.state.markups[e.property]=m;
-}
-var markupdelete=function(e){
-	if (e.isLocal) return;
-
-	var m=this.getMarkup(e.property);
-	delete this.state.markups[e.property];//in this.state.markups
-	if (m && m.handle) m.handle.clear();
-}
-var markupchanged=function(e){
-	if (e.isLocal) return;
-
-	if (e.oldValue===null && e.newValue) markupadded.call(this,e);
-	else if (e.newValue===null && e.oldValue) markupdelete.call(this,e);
-}
-var beforeChange=function(cm,changeObj) {
-	if (!this.isGoogleDriveFile())return;
-	if (this.ignore_change) return;
-
-	var coString=this.state._text;
-
-  var from  = this.cm.indexFromPos(changeObj.from);
-  var to    = this.cm.indexFromPos(changeObj.to);
-  var text  = changeObj.text.join('\n');
-
-  if (to - from > 0)    coString.removeRange(from, to);
-  if (text.length > 0)  coString.insertString(from, text);
-}
-
-var unmount = function() {
-	if (this.state._text) this.state._text.removeAllEventListeners();
-	if (this.state._markups) this.state.markups.removeAllEventListeners();
-}
-
-var loadMarkupFromGoogleDrive=function(markups) {
-	var keys=markups.keys(),values=markups.values();
-	var out={};
-	for (var i=0;i<keys.length;i++) {
-		var k=keys[i]
-		var v=values[i];
-		out[k]={};
-		for (var key in v){
-			out[k][key]=v[key];
-		}
-	}
-	return out;
-}
 var load = function(fn,opts) {
 	opts=opts||{};
 	if (opts.host==="google") {
-		var doc=opts.doc;
-		var _markups=doc.getModel().getRoot().get('markups');
-		var markups=loadMarkupFromGoogleDrive.call(this,_markups);
-		var _text=doc.getModel().getRoot().get('text'); 
-		var title=opts.title;
-		var data={value:_text.text, meta:{title:title}, markups:markups
-		, _markups:_markups, _text:_text };
-
-		TEXT_INSERTED=gapi.drive.realtime.EventType.TEXT_INSERTED;
-		TEXT_DELETED=gapi.drive.realtime.EventType.TEXT_DELETED;
-		VALUES_ADDED=gapi.drive.realtime.EventType.VALUES_ADDED;
-		VALUES_REMOVED=gapi.drive.realtime.EventType.VALUES_REMOVED;
-		VALUE_CHANGED=gapi.drive.realtime.EventType.VALUE_CHANGED;
-
-		_text.addEventListener(TEXT_INSERTED,inserttext.bind(this));
-		_text.addEventListener(TEXT_DELETED,deletetext.bind(this));
-
-		_markups.addEventListener(VALUE_CHANGED,markupchanged.bind(this));
-		this.setState(data,this.loaded);
+		googledrive.load.call(this,opts.doc,opts.title);
 	} else {
 		cmfileio.readFile(this.props.trait.filename,function(err,data){
 			if (err) {
@@ -170,4 +80,4 @@ var close = function() {
 		}
 
 }
-module.exports={load:load,loaded:loaded,save:save,close:close,unmount:unmount,beforeChange:beforeChange};
+module.exports={load:load,loaded:loaded,save:save,close:close};

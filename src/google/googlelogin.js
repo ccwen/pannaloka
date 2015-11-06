@@ -3,6 +3,7 @@ var clientId=require("./clientid").clientId;
 var AppId=require("./clientid").AppId;
 var action=require("./realtimeaction");
 var LoggedIn=require("./loggedin");
+var styles={loginButton:{fontSize:"125%"}};
 var GoogleLogin=React.createClass({
 	getInitialState:function(){
 		return {authorized:false};
@@ -38,7 +39,7 @@ var GoogleLogin=React.createClass({
 	}
 	,render:function(){
 			if (!this.state.authorized) {
-				return <button id="auth_button">Login</button>
+				return <button style={styles.loginButton} id="auth_button">Login</button>
 			} else {
 				return <LoggedIn realtimeUtils={this.realtimeUtils}/>
 			}
