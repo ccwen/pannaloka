@@ -1,1 +1,1 @@
-module.exports=require("reflux").createActions(["loggedIn"]);
+module.exports=require("reflux").createActions(["loggedIn","openFile","createFile","setRealtimeUtils"]);

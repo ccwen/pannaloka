@@ -1,24 +1,18 @@
 var React=require("react");
-var realtimestore=require("./realtimestore");
+var realtimeaction=require("./realtimeaction");
 var AppId=require("./clientid").AppId;
 var stackwidgetaction=require("../actions/stackwidget");
 
 var styles={openButton:{fontSize:"125%"},createButton:{fontSize:"125%"}};
 var GooglePanel=React.createClass({
-	componentDidMount:function() {
-	  this.unsubscribe = realtimestore.listen(this.onLoggedIn);
-	}
-	,componentWillUnmount:function(docid){
-		this.unsubscribe();
-	}
-	,openFile:function(docid) {
+	openFile:function(docid,title,opts) {
 		this.docId=docid;
-		this.props.realtimeUtils.load(docid, this.onFileLoaded);
+		realtimeaction.openFile(docid, title, opts,this.onFileLoaded);
 	}
 	,openCallback:function(res){
 		if (res.action==="picked"){
 			this.title=res.docs[0].name;
-			this.openFile(res.docs[0].id);
+			this.openFile(res.docs[0].id, this.title);
 		}
 		if (res.action!=="loaded") {
 			this.refs.openbutton.disabled=false;
@@ -44,11 +38,6 @@ var GooglePanel=React.createClass({
     });
 	}
 	,onFileLoaded:function(doc){
-    //var collaborativeString = doc.getModel().getRoot().get('text');
-    //wireTextBoxes(collaborativeString);
-    var obj={filename:this.docId,host:"google",doc:doc,title:this.title};
-    stackwidgetaction.openWidget(obj,"TextWidget");
-
 		this.refs.openbutton.disabled=false;
 		this.refs.createbutton.disabled=false;    
 	}
@@ -63,11 +52,13 @@ var GooglePanel=React.createClass({
 	,createFile:function() {
 		this.refs.openbutton.disabled=true;
 		this.refs.createbutton.disabled=true;
-		this.title='New File(click to change)';
-		this.props.realtimeUtils.createRealtimeFile(this.title, function(createResponse) {
+		var title='New File(click to change)';
+		this.title=title;
+
+		realtimeaction.createFile(title, function(createResponse) {
          //window.history.pushState(null, null, '?id=' + createResponse.id);
          this.docId=createResponse.id;
-         this.props.realtimeUtils.load(createResponse.id, this.onFileLoaded, this.onFileInitialize);
+         realtimeaction.openFile(createResponse.id, title, {},this.onFileLoaded, this.onFileInitialize);
     }.bind(this));
 	}
 	,render:function() {

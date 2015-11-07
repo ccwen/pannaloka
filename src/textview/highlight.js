@@ -4,6 +4,7 @@ var overlayaction=require("../actions/overlay");
 var milestones=require("ksana-codemirror").milestones;
 var ktxfilestore=require("../stores/ktxfile");
 var markupstore=require("../stores/markup");
+var googledrive=require("./googledrive");
 var gotoRangeOrMarkupID=function(file,range_mid,opts) {
 	opts=opts||{};
 	if (opts.below && !opts.autoOpen) opts.autoOpen=true;
@@ -26,6 +27,8 @@ var gotoRangeOrMarkupID=function(file,range_mid,opts) {
 		if (target) {
 			target.scrollTo=range_mid;
 			stackwidgetaction.openWidget(target,"TextWidget",{below:opts.below});	
+		} else if (file.indexOf("/")===-1){
+			googledrive.openFile.call(this,file,{below:opts.below,scrollTo:range_mid});
 		}
 	}
 }
@@ -189,6 +192,9 @@ var highlightRelatedMarkup=function(m) { //highlight markup and all related
 var	autoGoMarkup = function(m) {
 	var others=m.source||m.by||m.target;
 	if (!others)return;
+	if (others[0] instanceof Array) {
+		others=others[0];
+	}
 	if (typeof others[0]==="string"){
 		var wid=m.handle.doc.getEditor().react.getWid();
 		gotoRangeOrMarkupID.call(this,others[0],others[1],{below:wid});

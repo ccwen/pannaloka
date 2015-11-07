@@ -1,5 +1,7 @@
 var textMarker2json=require("ksana-codemirror").textMarker2json;
 var json2textMarker=require("ksana-codemirror").json2textMarker;
+var realtimeaction=require("../google/realtimeaction");
+
 var TEXT_DELETED,TEXT_INSERTED,VALUES_ADDED,VALUES_REMOVED,VALUE_CHANGED;
 var load=function(doc,title){
 		this._changes=[];
@@ -23,8 +25,8 @@ var load=function(doc,title){
 }
 
 var loadMarkupFromGoogleDrive=function(markups) {
-	var keys=markups.keys(),values=markups.values();
 	var out={};
+	var keys=markups.keys(),values=markups.values();
 	for (var i=0;i<keys.length;i++) {
 		var k=keys[i]
 		var v=values[i];
@@ -35,7 +37,17 @@ var loadMarkupFromGoogleDrive=function(markups) {
 	}
 	return out;
 }
-
+var setTitle=function(fileid,title,cb){
+	gapi.client.load('drive', 'v2', function() {  
+		var renameRequest = gapi.client.drive.files.patch({
+            fileId: fileid,
+            resource: { title: title }
+    });
+		renameRequest.execute(function(resp) {
+			cb(0,resp.title);
+    });
+	});
+}
 var inserttext=function(e) {
 	if (e.isLocal) return;
   var from  = this.cm.posFromIndex(e.index);
@@ -125,7 +137,7 @@ var findTouchedMarkup=function(){
 
 var unmount = function() {
 	if (this.state._text) this.state._text.removeAllEventListeners();
-	if (this.state._markups) this.state.markups.removeAllEventListeners();
+	if (this.state._markups) this.state._markups.removeAllEventListeners();
 }
 
 var update=function(){
@@ -158,5 +170,15 @@ var update=function(){
 	}.bind(this),500);//must smaller than 	
 }
 
+var openFile=function(fileid,opts) {
+	gapi.client.load('drive', 'v2', function() {  
+		var request = gapi.client.drive.files.get({
+  	  'fileId': fileid
+  	});
+  	request.execute(function(resp){
+  		realtimeaction.openFile(fileid,resp.title,opts);
+	  })
+  });
+}
 module.exports={load:load,update:update,markupchanged:markupchanged,inserttext:inserttext,deletetext:deletetext
-,beforeChange:beforeChange,unmount:unmount};
+,beforeChange:beforeChange,unmount:unmount,openFile:openFile,setTitle:setTitle};
