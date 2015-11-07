@@ -1,6 +1,6 @@
 jsonp_handler({
  "version": "1",
- "build": 46,
+ "build": 134,
  "title": "Pannaloka",
  "minruntime": 1,
  "baseurl": "http://rawgit.com/ksanaforge/pannaloka/master/",
@@ -26,14 +26,14 @@ jsonp_handler({
  "filesizes": [
   1064,
   665788,
-  730830,
-  670
+  735659,
+  671
  ],
  "filedates": [
   "2015-11-03T13:50:21.171Z",
   "2015-11-03T14:00:36.290Z",
-  "2015-11-04T12:55:06.194Z",
-  "2015-11-04T12:44:29.226Z"
+  "2015-11-06T15:23:17.511Z",
+  "2015-11-06T15:21:28.869Z"
  ],
- "date": "2015-11-04T12:55:07.088Z"
+ "date": "2015-11-06T15:23:18.414Z"
 })

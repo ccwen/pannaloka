@@ -10341,7 +10341,7 @@ var CodeMirrorComponent = React.createClass({
 	,getCodeMirror:function () {
 		return this.codeMirror;
 	}
-
+/*
 	,markText:function(opts) {
 		var doc=this.codeMirror.getDoc();
 		var selections=doc.listSelections();
@@ -10355,7 +10355,7 @@ var CodeMirrorComponent = React.createClass({
 			this.codeMirror.markText(sel.anchor,sel.head, opts );	
 		}
 	}
-
+*/
 	,focus:function () {
 		if (this.codeMirror) {
 			this.codeMirror.focus();
@@ -10388,16 +10388,17 @@ module.exports = CodeMirrorComponent;
 },{"./automarkup.js":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\automarkup.js","./ire-hint":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\ire-hint.js","./markups":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\markups.js","./milestones":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\milestones.js","codemirror":"C:\\ksana2015\\node_modules\\codemirror\\lib\\codemirror.js","codemirror/addon/dialog/dialog.js":"C:\\ksana2015\\node_modules\\codemirror\\addon\\dialog\\dialog.js","codemirror/addon/display/panel":"C:\\ksana2015\\node_modules\\codemirror\\addon\\display\\panel.js","codemirror/addon/hint/show-hint.js":"C:\\ksana2015\\node_modules\\codemirror\\addon\\hint\\show-hint.js","codemirror/addon/search/search.js":"C:\\ksana2015\\node_modules\\codemirror\\addon\\search\\search.js","codemirror/addon/search/searchcursor.js":"C:\\ksana2015\\node_modules\\codemirror\\addon\\search\\searchcursor.js","codemirror/addon/selection/active-line":"C:\\ksana2015\\node_modules\\codemirror\\addon\\selection\\active-line.js","react":"react","react-dom":"react-dom"}],"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js":[function(require,module,exports){
 var serialization=require("./serialization");
 module.exports={
-	serialize:serialization.serialize,
-	deserialize:serialization.deserialize,
-	getSelections:require("./selection").getSelections,
-	getCharAtCursor:require("./selection").getCharAtCursor,
-	CodeMirror:require("codemirror"),
-	Component:require("./codemirror-react"),
-	milestones:require("./milestones")
-	
+	serialize:serialization.serialize
+	,deserialize:serialization.deserialize
+	,getSelections:require("./selection").getSelections
+	,getCharAtCursor:require("./selection").getCharAtCursor
+	,CodeMirror:require("codemirror")
+	,Component:require("./codemirror-react")
+	,milestones:require("./milestones")
+	,textMarker2json:require("./markups").textMarker2json
+	,json2textMarker:require("./markups").json2textMarker
 };
-},{"./codemirror-react":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\codemirror-react.js","./milestones":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\milestones.js","./selection":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\selection.js","./serialization":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\serialization.js","codemirror":"C:\\ksana2015\\node_modules\\codemirror\\lib\\codemirror.js"}],"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\ire-hint.js":[function(require,module,exports){
+},{"./codemirror-react":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\codemirror-react.js","./markups":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\markups.js","./milestones":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\milestones.js","./selection":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\selection.js","./serialization":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\serialization.js","codemirror":"C:\\ksana2015\\node_modules\\codemirror\\lib\\codemirror.js"}],"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\ire-hint.js":[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 //if (var IRE=require("ksana-ire");
@@ -10464,35 +10465,35 @@ var applyBookmark=function(cm,bookmark) {
 	return null;
 }
 
+var json2textMarker=function(cm,key,m) {
+	var fromch=m.from[0],fromline=m.from[1];
+
+	if (typeof m.to==="undefined") {
+		m.key=key;
+		applyBookmark(cm,m).handle;
+		return;
+	}
+
+	if (typeof m.to==="number") {
+		toch=m.to;
+		toline=fromline;
+	}  else {
+		toch=m.to[0];
+		toline=m.to[1];
+	}
+
+	for (var i in m) {
+		if (reservedfields[i]) delete m[i];
+	}
+	m.key=key; //probably from firebase uid
+	m.handle=cm.markText({line:fromline,ch:fromch},{line:toline,ch:toch}, m );
+}
 var applyMarkups=function(cm,markups,clear) {
 	if (clear) clearAllMarks(cm.getDoc());
 	for (var key in markups) {
+		if (markups[key].handle) continue; //already in view
 		var m=markups[key];
-		if (m.handle) continue; //already in view
-		var fromch=m.from[0],fromline=m.from[1];
-
-		if (typeof m.to==="undefined") {
-			m.key=key;
-			applyBookmark(cm,m).handle;
-			delete m.from;
-			continue;
-		}
-
-		if (typeof m.to==="number") {
-			toch=m.to;
-			toline=fromline;
-		}  else {
-			toch=m.to[0];
-			toline=m.to[1];
-		}
-		delete m.from;
-		delete m.to;
-
-		for (var i in m) {
-			if (reservedfields[i]) delete m[i];
-		}
-		m.key=key; //probably from firebase uid
-		m.handle=cm.markText({line:fromline,ch:fromch},{line:toline,ch:toch}, m );		
+		json2textMarker.call(this,cm,key,m);
 	}
 }
 
@@ -10507,42 +10508,50 @@ var extractBookmark=function(textmarker, pos) {
 	}
 	return out;
 }
+
+var textMarker2json=function(m) {
+	if (m.clearOnEnter) return; //temporary markup will not be saved
+	var obj={};
+
+	for (var key in m) {
+		if (!m.hasOwnProperty(key))continue;
+		if (!reservedfields[key] && key[0]!=="_") { //key start with _ will not saved
+			obj[key]=m[key];
+			if (key==="className"&& m[key].indexOf("editingMarker")>-1) {//should not save this class
+				obj[key]=obj[key].replace(/ ?editingMarker ?/,"");
+			}
+		}
+	}
+
+	//overwrite from and to
+	var pos=m.find();
+	if (m.type==="bookmark") {
+		obj=extractBookmark(m,pos);
+	} else {
+		obj.from=[pos.from.ch,pos.from.line];
+		if (pos.to) {
+			obj.to=pos.to.ch;
+			if (pos.from.line!==pos.to.line) to=[to,pos.to.line];
+		} else {
+			console.error("markup missing to");
+		}
+	}	
+	return obj;
+}
 var extractMarkups=function(doc) {
 	var marks=doc.getAllMarks();
 	var markups={};
-
 	for (var i=0;i<marks.length;i++) {
-		var obj={};
 		var m=marks[i];
-		if (m.clearOnEnter) continue; //temporary markup will not be saved
-		var pos=m.find();
-		if (m.type==="bookmark") {
-			obj=extractBookmark(m,pos);
-		} else {
-			obj.from=[pos.from.ch,pos.from.line];
-			if (pos.to) {
-				obj.to=pos.to.ch;
-				if (pos.from.line!==pos.to.line) to=[to,pos.to.line];
-			} else {
-				console.error("markup missing to");
-			}
-		}
-		markups[m.key]=obj;
 
-		for (var key in m) {
-			if (!m.hasOwnProperty(key))continue;
-			if (!reservedfields[key] && key[0]!=="_") { //key start with _ will not saved
-				obj[key]=m[key];
-				if (key==="className"&& m[key].indexOf("editingMarker")>-1) {//should not save this class
-					obj[key]=obj[key].replace(/ ?editingMarker ?/,"");
-				}
-			}
-		}
+		var obj=textMarker2json(m);
+		if (obj) markups[m.key]=obj;		
 	}
 	return markups;
 }
 
-module.exports={applyMarkups:applyMarkups, extractMarkups:extractMarkups};
+module.exports={applyMarkups:applyMarkups, extractMarkups:extractMarkups,
+	json2textMarker:json2textMarker,textMarker2json:textMarker2json};
 },{}],"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\milestones.js":[function(require,module,exports){
 
 var findMilestone = function (array, obj, near) { 
@@ -16441,6 +16450,7 @@ var clientId=require("./clientid").clientId;
 var AppId=require("./clientid").AppId;
 var action=require("./realtimeaction");
 var LoggedIn=require("./loggedin");
+var styles={loginButton:{fontSize:"125%"}};
 var GoogleLogin=React.createClass({displayName: "GoogleLogin",
 	getInitialState:function(){
 		return {authorized:false};
@@ -16476,7 +16486,7 @@ var GoogleLogin=React.createClass({displayName: "GoogleLogin",
 	}
 	,render:function(){
 			if (!this.state.authorized) {
-				return React.createElement("button", {id: "auth_button"}, "Login")
+				return React.createElement("button", {style: styles.loginButton, id: "auth_button"}, "Login")
 			} else {
 				return React.createElement(LoggedIn, {realtimeUtils: this.realtimeUtils})
 			}
@@ -16488,6 +16498,8 @@ var React=require("react");
 var realtimestore=require("./realtimestore");
 var AppId=require("./clientid").AppId;
 var stackwidgetaction=require("../actions/stackwidget");
+
+var styles={openButton:{fontSize:"125%"},createButton:{fontSize:"125%"}};
 var GooglePanel=React.createClass({displayName: "GooglePanel",
 	componentDidMount:function() {
 	  this.unsubscribe = realtimestore.listen(this.onLoggedIn);
@@ -16556,8 +16568,8 @@ var GooglePanel=React.createClass({displayName: "GooglePanel",
 	}
 	,render:function() {
 		return React.createElement("span", null, 
-		React.createElement("button", {ref: "openbutton", onClick: this.pickFile}, "Open"), 
-		React.createElement("button", {ref: "createbutton", onClick: this.createFile}, "Create")
+		React.createElement("button", {style: styles.openButton, ref: "openbutton", onClick: this.pickFile}, "Open"), 
+		React.createElement("button", {style: styles.createButton, ref: "createbutton", onClick: this.createFile}, "Create")
 		)
 	}
 });
@@ -16765,7 +16777,7 @@ module.exports=ContextAttributeEditor;
 var React=require("react");
 var E=React.createElement;
 var PT=React.PropTypes;
-var util=require("../views/util");
+var highlight=require("../textview/highlight");
 var docfilestore=require("../stores/docfile");
 var RangeHyperlink=require("../components/rangehyperlink");
 var isDefinition=require("./validatecontext").isDefinition;
@@ -16783,15 +16795,15 @@ var ContextMember=React.createClass({displayName: "ContextMember",
 		var doc=docfilestore.docOf(file);
 		if (doc) { //already in view , open the target
 			var m=doc.getEditor().react.getMarkup(mid);
-			util.autoGoMarkup(m);
+			highlight.autoGoMarkup(m);
 		} else {
-			util.gotoRangeOrMarkupID(file,mid,{autoOpen:true});	
+			highlight.gotoRangeOrMarkupID(file,mid,{autoOpen:true});	
 		}
 	}
 	,onHyperlinkEnter:function(file,mid) {
 		var doc=docfilestore.docOf(file);
 		var m=doc.getEditor().react.getMarkup(mid);
-		util.highlightRelatedMarkup(m);
+		highlight.highlightRelatedMarkup(m);
 	}
 	,onDeleteClick:function(e) {
 		var idx=parseInt(e.target.parentElement.dataset.idx);
@@ -16810,7 +16822,7 @@ var ContextMember=React.createClass({displayName: "ContextMember",
 	,getMasterTerm:function(filename) {
 		if (!this.props.member || !this.props.member[0] ||  !this.props.member[0].handle) return;
 		var doc=docfilestore.docOf(filename);
-		return util.getMarkupText(doc,this.props.member[0].handle);
+		return highlight.getMarkupText(doc,this.props.member[0].handle);
 	}
 	,render:function() {
 		var getTypeLabel=require("./types").getTypeLabel; //not available when this file is loaded
@@ -16829,7 +16841,7 @@ var ContextMember=React.createClass({displayName: "ContextMember",
 });
 module.exports=ContextMember;
 
-},{"../components/rangehyperlink":"C:\\ksana2015\\pannaloka\\src\\components\\rangehyperlink.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../views/util":"C:\\ksana2015\\pannaloka\\src\\views\\util.js","./types":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\types.js","./validatecontext":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\validatecontext.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\definition.js":[function(require,module,exports){
+},{"../components/rangehyperlink":"C:\\ksana2015\\pannaloka\\src\\components\\rangehyperlink.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../textview/highlight":"C:\\ksana2015\\pannaloka\\src\\textview\\highlight.js","./types":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\types.js","./validatecontext":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\validatecontext.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\definition.js":[function(require,module,exports){
 var React=require("react");
 var E=React.createElement;
 var styles={input:{border:"0px",fontSize:"100%",outline:0,borderBottom:"1px solid "}};
@@ -17319,7 +17331,7 @@ var getTypeLabel=function(type) {
 
 module.exports={types:types,getTypeLabel:getTypeLabel};
 },{"../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","./context":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\context.js","./definition":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\definition.js","./mark":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\mark.js","./quote":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\quote.js","./simple":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\simple.js","./validatecontext":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\validatecontext.js","./validatemilestone":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\validatemilestone.js","./validateselection":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\validateselection.js"}],"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\util.js":[function(require,module,exports){
-var getMarkupsInRange=require("../views/util").getMarkupsInRange;
+var getMarkupsInRange=require("../textview/highlight").getMarkupsInRange;
 
 var filterEmptyRange=function(selections) {
 	var out={};
@@ -17353,7 +17365,7 @@ var getRangeText=function(doc,r) {
 	return doc.getRange(from,to);
 }
 module.exports={filterEmptyRange:filterEmptyRange,getRangeText,markupsFromSelection:markupsFromSelection};
-},{"../views/util":"C:\\ksana2015\\pannaloka\\src\\views\\util.js"}],"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\validatecontext.js":[function(require,module,exports){
+},{"../textview/highlight":"C:\\ksana2015\\pannaloka\\src\\textview\\highlight.js"}],"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\validatecontext.js":[function(require,module,exports){
 //must have at least one definition and one contextual markup
 var filterEmptyRange=require("./util").filterEmptyRange;
 var selectionstore=require("../stores/selection");
@@ -17674,7 +17686,7 @@ if (typeof fs.readFile=="undefined") {
 	var rpcutil=require("./rpc/rpc_util");	
 }
 
-var dataroot="data/";
+var dataroot="pannaloka/data/";
 
 var ready=function() {
 	if (fs.readFile) return true;
@@ -18201,17 +18213,7 @@ var StackWidgetStore=Reflux.createStore({
 
 })
 module.exports=StackWidgetStore;
-},{"../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","reflux":"C:\\ksana2015\\node_modules\\reflux\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\uuid.js":[function(require,module,exports){
-module.exports=function generateUUID(){
-    var d = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = (d + Math.random()*16)%16 | 0;
-        d = Math.floor(d/16);
-        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
-    });
-    return uuid;
-}
-},{}],"C:\\ksana2015\\pannaloka\\src\\views\\charinfo.js":[function(require,module,exports){
+},{"../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","reflux":"C:\\ksana2015\\node_modules\\reflux\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\charinfo.js":[function(require,module,exports){
 var selectionstore=require("../stores/selection");
 var run=function(cm) {
 	var renderCh=function (ch) {
@@ -18226,7 +18228,7 @@ var run=function(cm) {
   }
 }
 module.exports={run:run};
-},{"../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\closetextbutton.js":[function(require,module,exports){
+},{"../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\closetextbutton.js":[function(require,module,exports){
 var React=require("react");
 
 var CloseTextButton = React.createClass({displayName: "CloseTextButton",
@@ -18236,126 +18238,7 @@ var CloseTextButton = React.createClass({displayName: "CloseTextButton",
 });
 module.exports = CloseTextButton;
 
-},{"react":"react"}],"C:\\ksana2015\\pannaloka\\src\\views\\createmarkup.js":[function(require,module,exports){
-var React=require("react");
-var Component=React.Component;
-var PureRender=require('react-addons-pure-render-mixin');
-
-var selectionstore=require("../stores/selection");
-var markupstore=require("../stores/markup");
-var markupaction=require("../actions/markup");
-var markuptypedef=require("../markuptypedef");
-var getAvailableType=markuptypedef.getAvailableType;
-var types=markuptypedef.types;
-var DefaultMarkupAttrEditor=require("../markuptypedef/defmarkupattr");
-
-var UserPreference =function() {
-	this.preferences=[];
-	this.setPrefer=function(type, others) {
-		this.preferences=this.preferences.filter(function(pref){
-			return (others.indexOf(pref)===-1);
-		});
-		this.preferences.push(type);
-	} 
-
-	this.getPrefer=function(types) { //return first matching perference
-		for (var i=0;i<types.length;i++) {
-			if (this.preferences.indexOf(types[i])>-1) {
-				return i;
-			}
-		}
-		return 0;
-	}
-}
-
-var CreateMarkup = React.createClass({displayName: "CreateMarkup",
-	getInitialState:function() {
-		var selections=selectionstore.selections;
-		this.user=new UserPreference();
-		var T=getAvailableType(selections);
-		var selectedIndex=this.user.getPrefer(T);		
-		return {types:T,userselect:"",selectedIndex:0,selections:selectionstore.selections};
-	}
-
-	,onData :function(selections) {
-		var types=getAvailableType(selections);
-		var selectedIndex=this.user.getPrefer(types);
-		if (types.length) markupstore.cancelEdit();
-		this.setState({types,selectedIndex,selections});
-	}
-
-	,componentDidMount :function() {
-		this.unsubscribe = selectionstore.listen(this.onData);
-	}
-
-	,componentWillUnmount :function() {
-		this.unsubscribe();
-	}
-
-	,selecttype :function(e) {
-		var target=e.target;
-		while (target && typeof target.dataset.idx==="undefined") target=target.parentElement;
-		if (!target) return;
-		var idx=parseInt(target.dataset.idx);
-		var userselect=this.state.types[idx];
-		this.user.setPrefer(userselect,this.state.types);
-		this.setState({selectedIndex:idx});
-	}
-
-	,renderType :function(item,idx) {
-		return React.createElement("label", {className: "markuptype", key: idx, "data-idx": idx}, React.createElement("input", {checked: idx==this.state.selectedIndex, 
-				onChange: this.selecttype, 
-				type: "radio", name: "markuptype"}), types[item].label)
-	}
-
-	,onCreateMarkup :function (trait) {
-		var selections=this.state.selections;
-		var typename=this.state.types[this.state.selectedIndex];
-		var typedef=types[typename];
-		markupaction.createMarkup({selections,trait,typename,typedef});
-	}
-
-	,setHotkey :function (handler) {
-		markupaction.setHotkey(handler);
-	}
-
-	,renderAttributeEditor :function() {
-		if (this.state.types.length===0 || this.state.selectedIndex===-1) return;
-
-		var activetype=this.state.types[this.state.selectedIndex];
-		var attributeEditor=types[activetype].editor || DefaultMarkupAttrEditor;
-		return React.createElement( attributeEditor,
-			{selections:this.state.selections
-				,setHotkey:this.setHotkey
-				,onCreateMarkup:this.onCreateMarkup} );
-
-	}
-	,msg :function() {
-		var s="選取文字，按Ctrl選多段";
-		if (markupstore.getEditing()) s="";//Ctrl+L 嵌用此標記→";
-		return s;
-	}
-
-	,render :function() {//need 130% to prevent flickering when INPUT add to markup editor
-		if (!this.props.editing) {
-			markupaction.setHotkey(null);
-			return React.createElement("span", null)
-		}
-
-		if (!this.state.types.length) {
-			markupaction.setHotkey(null);
-		}
-
-		return React.createElement("span", null, 
-			this.state.types.length?
-			this.state.types.map(this.renderType):this.msg(), 
-			"|", 
-			this.renderAttributeEditor()
-		)
-	}
-});
-module.exports=CreateMarkup;
-},{"../actions/markup":"C:\\ksana2015\\pannaloka\\src\\actions\\markup.js","../markuptypedef":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\index.js","../markuptypedef/defmarkupattr":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\defmarkupattr.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","react":"react","react-addons-pure-render-mixin":"C:\\ksana2015\\node_modules\\react-addons-pure-render-mixin\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\createmilestones.js":[function(require,module,exports){
+},{"react":"react"}],"C:\\ksana2015\\pannaloka\\src\\textview\\createmilestones.js":[function(require,module,exports){
 var types=require("../markuptypedef").types;
 var milestone_novalidate=require("../markuptypedef").milestone_novalidate;
 var validTextRange=require("../markuptypedef/validatemilestone").validTextRange;
@@ -18438,7 +18321,7 @@ var createMilestones=function(ranges,cb) { //this is CodeMirror instance
 
 
 module.exports=createMilestones;
-},{"../actions/markup":"C:\\ksana2015\\pannaloka\\src\\actions\\markup.js","../markuptypedef":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\index.js","../markuptypedef/validatemilestone":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\validatemilestone.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","codemirror":"C:\\ksana2015\\node_modules\\codemirror\\lib\\codemirror.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\cursormethod.js":[function(require,module,exports){
+},{"../actions/markup":"C:\\ksana2015\\pannaloka\\src\\actions\\markup.js","../markuptypedef":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\index.js","../markuptypedef/validatemilestone":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\validatemilestone.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","codemirror":"C:\\ksana2015\\node_modules\\codemirror\\lib\\codemirror.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\cursormethod.js":[function(require,module,exports){
 var kcm=require("ksana-codemirror");
 var getSelections=kcm.getSelections, getCharAtCursor=kcm.getCharAtCursor;
 var selectionaction=require("../actions/selection");
@@ -18446,7 +18329,7 @@ var docfileaction=require("../actions/docfile");
 var markupstore=require("../stores/markup");
 var selectionstore=require("../stores/selection");
 var markupaction=require("../actions/markup");
-var util=require("./util");
+var highlight=require("./highlight");
 
 var sortByDistance=function(cursor,markups,doc) {
 	return markups.filter(function(m){
@@ -18480,7 +18363,7 @@ var cursorActivity=function(){
 			this.hasMarkupUnderCursor=false;
 			//has range
 		} else {
-			var markups=util.getMarkupsInRange(this.doc,this.doc.getCursor());
+			var markups=highlight.getMarkupsInRange(this.doc,this.doc.getCursor());
 			markups=sortByDistance(this.doc.getCursor(),markups);
 			this.markups=markups;
 			markupaction.markupsUnderCursor(markups);
@@ -18495,7 +18378,7 @@ var cursorActivity=function(){
 var mouseMove=function(cm,e) {//event captured by React, not Codemirror
 	//console.log(e.clientX,e.clientY,e.pageX,e.pageY)
 	var pos=cm.coordsChar({left:e.clientX,top:e.clientY});
-	var markups=util.getMarkupsInRange(this.doc,pos);
+	var markups=highlight.getMarkupsInRange(this.doc,pos);
 	markups=sortByDistance(this.doc.getCursor(),markups);
 	if (!markups.length){
 		markupaction.hovering(null);
@@ -18504,17 +18387,17 @@ var mouseMove=function(cm,e) {//event captured by React, not Codemirror
 
 	var m=markups[0].markup;//only highlight first one
 	markupaction.hovering(m);
-	util.highlightRelatedMarkup(m);
+	highlight.highlightRelatedMarkup(m);
 }
 
 var mouseDown=function(cm,e){
 	var m=markupstore.getHovering();
-	if (m) util.autoGoMarkup.call(this,m);
+	if (m) highlight.autoGoMarkup.call(this,m);
 }
 
 module.exports={cursorActivity:cursorActivity, mouseDown:mouseDown
 ,mouseMove:mouseMove};
-},{"../actions/docfile":"C:\\ksana2015\\pannaloka\\src\\actions\\docfile.js","../actions/markup":"C:\\ksana2015\\pannaloka\\src\\actions\\markup.js","../actions/selection":"C:\\ksana2015\\pannaloka\\src\\actions\\selection.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","./util":"C:\\ksana2015\\pannaloka\\src\\views\\util.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\defaulttextview.js":[function(require,module,exports){
+},{"../actions/docfile":"C:\\ksana2015\\pannaloka\\src\\actions\\docfile.js","../actions/markup":"C:\\ksana2015\\pannaloka\\src\\actions\\markup.js","../actions/selection":"C:\\ksana2015\\pannaloka\\src\\actions\\selection.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","./highlight":"C:\\ksana2015\\pannaloka\\src\\textview\\highlight.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\defaulttextview.js":[function(require,module,exports){
 var React=require("react");
 var ReactDOM=require("react-dom");
 var CodeMirror=require("ksana-codemirror").Component;
@@ -18532,7 +18415,7 @@ var traitmethod=require("./traitmethod");
 var charinfo=require("./charinfo");
 var ListMarkup=require("./listmarkup");
 var CloseTextButton=require("./closetextbutton");
-
+var googledrive=require("./googledrive");
 var DefaultTextView = React.createClass({displayName: "DefaultTextView",
 
 	getInitialState:function() {
@@ -18554,13 +18437,16 @@ var DefaultTextView = React.createClass({displayName: "DefaultTextView",
 		this.unsubscribeMarkup();
 		this.unsubscribeSelection();
 		this.cm.react=null;
-		filemethod.unmount();
+		googledrive.unmount.call(this);
 	}
 
 	,componentDidUpdate:function() {
 		this.setsize();
 	}
 
+	,isGoogleDriveFile:function(){
+		return (this.props.trait && this.props.trait.host==="google");
+	}
 	,keymap:function(){
 		this.cm.setOption("extraKeys", {
 	  	"Ctrl-L": function(cm) {
@@ -18583,7 +18469,7 @@ var DefaultTextView = React.createClass({displayName: "DefaultTextView",
 	  	//,"Ctrl-R"
 	  	//,
 
-	  	,"Ctrl-Q":this.onClose.bind(this)
+	  	,"Ctrl-Q":this.onClose
 		});
 	}
 
@@ -18705,7 +18591,7 @@ var DefaultTextView = React.createClass({displayName: "DefaultTextView",
 	}
 
 	,onBeforeChange :function(cm,changeObj) {
-		filemethod.beforeChange.call(this,cm,changeObj);
+		googledrive.beforeChange.call(this,cm,changeObj);
 	}
 
 	,render:function () {
@@ -18734,77 +18620,8 @@ var DefaultTextView = React.createClass({displayName: "DefaultTextView",
 	}
 });
 module.exports=DefaultTextView;
-},{"../actions/markup":"C:\\ksana2015\\pannaloka\\src\\actions\\markup.js","../components/textviewmenu":"C:\\ksana2015\\pannaloka\\src\\components\\textviewmenu.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","./charinfo":"C:\\ksana2015\\pannaloka\\src\\views\\charinfo.js","./closetextbutton":"C:\\ksana2015\\pannaloka\\src\\views\\closetextbutton.js","./cursormethod":"C:\\ksana2015\\pannaloka\\src\\views\\cursormethod.js","./filemethod":"C:\\ksana2015\\pannaloka\\src\\views\\filemethod.js","./listmarkup":"C:\\ksana2015\\pannaloka\\src\\views\\listmarkup.js","./markupmethod":"C:\\ksana2015\\pannaloka\\src\\views\\markupmethod.js","./traitmethod":"C:\\ksana2015\\pannaloka\\src\\views\\traitmethod.js","./transclude":"C:\\ksana2015\\pannaloka\\src\\views\\transclude.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js","react":"react","react-dom":"react-dom"}],"C:\\ksana2015\\pannaloka\\src\\views\\filelist.js":[function(require,module,exports){
-var React=require("react");
-var Component=React.Component;
-var PureRender=require('react-addons-pure-render-mixin');
-
-
-var ktxfilestore=require("../stores/ktxfile");
-var FileItem=require("../components/fileitem");
-
-var stackwidgetaction=require("../actions/stackwidget");
-var NewFileButton = React.createClass({displayName: "NewFileButton",
-	newfile : function(){
-		var emptyfile={filename:ktxfilestore.newfilename() , title:"Untitled" , newfile:true};
-		stackwidgetaction.openWidget(emptyfile,"TextWidget");
-	}
-
-	,render :function() {
-		return React.createElement("button", {onClick: this.newfile}, "Create New File")
-	}
-});
-var FileList = React.createClass({displayName: "FileList",
-	getInitialState:function(){
-		return {files:[],selectedIndex:0};
-	}
-
-	,onData :function(files) {
-		this.setState({files});
-	}
-
-	,componentDidMount :function() {
-		this.unsubscribe = ktxfilestore.listen(this.onData);
-	}
-
-	,componentWillUnmount :function() {
-		this.unsubscribe();
-	}
-
-	,openfile :function(e) {
-		var fobj=this.state.files[this.state.selectedIndex];
-		var obj=ktxfilestore.findFile(fobj.filename);
-		if (obj) {
-			stackwidgetaction.openWidget(obj,"TextWidget");	
-		}
-	}
-
-	,renderItem :function(item,idx) {
-		return React.createElement("div", {key: idx, "data-idx": idx}, 
-			React.createElement(FileItem, React.__spread({onClick: this.openfile, 
-			selected: this.state.selectedIndex==idx},  item)))
-	}
-
-	,selectItem :function(e) {
-		var target=e.target;
-		while (target && target.dataset && !target.dataset.idx) {
-			target=target.parentElement;
-		}
-		if (!target || !target.dataset) return;
-		var selectedIndex=parseInt(target.dataset.idx);
-		if (!isNaN(selectedIndex)) this.setState({selectedIndex});
-	}
-
-	,render :function() {
-		return React.createElement("div", null, 
-				React.createElement(NewFileButton, null), 
-				React.createElement("div", {onClick: this.selectItem}, this.state.files.map(this.renderItem))
-		)
-	}
-});
-module.exports = FileList;
-},{"../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../components/fileitem":"C:\\ksana2015\\pannaloka\\src\\components\\fileitem.js","../stores/ktxfile":"C:\\ksana2015\\pannaloka\\src\\stores\\ktxfile.js","react":"react","react-addons-pure-render-mixin":"C:\\ksana2015\\node_modules\\react-addons-pure-render-mixin\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\filemethod.js":[function(require,module,exports){
-var util=require("./util");
+},{"../actions/markup":"C:\\ksana2015\\pannaloka\\src\\actions\\markup.js","../components/textviewmenu":"C:\\ksana2015\\pannaloka\\src\\components\\textviewmenu.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","./charinfo":"C:\\ksana2015\\pannaloka\\src\\textview\\charinfo.js","./closetextbutton":"C:\\ksana2015\\pannaloka\\src\\textview\\closetextbutton.js","./cursormethod":"C:\\ksana2015\\pannaloka\\src\\textview\\cursormethod.js","./filemethod":"C:\\ksana2015\\pannaloka\\src\\textview\\filemethod.js","./googledrive":"C:\\ksana2015\\pannaloka\\src\\textview\\googledrive.js","./listmarkup":"C:\\ksana2015\\pannaloka\\src\\textview\\listmarkup.js","./markupmethod":"C:\\ksana2015\\pannaloka\\src\\textview\\markupmethod.js","./traitmethod":"C:\\ksana2015\\pannaloka\\src\\textview\\traitmethod.js","./transclude":"C:\\ksana2015\\pannaloka\\src\\textview\\transclude.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js","react":"react","react-dom":"react-dom"}],"C:\\ksana2015\\pannaloka\\src\\textview\\filemethod.js":[function(require,module,exports){
+var highlight=require("./highlight");
 var docfileaction=require("../actions/docfile");
 var ktxfileaction=require("../actions/ktxfile");
 var selectionaction=require("../actions/selection");
@@ -18812,7 +18629,8 @@ var cmfileio=require("../cmfileio");
 var stackwidgetaction=require("../actions/stackwidget");
 var markupaction=require("../actions/markup");
 var markupstore=require("../stores/markup");
-var TEXT_DELETED,TEXT_INSERTED;
+var googledrive=require("./googledrive");
+
 var	loaded = function() {
 	this.cm=this.refs.cm.getCodeMirror();
 	this.cm.react=this;
@@ -18827,68 +18645,16 @@ var	loaded = function() {
 	}
 	if (this.props.trait.scrollTo) {
 		setTimeout(function(){
-			util.highlightDoc(this.doc,this.props.trait.scrollTo);
+			highlight.highlightDoc(this.doc,this.props.trait.scrollTo);
 		}.bind(this),300);//wait for markup to load
 	}
 }
 
-var inserttext=function(e) {
-	if (e.isLocal) return;
-  var from  = this.cm.posFromIndex(e.index);
-  this.ignore_change = true ;
-  this.cm.replaceRange(e.text, from, from);
-	this.ignore_change = false ;
-}
-
-var deletetext=function(e) {
-	if (e.isLocal) return;
-  var from = this.cm.posFromIndex(e.index) ;
-	var to   = this.cm.posFromIndex(e.index + e.text.length) ;
-
-  this.ignore_change = true ;
-  this.cm.replaceRange("", from, to);
-	this.ignore_change = false ;
-}
-
-var beforeChange=function(cm,changeObj) {
-	if (this.props.trait.host!=="google")return;
-	if (this.ignore_change) return;
-
-	var coString=this.state._text;
-
-  var from  = this.cm.indexFromPos(changeObj.from);
-  var to    = this.cm.indexFromPos(changeObj.to);
-  var text  = changeObj.text.join('\n');
-
-  if (to - from > 0)    coString.removeRange(from, to);
-  if (text.length > 0)  coString.insertString(from, text);
-}
-
-var unmount = function() {
-	if (this.state._text) {
-		this.state._text.removeEventListener(TEXT_INSERTED,_inserttexthandler);
-		this.state._text.removeEventListener(TEXT_DELETED,_deletetexthandler);
-	}
-}
 
 var load = function(fn,opts) {
 	opts=opts||{};
 	if (opts.host==="google") {
-		var doc=opts.doc;
-		var _markups=doc.getModel().getRoot().get('markups');
-		var _text=doc.getModel().getRoot().get('text'); 
-		var title=opts.title;
-		var data={value:_text.text, meta:{title:title}, markups:JSON.parse(_markups.toString()) 
-		, _markups:_markups, _text:_text };
-
-		TEXT_INSERTED=gapi.drive.realtime.EventType.TEXT_INSERTED;
-		TEXT_DELETED=gapi.drive.realtime.EventType.TEXT_DELETED;
-		this._inserttexthandler=inserttext.bind(this);
-		this._deletetexthandler=deletetext.bind(this);
-		_text.addEventListener(TEXT_INSERTED,this._inserttexthandler);
-		_text.addEventListener(TEXT_DELETED,this._deletetexthandler);
-
-		this.setState(data,this.loaded);
+		googledrive.load.call(this,opts.doc,opts.title);
 	} else {
 		cmfileio.readFile(this.props.trait.filename,function(err,data){
 			if (err) {
@@ -18937,824 +18703,171 @@ var close = function() {
 		}
 
 }
-module.exports={load:load,loaded:loaded,save:save,close:close,unmount:unmount,beforeChange:beforeChange};
-},{"../actions/docfile":"C:\\ksana2015\\pannaloka\\src\\actions\\docfile.js","../actions/ktxfile":"C:\\ksana2015\\pannaloka\\src\\actions\\ktxfile.js","../actions/markup":"C:\\ksana2015\\pannaloka\\src\\actions\\markup.js","../actions/selection":"C:\\ksana2015\\pannaloka\\src\\actions\\selection.js","../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../cmfileio":"C:\\ksana2015\\pannaloka\\src\\cmfileio.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","./util":"C:\\ksana2015\\pannaloka\\src\\views\\util.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\inputmethod.js":[function(require,module,exports){
-var React=require("react");
-var Component=React.Component;
-var docfilestore=require("../stores/docfile");
-var IME=require("ksana-inputmethod")();
+module.exports={load:load,loaded:loaded,save:save,close:close};
+},{"../actions/docfile":"C:\\ksana2015\\pannaloka\\src\\actions\\docfile.js","../actions/ktxfile":"C:\\ksana2015\\pannaloka\\src\\actions\\ktxfile.js","../actions/markup":"C:\\ksana2015\\pannaloka\\src\\actions\\markup.js","../actions/selection":"C:\\ksana2015\\pannaloka\\src\\actions\\selection.js","../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../cmfileio":"C:\\ksana2015\\pannaloka\\src\\cmfileio.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","./googledrive":"C:\\ksana2015\\pannaloka\\src\\textview\\googledrive.js","./highlight":"C:\\ksana2015\\pannaloka\\src\\textview\\highlight.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\googledrive.js":[function(require,module,exports){
+var textMarker2json=require("ksana-codemirror").textMarker2json;
+var json2textMarker=require("ksana-codemirror").json2textMarker;
+var TEXT_DELETED,TEXT_INSERTED,VALUES_ADDED,VALUES_REMOVED,VALUE_CHANGED;
+var load=function(doc,title){
+		this._changes=[];
+		var _markups=doc.getModel().getRoot().get('markups');
+		var markups=loadMarkupFromGoogleDrive.call(this,_markups);
+		var _text=doc.getModel().getRoot().get('text'); 
+		var data={value:_text.text, meta:{title:title}, markups:markups
+		, _markups:_markups, _text:_text ,_doc:doc };
 
-var InputMethod=React.createClass({displayName: "InputMethod",
-	getInitialState:function() {
-		return {selected:this.props.ime-1,preview:""};
-	}
-	,input:function(val,e) {
-		var cm=docfilestore.getActiveEditor();
-		var output=IME[this.state.selected].ime.convert(val);
-		if (output) {
-			var pos=cm.getCursor();
-			cm.replaceRange(output,pos,pos);
-			cm.setCursor({line:pos.line,ch:pos.ch+output.length});
-		}
-		e.target.value="";
-	}
-	,componentWillUnmount:function() {
-		clearTimeout(this.timer);
-	}
-	,onChange:function(e) {
-		clearTimeout(this.timer);
-		var val=e.target.value;
-		this.timer=setTimeout(function(){
-			var preview=IME[this.state.selected].ime.convert(val);
-			this.setState({preview:preview});
-		}.bind(this),100);
-	}
-	,onKeyPress:function(e) {
-		if (e.key=="Enter") return this.input(e.target.value,e);
-	}
-	,componentWillReceiveProps : function(nextprops) {
-		this.setState({selected:nextprops.ime-1});
-	}
-	,renderIME:function(item,idx){
-		return React.createElement("option", {value: item.name, key: idx}, item.name)
-	}
-	,selectIME:function(e){
-		this.setState({selected:e.target.selectedIndex});
-		this.props.onSetIME&&this.props.onSetIME(e.target.selectedIndex+1);
-	}
-	,render:function(){
-		if (this.state.selected<0) return React.createElement("span", null)
-		return React.createElement("span", null, 
-			React.createElement("select", {value: IME[this.state.selected].name, 
-			onChange: this.selectIME}, IME.map(this.renderIME)), 
-			React.createElement("input", {onKeyPress: this.onKeyPress, onChange: this.onChange}), 
-			React.createElement("span", null, this.state.preview)
-		)
-	}
-});
+		TEXT_INSERTED=gapi.drive.realtime.EventType.TEXT_INSERTED;
+		TEXT_DELETED=gapi.drive.realtime.EventType.TEXT_DELETED;
+		VALUES_ADDED=gapi.drive.realtime.EventType.VALUES_ADDED;
+		VALUES_REMOVED=gapi.drive.realtime.EventType.VALUES_REMOVED;
+		VALUE_CHANGED=gapi.drive.realtime.EventType.VALUE_CHANGED;
 
-module.exports=InputMethod;
-},{"../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","ksana-inputmethod":"C:\\ksana2015\\node_modules\\ksana-inputmethod\\index.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\views\\listmarkup.js":[function(require,module,exports){
-var React=require("react");
-var selectionstore=require("../stores/selection");
-var findmarkup=require("../markup/find");
-var RangeHyperlink=require("../components/rangehyperlink");
-var util=require("./util");
-var types=require("../markuptypedef").types;
-var ListMarkup = React.createClass({displayName: "ListMarkup",
-	getInitialState:function(){
-		return {links:[]};
-	}
-	,componentDidMount:function(){
-		this.unsubscribe = selectionstore.listen(this.onSelection);
-	}
-	,componentWillUnmount:function(){
-		clearTimeout(this.timer);
-		this.unsubscribe();
-	}
+		_text.addEventListener(TEXT_INSERTED,inserttext.bind(this));
+		_text.addEventListener(TEXT_DELETED,deletetext.bind(this));
 
-	,onHyperlinkClick:function(file,key_range) {
-		util.gotoRangeOrMarkupID(file,key_range,{moveCursor:true,autoOpen:true});
-	}
-
-	,findMarkup :function() {
-		var ranges=selectionstore.getRanges({textLength:20});
-		if (!ranges || ranges.length!==1)return ;
-
-		var rangetext=ranges[0][2],links=[];
-		var markups=findmarkup.byMasterText(rangetext,this.props.markups);
-		if (markups && markups.length) {
-			links=markups.map(function(key){
-				var clsname=this.props.markups[key].className;
-				var typelabel="~"+types[clsname].label;
-				return [this.props.filename, key, typelabel ];
-			}.bind(this));				
-		}
-
-		if (this.props.filename==ranges[0][0]) {
-			links.unshift([this.props.filename, ranges[0][1], rangetext,"跳回選取區" ]);//for link back to selection
-		} else {
-			links.unshift([this.props.filename, null, rangetext,markups.length?"":"無搜尋結果" ]);//not clickable , label only
-		}
-		this.setState({links});
-	}	
-
-	,onSelection :function(fileselections)  {
-		clearTimeout(this.timer);
-		var delta=Math.round(Math.random()*200);
-		this.timer=setTimeout(this.findMarkup,800+delta);//different view get fired seperately
-	}
-	,render:function() {
-		return React.createElement("span", null, React.createElement(RangeHyperlink, {onHyperlinkClick: this.onHyperlinkClick, ranges: this.state.links}))
-	}
-})
-module.exports=ListMarkup;
-},{"../components/rangehyperlink":"C:\\ksana2015\\pannaloka\\src\\components\\rangehyperlink.js","../markup/find":"C:\\ksana2015\\pannaloka\\src\\markup\\find.js","../markuptypedef":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\index.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","./util":"C:\\ksana2015\\pannaloka\\src\\views\\util.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\views\\markupmethod.js":[function(require,module,exports){
-var util=require("./util");
-var docfilestore=require("../stores/docfile");
-var createmilestones=require("./createmilestones");
-var selectionaction=require("../actions/selection");
-var kcm=require("ksana-codemirror");
-var markupNav=require("../markup/nav");
-var	createMilestones = function (ranges)  { //uses by ksana-codemirror/automarkup.js
-	createmilestones.call(this.cm,ranges,function(newmarkups){
-		if (!newmarkups.length) return;
-		var markups={};
-		for (var i in this.state.markups ) markups[i]=this.state.markups[i];
-
-		for (var i=0;i<newmarkups.length;i++) {
-			markups[newmarkups[i].key]=newmarkups[i].markup;
-		}
-		
-		this.setState({dirty:true,markups},function(){
-			this.rebuildMilestone(this.state.markups);
-		}.bind(this));
-	}.bind(this));
+		_markups.addEventListener(VALUE_CHANGED,markupchanged.bind(this));
+		this.setState(data,this.loaded);
 }
 
-	//just for lookup , not trigger redraw as markup.handle already exists.
-var	addMarkup = function (markup) {
-	if (!markup  || !markup.key) return;
-	this.state.markups[markup.key]=markup;
-	if (markup.className==="milestone") this.rebuildMilestone(this.state.markups);
-	var file=docfilestore.fileOf(markup.handle.doc);
-	markupNav.rebuild(file,markup.className);
-	this.setState({dirty:true});
-}
-
-var	getOther = function(markup,opts) {
-	var out=[],markups=this.state.markups;
-	opts=opts||{};
-	if (markup.master) {
-		var master=markups[markup.master];
-		if (master) out.push(master);
-	} else if (markup.others) {
-		for (var i=0;i<markup.others.length;i++) {
-			var key=markup.others[i];
-			out.push(markups[key]);
+var loadMarkupFromGoogleDrive=function(markups) {
+	var keys=markups.keys(),values=markups.values();
+	var out={};
+	for (var i=0;i<keys.length;i++) {
+		var k=keys[i]
+		var v=values[i];
+		out[k]={};
+		for (var key in v){
+			out[k][key]=v[key];
 		}
-	}
-
-	if (out.length && opts.format=="range") {
-		return out.map(function(m){
-			var file=docfilestore.fileOf(m.handle.doc);
-			var text=util.getMarkupText(m.handle.doc,m.handle);
-			return [file,m.key,text];
-		});
 	}
 	return out;
 }
 
-var	removeMarkup =function(key) {
-	var m=this.state.markups[key];
-
-	if (m) {
-		var clsname=m.className;
-		
-		m.handle.clear();
-		delete this.state.markups[key];
-		if (clsname==="milestone") this.rebuildMilestone(this.state.markups);
-		var file=docfilestore.fileOf(m.handle.doc);
-		markupNav.rebuild(file,clsname);
-		this.setState({dirty:true});
-	} else {
-		console.error("unknown markup id",key)
-	}
+var inserttext=function(e) {
+	if (e.isLocal) return;
+  var from  = this.cm.posFromIndex(e.index);
+  this.ignore_change = true ;
+  this.cm.replaceRange(e.text, from, from);
+	this.ignore_change = false ;
 }
 
-var markupReady = function (markups) {//this is React component
-	this.rebuildMilestone.call(this,markups);//in defaulttextview
-	var fn=docfilestore.fileOf(this.doc);
-	markupNav.setMarkups(markups,fn);
+var deletetext=function(e) {
+	if (e.isLocal) return;
+  var from = this.cm.posFromIndex(e.index) ;
+	var to   = this.cm.posFromIndex(e.index + e.text.length) ;
+
+  this.ignore_change = true ;
+  this.cm.replaceRange("", from, to);
+	this.ignore_change = false ;
 }
 
-var onMarkup = function(M,action) {		
-	var shallowCopyMarkups = function(M) { //use Object.assign in future
-		var out={};
-		for (var i in M) out[i]=M[i];
-		return out;
+var markupadded=function(e){
+	if (e.isLocal) return;
+	var m={};
+	for (var i in e.newValue) {
+		m[i]=e.newValue[i];
 	}
-	if (!action || !action.newly || !M.length) return;
-	var touched=null;
-	var markups=null;
-	for (var i in M) {
-		var m=M[i];
-		if (m.doc===this.doc) {
-			if (!markups) markups=shallowCopyMarkups(this.state.markups);
-			markups[m.key]=m.markup;
-			if (!touched) touched={};
-			touched[m.markup.className]=true;
+	json2textMarker.call(this,this.cm,e.property,m);
+	this.state.markups[e.property]=m;
+}
+var markupmodified=function(e){
+	var newtrait={};
+	if (!e.newValue.trait) return;
+
+	for (var key in e.newValue.trait){
+		newtrait[key]=newValue.trait[key];
+	}
+	var M=this.state.markups[e.property];
+	if (newValue.from) M.from=JSON.parse(JSON.stringify(e.newValue.from));
+	if (newValue.to) M.to=JSON.parse(JSON.stringify(e.newValue.to));
+
+	M.trait=newtrait;
+}
+var markupdelete=function(e){
+	if (e.isLocal) return;
+
+	var m=this.getMarkup(e.property);
+	delete this.state.markups[e.property];//in this.state.markups
+	if (m && m.handle) m.handle.clear();
+}
+var markupchanged=function(e){
+	if (e.isLocal) return;
+
+	if (e.oldValue===null && e.newValue) markupadded.call(this,e);
+	else if (e.newValue===null && e.oldValue) markupdelete.call(this,e);
+	else markupmodified.call(this,e);
+}
+var beforeChange=function(cm,changeObj) {
+	if (!this.isGoogleDriveFile())return;
+	if (this.ignore_change) return;
+
+	var coString=this.state._text;
+
+  var from  = this.cm.indexFromPos(changeObj.from);
+  var to    = this.cm.indexFromPos(changeObj.to);
+  var text  = changeObj.text.join('\n');
+
+  clearTimeout(this._gdrivetimer);
+  this._changes.push([from,to,text]);
+
+  this._gdrivetimer=setTimeout(function(){
+  	update.call(this);
+  }.bind(this),1000);
+
+}
+var findTouchedMarkup=function(){
+	var markups=this.state.markups;
+	var out=[];
+	for (var key in markups) {
+		var m=markups[key];
+		var pos=m.handle.find();
+		if (pos.from.line!==m.from[1] || pos.from.ch!==m.from[0] ||
+			  pos.to.line!==m.to[1] || pos.to.ch!==m.to[0] ) {
+			var newm=textMarker2json(m.handle);
+			out.push([key,newm]);
 		}
 	}
-	selectionaction.clearAllSelection();
-	if (markups) this.setState({dirty:true,markups},function(){
-		//console.log(Object.keys(markups).length,Object.keys(this.state.markups).length);
-		if (touched) {
-			var file=docfilestore.fileOf(this.doc);
-			markupNav.setMarkups(this.state.markups,file,true);//do not perform full rebuild
-			for (var type in touched) {
-				markupNav.rebuild(file,type);
-			}
-		}
-		if (M[0].markup.className==="milestone") this.rebuildMilestone(markups);
-	}.bind(this));
-
+	return out;
 }
 
-var rebuildMilestone = function (markups) {
-	kcm.milestones.buildMilestone(this.doc,markups);
-	//force repaint of gutter
-	this.cm.setOption("lineNumbers",false);
-	this.cm.setOption("lineNumbers",true);
+var unmount = function() {
+	if (this.state._text) this.state._text.removeAllEventListeners();
+	if (this.state._markups) this.state.markups.removeAllEventListeners();
 }
 
-module.exports={onMarkup:onMarkup,createMilestones:createMilestones,markupReady:markupReady,
-	getOther:getOther,addMarkup:addMarkup,removeMarkup:removeMarkup,rebuildMilestone:rebuildMilestone}
-},{"../actions/selection":"C:\\ksana2015\\pannaloka\\src\\actions\\selection.js","../markup/nav":"C:\\ksana2015\\pannaloka\\src\\markup\\nav.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","./createmilestones":"C:\\ksana2015\\pannaloka\\src\\views\\createmilestones.js","./util":"C:\\ksana2015\\pannaloka\\src\\views\\util.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\markupnav.js":[function(require,module,exports){
-var React=require("react");
-var markupstore=require("../stores/markup");
-var markupNav = React.createClass({displayName: "markupNav",
-	next :function() {
-		var next=markupstore.getNext();
-		this.props.goMarkupByKey(next);
+var update=function(){
+	var coString=this.state._text, coMarkups=this.state._markups;
+	var model=this.state._doc.getModel();
+	model.beginCompoundOperation();
+	for (var i=0;i<this._changes.length;i++){
+		var c=this._changes[i];
+		var from=c[0], to=c[1],text=c[2];
+		if (to - from > 0)    coString.removeRange(from, to);
+  	if (text.length > 0)  coString.insertString(from, text);
 	}
-	,prev :function() {
-		var prev=markupstore.getPrev();
-		this.props.goMarkupByKey(prev);
-	}
-	,render :function() {
-		var editing=markupstore.getEditing();
-		if (!editing) return React.createElement("span", null)
-		return React.createElement("span", null, 
-			React.createElement("button", {onClick: this.prev}, "Prev"), 
-			React.createElement("button", {onClick: this.next}, "Next")
-
-		)
-	}
-});
-module.exports=markupNav;
-},{"../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\views\\markuppanel.js":[function(require,module,exports){
-var React=require("react");
-var Component=React.Component;
-var PureRender=require('react-addons-pure-render-mixin');
-
-
-var markupstore=require("../stores/markup");
-var markupaction=require("../actions/markup");
-var selectionstore=require("../stores/selection");
-var docfilestore=require("../stores/docfile");
-var CreateMarkup=require("./createmarkup");
-var MarkupSelector=require("../components/markupselector");
-var MarkupNavigator=require("./markupnav");
-var util=require("./util");
-
-var MarkupPanel = React.createClass({displayName: "MarkupPanel",
-	getInitialState() {
-		return {editing:null,markups:[],hasSelection:false,deletable:false,getOther:null};
-	}
-	,onClose : function()  {
-		stackwidgetaction.closeWidget(this.props.wid)
+	this._changes=[];
+	var touchedMarkups=findTouchedMarkup.call(this);
+	for (var i=0;i<touchedMarkups.length;i++) {
+		var m=touchedMarkups[i];
+		coMarkups.set(m[0],m[1]);
 	}
 
-	,onMarkup : function (markups,action)  {
-		if (action.cursor) {
-			var keys=Object.keys(markups);
-			var wid=null,cm=null,getOther=null;
-			if (keys.length) {
-				cm=markups[keys[0]].doc.getEditor();
-				wid=cm.react.getWid();
-				getOther=cm.react.getOther;
-			}
-			this.setState({markups,wid,cm,getOther});
+	model.endCompoundOperation();
+
+	//replace markup in textview
+	setTimeout(function(){
+		for (var i=0;i<touchedMarkups.length;i++) {
+			var m=touchedMarkups[i];
+			var oldm=this.state.markups[m[0]];
+			m[1].handle=oldm.handle;
+			this.state.markups[m[0]]=m[1];
 		}
-	}
-
-	,onDocfile : function()  {
-		this.forceUpdate();
-	}
-
-	,componentDidMount : function() {
-		this.unsubscribe1 = markupstore.listen(this.onMarkup);
-		this.unsubscribe2 = docfilestore.listen(this.onDocfile);
-	}
-
-	,componentWillUnmount : function() {
-		this.unsubscribe1();
-		this.unsubscribe2();
-	}
-
-	,onHyperlinkClick : function (file,mid,opts)  {
-		var o={};
-		for (var i in opts)	o[i]=opts[i];
-		o.below=this.state.wid;
-		o.autoopen=true;
-		util.gotoRangeOrMarkupID(file,mid,o);
-	}
-
-	,onHyperlinkEnter : function (file,mid)  {
-		util.gotoRangeOrMarkupID(file,mid,{noScroll:true});
-	}
-
-	,goMarkupByKey : function (mid)  {
-		var editing=markupstore.getEditing();
-		if (!editing)return;
-		var file=docfilestore.fileOf(editing.doc);
-		this.onHyperlinkClick(file,mid,{moveCursor:true});
-	}
-
-	,onChanged : function (doc)  {
-		doc.getEditor().react.setDirty();
-	}
-
-	,onDelete : function(m,typedef)  {
-		if (!m || !m.handle) {
-			throw "wrong markup"
-			return;
-		}
-		markupstore.remove(m);
-		var others=m.handle.doc.getEditor().react.getOther(m);
-		if (others) {
-			others.map(function(other){markupstore.remove(other)});
-		}
-		typedef.onDelete &&	typedef.onDelete(m);
-	}
-
-	,onEditing : function(m,handler)  {
-		markupstore.setEditing(m,handler);
-	}
-
-	,render : function () {		
-
-		var ranges=selectionstore.getRanges();
-
-		return (React.createElement("span", null, React.createElement("span", {style: {fontSize:"130%"}}, "|"), 
-			React.createElement(MarkupNavigator, {goMarkupByKey: this.goMarkupByKey}), 
-			React.createElement(CreateMarkup, {editing: !this.state.markups.length}), 
-			React.createElement(MarkupSelector, {
-			 onHyperlinkClick: this.onHyperlinkClick, 
-			 onHyperlinkEnter: this.onHyperlinkEnter, 
-			 getOther: this.state.getOther, 
-			 markups: this.state.markups, onChanged: this.onChanged, 
-			 onDelete: this.onDelete, 
-			 onEditing: this.onEditing, 
-			 ranges: ranges, 
-			 editing: this.state.editing, deletable: this.state.deletable})
-
-			 
-			)
-
-		)
-	}
-});
-module.exports=MarkupPanel;
-},{"../actions/markup":"C:\\ksana2015\\pannaloka\\src\\actions\\markup.js","../components/markupselector":"C:\\ksana2015\\pannaloka\\src\\components\\markupselector.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","./createmarkup":"C:\\ksana2015\\pannaloka\\src\\views\\createmarkup.js","./markupnav":"C:\\ksana2015\\pannaloka\\src\\views\\markupnav.js","./util":"C:\\ksana2015\\pannaloka\\src\\views\\util.js","react":"react","react-addons-pure-render-mixin":"C:\\ksana2015\\node_modules\\react-addons-pure-render-mixin\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\outlinepanel.js":[function(require,module,exports){
-var React=require("react");
-var E=React.createElement;
-var Component=React.Component;
-var PureRender=require('react-addons-pure-render-mixin');
-
-var docfilestore=require("../stores/docfile");
-var ktcfilestore=require("../stores/ktcfile");
-var ktcfileaction=require("../actions/ktcfile");
-var util=require("./util");
-var TreeToc=require("ksana2015-treetoc").Component;
-var RangeHyperlink=require("../components/rangehyperlink");
-var SaveButton=require("../components/savebutton");
-var selectionstore=require("../stores/selection");
-var markupstore=require("../stores/markup");
-var docfilestore=require("../stores/docfile");
-var OutlinePanel = React.createClass({displayName: "OutlinePanel",
-	getInitialState:function() {		
-		return { toc:[{d:0,t:"test"},{d:1,t:"testchild"}] ,dirty:false};
-	}
-
-	,onToc :function( allfiles, toc) {
-		if (!toc) return;
-		this.setState({toc});
-	}
-
-	,componentDidMount :function() {
-		this.unsubscribe = ktcfilestore.listen(this.onToc);
-	}
-	,componentWillUnmount :function() {
-		this.unsubscribe();
-	}
-	,saveTree : function() {
-		ktcfileaction.writeTree(this.state.toc);
-		this.setState({dirty:false});
-	}
-	,onChanged : function() {
-		this.setState({dirty:true});
-	}
-
-	,setLink :function(node) {
-		var m=markupstore.getEditing();
-
-		if (m) {
-			var text=util.getMarkupText(m.doc,m.markup.handle);
-			node.links=[[docfilestore.fileOf(m.doc),m.key,text]];
-		} else { //try range
-			var ranges=selectionstore.getRanges({textLength:5,pack:true});
-			if (ranges.length) {
-				node.links=ranges;
-			} else delete node.links;
-		}
-		this.onChanged();
-		this.forceUpdate();
-
-	}
-
-	,onHyperlinkClick :function(file,range) {
-		util.gotoRangeOrMarkupID(file,range,{moveCursor:true,autoOpen:true});
-	}
-	,onNode :function(node,selected,n,editingcaption) {
-		if (n==editingcaption) {
-			var label="🔗";
-			if (node.links) label="reset "+label;
-			return E("button",{onClick:this.setLink.bind(this,node)},label);
-		} else {
-			return E(RangeHyperlink,{onHyperlinkClick:this.onHyperlinkClick,ranges:node.links||[]})
-		}
-	}
-
-	,render :function() {
-		return React.createElement("div", null, 
-		React.createElement(SaveButton, {dirty: this.state.dirty, onSave: this.saveTree}), 
-		React.createElement(TreeToc, {opts: {editable:true,onNode:this.onNode}, 
-			onChanged: this.onChanged, 
-			toc: this.state.toc})
-		)
-	}
-});
-module.exports = OutlinePanel;
-},{"../actions/ktcfile":"C:\\ksana2015\\pannaloka\\src\\actions\\ktcfile.js","../components/rangehyperlink":"C:\\ksana2015\\pannaloka\\src\\components\\rangehyperlink.js","../components/savebutton":"C:\\ksana2015\\pannaloka\\src\\components\\savebutton.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../stores/ktcfile":"C:\\ksana2015\\pannaloka\\src\\stores\\ktcfile.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","./util":"C:\\ksana2015\\pannaloka\\src\\views\\util.js","ksana2015-treetoc":"C:\\ksana2015\\node_modules\\ksana2015-treetoc\\index.js","react":"react","react-addons-pure-render-mixin":"C:\\ksana2015\\node_modules\\react-addons-pure-render-mixin\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\overlay.js":[function(require,module,exports){
-var React=require("react");
-var Component=React.Component;
-var E=React.createElement;
-var PureRender=require('react-addons-pure-render-mixin');
-
-var styles={svg:{width:"1920px",height:"1080px"},
-overlay:{position:"absolute",left:0,top:0,pointerEvents:"none"}};
-var overlaystore=require("../stores/overlay");
-var Overlay = React.createClass({displayName: "Overlay",
-  getInitialState:function() {
-    return {paths:[]};
-    //{stroke:"red",d:"M150 0 L75 200 L225 200Z"}
-  }
-  ,onPath :function(paths) {
-    this.setState({paths});
-  }
-  ,componentDidMount:function() {
-    this.unsubscribe = overlaystore.listen(this.onPath);
-  }
-  ,componentWillUnmount :function() {
-    this.unsubscribe();
-  }
-  ,renderPaths :function(path,idx) {
-    return E(path.cmd||"path",path);
-  }
-  ,render :function() {
-    return ( 
-        React.createElement("div", {id: "svgmarkups", style: styles.overlay}, 
-          React.createElement("svg", {xmlns: "http://www.w3.org/2000/svg", style: styles.svg}, 
-            this.state.paths.map(this.renderPaths), 
-           React.createElement("defs", null, 
-              React.createElement("marker", {id: "head", orient: "auto", markerWidth: "2", markerHeight: "4", refX: "0.1", 
-                refY: "2"}, React.createElement("path", {id: "headpoly", d: "M0,0 V4 L5,5 Z", fill: "black"}))
-           )
-        )
-      )
-    ); 
-  }
-});
-module.exports=Overlay;
-},{"../stores/overlay":"C:\\ksana2015\\pannaloka\\src\\stores\\overlay.js","react":"react","react-addons-pure-render-mixin":"C:\\ksana2015\\node_modules\\react-addons-pure-render-mixin\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\simpleview.js":[function(require,module,exports){
-var React=require("react");
-var Component=React.Component;
-var stackwidgetaction=require("../actions/stackwidget");
-var StackWidgetMenu=require("../components/stackwidgetmenu");
-
-var SimpleView = React.createClass({displayName: "SimpleView",
-	onClose:function(){
-		stackwidgetaction.closeWidget(this.props.wid);
-	}
-	,render :function() {
-		return React.createElement("div", null, 
-			React.createElement(StackWidgetMenu, {onClose: this.onClose}), 
-			"hello ", this.props.trait.text, " ", this.props.wid
-		)
-	}
-});
-module.exports=SimpleView;
-},{"../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../components/stackwidgetmenu":"C:\\ksana2015\\pannaloka\\src\\components\\stackwidgetmenu.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\views\\stackwidgetlist.js":[function(require,module,exports){
-var React=require("react");
-var Component=React.Component;
-
-var stackwidgetstore=require("../stores/stackwidget");
-var StackWidget=require("../containers/stackwidget");
-
-var MINWIDGETHEIGHT = 150;
-
-var StackWidgetList = React.createClass({displayName: "StackWidgetList",
-	getInitialState:function(){
-    
-    return  { widgets:[], widgetheights:[]};
-  }
-
-	,componentDidMount :function() {
-		this.unsubscribe = stackwidgetstore.listen(this.onData);
-	}
-
-	,componentWillUnmount :function() {
-		this.unsubscribe();
-	}
-
-	,totalFlex :function(widgets) {
-		return widgets.reduce(function(prev,w){ 
-			return (w.trait.flex||1)+prev } 
-		,0);
-	}
-	,setWidgetHeight :function(props,widgets) {
-		if (!props) props=this.props;
-		if (!widgets) widgets=this.state.widgets;
-		var totalheight=props.height;
-		var total=this.totalFlex(widgets);
-
-		var widgetheights=widgets.map(function(w){
-			var widgetheight=totalheight*((w.trait.flex||1)/total) - 4;
-			if (widgetheight<MINWIDGETHEIGHT) widgetheight=MINWIDGETHEIGHT;
-			return widgetheight;
-		}.bind(this));
-
-		this.setState({widgetheights});
-	}
-
-	,componentWillReceiveProps :function(nextProps) {
-		this.setWidgetHeight(nextProps,this.state.widgets);
-	}
-
-	,onData :function(widgets) {
-		this.setWidgetHeight(this.props,widgets);
-		this.setState({widgets});
-	}
-
-	,renderItem :function(item,idx) {
-		return React.createElement(StackWidget, {height: this.state.widgetheights[idx], key: item.wid, 
-		resize: this.setWidgetHeight, wid: item.wid, widgetClass: item.widgetClass, trait: item.trait})
-	}
-
-  ,render :function() {
-  	return React.createElement("div", null, 
-  		this.state.widgets.map(this.renderItem)
-  	)
-  }
-});
-module.exports=StackWidgetList;
-},{"../containers/stackwidget":"C:\\ksana2015\\pannaloka\\src\\containers\\stackwidget.js","../stores/stackwidget":"C:\\ksana2015\\pannaloka\\src\\stores\\stackwidget.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\views\\stackwidgetmainmenu.js":[function(require,module,exports){
-var React=require("react");
-var Component=React.Component;
-
-var stackwidgetaction=require("../actions/stackwidget");
-var selectionaction=require("../actions/selection");
-
-var StackWidgetMainMenu = React.createClass({displayName: "StackWidgetMainMenu",
-	newWidget :function () {
-		stackwidgetaction.newWidget({text:"widget"});
-	}
-
-  ,render : function() {
-  	return React.createElement("span", null, 
-  		React.createElement("button", {onClick: this.newWidget}, "New widget")
-  	)
-  }
-});
-module.exports=StackWidgetMainMenu;
-
-},{"../actions/selection":"C:\\ksana2015\\pannaloka\\src\\actions\\selection.js","../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\views\\statusview.js":[function(require,module,exports){
-var React=require("react");
-var Component=React.Component;
-var PureRender=require('react-addons-pure-render-mixin');
-
-var selectionstore=require("../stores/selection");
-var SelectionStatus=require("../components/selectionstatus");
-
-var StatusView = React.createClass({displayName: "StatusView",
-	getInitialState:function() {
-		return {selections:{},cursorch:""};
-	}
-
-	,onData :function(selections,cursorch) {
-		this.setState({selections,cursorch});
-	}
-
-	,componentDidMount :function() {
-		this.unsubscribe = selectionstore.listen(this.onData);
-	}
-
-	,componentWillUnmount :function() {
-		this.unsubscribe();
-	}
-
-	,render :function() {
-		return React.createElement("div", null, 
-			React.createElement(SelectionStatus, {selections: this.state.selections, cursorch: this.state.cursorch})
-		)
-	}
-});
-module.exports=StatusView;
-},{"../components/selectionstatus":"C:\\ksana2015\\pannaloka\\src\\components\\selectionstatus.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","react":"react","react-addons-pure-render-mixin":"C:\\ksana2015\\node_modules\\react-addons-pure-render-mixin\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\traitmethod.js":[function(require,module,exports){
-var docfileaction=require("../actions/docfile");
-var setFlexHeight=function(flex) {
-	this.props.trait.flex=flex; //bad practice
-	this.props.resize();
+	}.bind(this),500);//must smaller than 	
 }
 
-var setGoogleDriveTitle=function(fileid,title,cb){
-	gapi.client.load('drive', 'v2', function() {  
-		var renameRequest = gapi.client.drive.files.patch({
-            fileId: fileid,
-            resource: { title: title }
-    });
-		renameRequest.execute(function(resp) {
-			cb(0,resp.title);
-    });
-	});
-}
-var setTitle=function(title){
-	if (this.props.trait.host==="google") {
-		setGoogleDriveTitle(this.props.trait.filename,title,function(err,title){
-			this.props.trait.title=title; //bad practice
-			this.setState({dirty:true,titlechanged:true});
-		}.bind(this));
-
-	}else {
-		this.props.trait.title=title; //bad practice
-		this.setState({dirty:true,titlechanged:true});
-	}
-}	
-
-module.exports={setFlexHeight:setFlexHeight,setTitle:setTitle};
-},{"../actions/docfile":"C:\\ksana2015\\pannaloka\\src\\actions\\docfile.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\transclude.js":[function(require,module,exports){
-var MAX_TRANSCLUSION_LENGTH = 30;
-
-var React=require("react");
-var ReactDOM=require("react-dom");
-var selectionstore=require("../stores/selection");
-var docfilestore=require("../stores/docfile");
-var uuid=require("../uuid");
-var transclusion = require("../components/transclusion");
-var milestones=require("ksana-codemirror").milestones;
-var util=require("./util");
-var bookmarkfromrange=function(doc) { //simulate bookmark format in file
-	var bookmark={}; 
-	var ranges=selectionstore.getRanges();
-	if (ranges.length!==1)return;
-	var thisfile=docfilestore.fileOf(doc);
-	if (!thisfile || thisfile==ranges[0][0])return ;//cannot tranclude in same file
-
-  var text=selectionstore.getRangeText(0);
-  if (text.length>MAX_TRANSCLUSION_LENGTH) text=text.substr(0,MAX_TRANSCLUSION_LENGTH)+"...";
-
-  var packed=milestones.pack.call( docfilestore.docOf(ranges[0][0]),ranges[0][1]);
-  bookmark.target=[ranges[0][0],packed,text];
-  bookmark.key=uuid();
-  bookmark.className="transclusion";
-  //TODO save target file generation 
-  return bookmark;
-}
-
-var bookmarkfrommarkup=function(mrk) {
-	var bookmark={};
-	var file=docfilestore.fileOf(mrk.markup.handle.doc);
-	var text="~"+util.getMarkupText(mrk.markup.handle.doc,mrk.markup.handle);
-	bookmark.target=[file, mrk.key, text];
-	bookmark.key=uuid();
-	bookmark.className="transclusion";
-	return bookmark;
-}
-
-var removeBookmarkAtCursor = function(doc) {
-	var cursor=doc.getCursor();
-	var removed=0;
-	var react=doc.getEditor().react;
-	var bookmarks=doc.findMarksAt(cursor);
-	bookmarks.forEach(function(bookmark){
-		if (bookmark.type==="bookmark") {
-			react.removeMarkup(bookmark.key);
-			bookmark.clear();
-			removed++;
-		}
-	});
-	return removed;
-}
-
-var transclude_onclick=function(e) {
-	var key=e.target.dataset.mid;
-	var m=this.getMarkup(key);
-	var highlight= m.target[1];
-	this.doc.setCursor(m.handle.find());
-	util.gotoRangeOrMarkupID(m.target[0],m.target[1],{below:this.props.wid,moveCursor:true});
-}	
-
-
-var transclude=function(bm,mrk) {
-	var doc=this.doc;
-	var removed=removeBookmarkAtCursor.call(this,doc);
-	if (removed) return;
-	if (mrk) {
-		bm=bookmarkfrommarkup(mrk);
-	} else if (!bm) {
-		bm=bookmarkfromrange(doc);
-	}
-	if (!bm) return;
-
-	var cursor=doc.getCursor();
-  var marker = document.createElement('span');
-  ReactDOM.render(  React.createElement(transclusion,
-  	{title:bm.target[0],mid:bm.key,text:bm.target[2],onClick:transclude_onclick.bind(this)})
-  ,marker);
-  var textmarker=doc.markText(cursor,cursor,{
-  	  //need codemirror after 5.7.1 https://github.com/codemirror/CodeMirror/commit/bc5a4939b2603f587c2358a8b13063862660bcdf
-  	replacedWith:marker,target:bm.target,className:bm.className,clearWhenEmpty: false,key:bm.key,type:"bookmark"}
-  );
-
-  //textmarker.type="bookmark"; //load from file will cause transclusion class apply till end-of-line
-  bm.handle=textmarker;
-  return bm;
-}
-
-
-module.exports=transclude;
-},{"../components/transclusion":"C:\\ksana2015\\pannaloka\\src\\components\\transclusion.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","../uuid":"C:\\ksana2015\\pannaloka\\src\\uuid.js","./util":"C:\\ksana2015\\pannaloka\\src\\views\\util.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js","react":"react","react-dom":"react-dom"}],"C:\\ksana2015\\pannaloka\\src\\views\\treelist.js":[function(require,module,exports){
-var React=require("react");
-var Component=React.Component;
-var PureRender=require('react-addons-pure-render-mixin');
-
-var ktcfilestore=require("../stores/ktcfile");
-var FileItem=require("../components/fileitem");
-
-var ktcfileaction=require("../actions/ktcfile");
-var NewFileButton =React.createClass({displayName: "NewFileButton",
-	newfile : function(){
-		ktcfileaction.newTree();
-		setTimeout(function(){
-			this.props.onOpenTree();
-		}.bind(this),100);
-		
-	}
-
-	,render :function() {
-		return React.createElement("button", {onClick: this.newfile}, "Create New Tree")
-	}
-});
-
-var TreeList = React.createClass({displayName: "TreeList",
-	getInitialState:function(){
-		return {files:[],selectedIndex:0};
-	}
-
-	, onData :function(files) {
-		this.setState({files});
-	}
-
-	,componentDidMount :function() {
-		this.unsubscribe = ktcfilestore.listen(this.onData);
-	}
-
-	,componentWillUnmount :function() {
-		this.unsubscribe();
-	}
-
-	,opentree :function(e) {
-		var file=this.state.files[this.state.selectedIndex];
-		ktcfileaction.openTree(file.filename);
-		this.props.onOpenTree && this.props.onOpenTree();
-	}
-
-	,renderItem :function(item,idx) {
-		return React.createElement("div", {key: idx, "data-idx": idx}, 
-			React.createElement(FileItem, React.__spread({onClick: this.opentree, selected: this.state.selectedIndex==idx},  item)))
-	}
-
-	,selectItem :function(e) {
-		var target=e.target;
-		while (target && !target.dataset.idx) {
-			target=target.parentElement;
-		}
-		var selectedIndex=parseInt(target.dataset.idx);
-		if (!isNaN(selectedIndex)) this.setState({selectedIndex});
-	}
-
-	,render :function() {
-		return React.createElement("div", null, 
-				React.createElement(NewFileButton, {onOpenTree: this.props.onOpenTree}), 
-				React.createElement("div", {onClick: this.selectItem}, this.state.files.map(this.renderItem))
-		)
-	}
-});
-
-module.exports = TreeList ;
-},{"../actions/ktcfile":"C:\\ksana2015\\pannaloka\\src\\actions\\ktcfile.js","../components/fileitem":"C:\\ksana2015\\pannaloka\\src\\components\\fileitem.js","../stores/ktcfile":"C:\\ksana2015\\pannaloka\\src\\stores\\ktcfile.js","react":"react","react-addons-pure-render-mixin":"C:\\ksana2015\\node_modules\\react-addons-pure-render-mixin\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\util.js":[function(require,module,exports){
+module.exports={load:load,update:update,markupchanged:markupchanged,inserttext:inserttext,deletetext:deletetext
+,beforeChange:beforeChange,unmount:unmount};
+},{"ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\highlight.js":[function(require,module,exports){
 var docfilestore=require("../stores/docfile");
 var stackwidgetaction=require("../actions/stackwidget");
 var overlayaction=require("../actions/overlay");
@@ -19955,13 +19068,1042 @@ var	autoGoMarkup = function(m) {
 module.exports={gotoRangeOrMarkupID:gotoRangeOrMarkupID,highlightDoc:highlightDoc
 ,getMarkupText:getMarkupText,posInRange:posInRange,getMarkupsInRange:getMarkupsInRange
 ,highlightRelatedMarkup:highlightRelatedMarkup,autoGoMarkup:autoGoMarkup};
-},{"../actions/overlay":"C:\\ksana2015\\pannaloka\\src\\actions\\overlay.js","../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../stores/ktxfile":"C:\\ksana2015\\pannaloka\\src\\stores\\ktxfile.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\widgetclasses.js":[function(require,module,exports){
-var DefaultTextView=require("./defaulttextview");
+},{"../actions/overlay":"C:\\ksana2015\\pannaloka\\src\\actions\\overlay.js","../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../stores/ktxfile":"C:\\ksana2015\\pannaloka\\src\\stores\\ktxfile.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\listmarkup.js":[function(require,module,exports){
+var React=require("react");
+var selectionstore=require("../stores/selection");
+var findmarkup=require("../markup/find");
+var RangeHyperlink=require("../components/rangehyperlink");
+var highlight=require("./highlight");
+var types=require("../markuptypedef").types;
+var ListMarkup = React.createClass({displayName: "ListMarkup",
+	getInitialState:function(){
+		return {links:[]};
+	}
+	,componentDidMount:function(){
+		this.unsubscribe = selectionstore.listen(this.onSelection);
+	}
+	,componentWillUnmount:function(){
+		clearTimeout(this.timer);
+		this.unsubscribe();
+	}
+
+	,onHyperlinkClick:function(file,key_range) {
+		highlight.gotoRangeOrMarkupID(file,key_range,{moveCursor:true,autoOpen:true});
+	}
+
+	,findMarkup :function() {
+		var ranges=selectionstore.getRanges({textLength:20});
+		if (!ranges || ranges.length!==1)return ;
+
+		var rangetext=ranges[0][2],links=[];
+		var markups=findmarkup.byMasterText(rangetext,this.props.markups);
+		if (markups && markups.length) {
+			links=markups.map(function(key){
+				var clsname=this.props.markups[key].className;
+				var typelabel="~"+types[clsname].label;
+				return [this.props.filename, key, typelabel ];
+			}.bind(this));				
+		}
+
+		if (this.props.filename==ranges[0][0]) {
+			links.unshift([this.props.filename, ranges[0][1], rangetext,"跳回選取區" ]);//for link back to selection
+		} else {
+			links.unshift([this.props.filename, null, rangetext,markups.length?"":"無搜尋結果" ]);//not clickable , label only
+		}
+		this.setState({links});
+	}	
+
+	,onSelection :function(fileselections)  {
+		clearTimeout(this.timer);
+		var delta=Math.round(Math.random()*200);
+		this.timer=setTimeout(this.findMarkup,800+delta);//different view get fired seperately
+	}
+	,render:function() {
+		return React.createElement("span", null, React.createElement(RangeHyperlink, {onHyperlinkClick: this.onHyperlinkClick, ranges: this.state.links}))
+	}
+})
+module.exports=ListMarkup;
+},{"../components/rangehyperlink":"C:\\ksana2015\\pannaloka\\src\\components\\rangehyperlink.js","../markup/find":"C:\\ksana2015\\pannaloka\\src\\markup\\find.js","../markuptypedef":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\index.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","./highlight":"C:\\ksana2015\\pannaloka\\src\\textview\\highlight.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\textview\\markupmethod.js":[function(require,module,exports){
+var highlight=require("./highlight");
+var docfilestore=require("../stores/docfile");
+var createmilestones=require("./createmilestones");
+var selectionaction=require("../actions/selection");
+var kcm=require("ksana-codemirror");
+var textMarker2json=kcm.textMarker2json;
+var markupNav=require("../markup/nav");
+var	createMilestones = function (ranges)  { //uses by ksana-codemirror/automarkup.js
+	createmilestones.call(this.cm,ranges,function(newmarkups){
+		if (!newmarkups.length) return;
+		var markups={};
+		for (var i in this.state.markups ) markups[i]=this.state.markups[i];
+
+		for (var i=0;i<newmarkups.length;i++) {
+			markups[newmarkups[i].key]=newmarkups[i].markup;
+		}
+		
+		this.setState({dirty:true,markups},function(){
+			this.rebuildMilestone(this.state.markups);
+		}.bind(this));
+	}.bind(this));
+}
+
+var addremotemarkup=function(key,markup){//not in textview yet
+	this.state._markups.set(key,markup);
+}
+
+var removeremotemarkup=function(markup) {
+	this.state._markups.delete(markup.key);
+}
+/*
+//just for lookup , not trigger redraw as markup.handle already exists.
+var	addMarkup = function (markup) {
+	if (!markup  || !markup.key) return;
+	this.state.markups[markup.key]=markup;
+
+	if (this.isGoogleDriveFile()) addremotemarkup(markup);
+	if (markup.className==="milestone") this.rebuildMilestone(this.state.markups);
+	var file=docfilestore.fileOf(markup.handle.doc);
+	markupNav.rebuild(file,markup.className);
+	this.setState({dirty:true});
+}
+*/
+
+var	getOther = function(markup,opts) {
+	var out=[],markups=this.state.markups;
+	opts=opts||{};
+	if (markup.master) {
+		var master=markups[markup.master];
+		if (master) out.push(master);
+	} else if (markup.others) {
+		for (var i=0;i<markup.others.length;i++) {
+			var key=markup.others[i];
+			out.push(markups[key]);
+		}
+	}
+
+	if (out.length && opts.format=="range") {
+		return out.map(function(m){
+			var file=docfilestore.fileOf(m.handle.doc);
+			var text=highlight.getMarkupText(m.handle.doc,m.handle);
+			return [file,m.key,text];
+		});
+	}
+	return out;
+}
+
+var	removeMarkup =function(key) {
+	var m=this.state.markups[key];
+
+	if (m) {
+		var clsname=m.className;
+		if (this.isGoogleDriveFile()) removeremotemarkup.call(this,m);
+
+		m.handle.clear();
+		delete this.state.markups[key];
+		if (clsname==="milestone") this.rebuildMilestone(this.state.markups);
+		var file=docfilestore.fileOf(m.handle.doc);
+		markupNav.rebuild(file,clsname);
+		this.setState({dirty:true});
+	} else {
+		console.error("unknown markup id",key)
+	}
+}
+
+var markupReady = function (markups) {//this is React component
+	this.rebuildMilestone.call(this,markups);//in defaulttextview
+	var fn=docfilestore.fileOf(this.doc);
+	markupNav.setMarkups(markups,fn);
+}
+
+var onMarkup = function(M,action) {		
+	var shallowCopyMarkups = function(M) { //use Object.assign in future
+		var out={};
+		for (var i in M) out[i]=M[i];
+		return out;
+	}
+	if (!action || !action.newly || !M.length) return;
+	var touched=null;
+	var markups=null;
+	for (var i in M) {
+		var m=M[i];
+		if (m.doc===this.doc) {
+			if (!markups) markups=shallowCopyMarkups(this.state.markups);
+			markups[m.key]=m.markup;
+			if (this.isGoogleDriveFile()) addremotemarkup.call(this,m.key,m.markup);
+			if (!touched) touched={};
+			touched[m.markup.className]=true;
+		}
+	}
+
+	selectionaction.clearAllSelection();
+	if (markups) this.setState({dirty:true,markups},function(){
+		//console.log(Object.keys(markups).length,Object.keys(this.state.markups).length);
+		if (touched) {
+			var file=docfilestore.fileOf(this.doc);
+			markupNav.setMarkups(this.state.markups,file,true);//do not perform full rebuild
+			for (var type in touched) {
+				markupNav.rebuild(file,type);
+			}
+		}
+		if (M[0].markup.className==="milestone") this.rebuildMilestone(markups);
+	}.bind(this));
+
+}
+
+var rebuildMilestone = function (markups) {
+	kcm.milestones.buildMilestone(this.doc,markups);
+	//force repaint of gutter
+	this.cm.setOption("lineNumbers",false);
+	this.cm.setOption("lineNumbers",true);
+}
+
+module.exports={onMarkup:onMarkup,createMilestones:createMilestones,markupReady:markupReady,
+	getOther:getOther,removeMarkup:removeMarkup,rebuildMilestone:rebuildMilestone}
+},{"../actions/selection":"C:\\ksana2015\\pannaloka\\src\\actions\\selection.js","../markup/nav":"C:\\ksana2015\\pannaloka\\src\\markup\\nav.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","./createmilestones":"C:\\ksana2015\\pannaloka\\src\\textview\\createmilestones.js","./highlight":"C:\\ksana2015\\pannaloka\\src\\textview\\highlight.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\traitmethod.js":[function(require,module,exports){
+var docfileaction=require("../actions/docfile");
+var setFlexHeight=function(flex) {
+	this.props.trait.flex=flex; //bad practice
+	this.props.resize();
+}
+
+var setGoogleDriveTitle=function(fileid,title,cb){
+	gapi.client.load('drive', 'v2', function() {  
+		var renameRequest = gapi.client.drive.files.patch({
+            fileId: fileid,
+            resource: { title: title }
+    });
+		renameRequest.execute(function(resp) {
+			cb(0,resp.title);
+    });
+	});
+}
+var setTitle=function(title){
+	if (this.props.trait.host==="google") {
+		setGoogleDriveTitle(this.props.trait.filename,title,function(err,title){
+			this.props.trait.title=title; //bad practice
+			this.setState({dirty:true,titlechanged:true});
+		}.bind(this));
+
+	}else {
+		this.props.trait.title=title; //bad practice
+		this.setState({dirty:true,titlechanged:true});
+	}
+}	
+
+module.exports={setFlexHeight:setFlexHeight,setTitle:setTitle};
+},{"../actions/docfile":"C:\\ksana2015\\pannaloka\\src\\actions\\docfile.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\transclude.js":[function(require,module,exports){
+var MAX_TRANSCLUSION_LENGTH = 30;
+
+var React=require("react");
+var ReactDOM=require("react-dom");
+var selectionstore=require("../stores/selection");
+var docfilestore=require("../stores/docfile");
+var uuid=require("../uuid");
+var transclusion = require("../components/transclusion");
+var milestones=require("ksana-codemirror").milestones;
+var highlight=require("./highlight");
+var bookmarkfromrange=function(doc) { //simulate bookmark format in file
+	var bookmark={}; 
+	var ranges=selectionstore.getRanges();
+	if (ranges.length!==1)return;
+	var thisfile=docfilestore.fileOf(doc);
+	if (!thisfile || thisfile==ranges[0][0])return ;//cannot tranclude in same file
+
+  var text=selectionstore.getRangeText(0);
+  if (text.length>MAX_TRANSCLUSION_LENGTH) text=text.substr(0,MAX_TRANSCLUSION_LENGTH)+"...";
+
+  var packed=milestones.pack.call( docfilestore.docOf(ranges[0][0]),ranges[0][1]);
+  bookmark.target=[ranges[0][0],packed,text];
+  bookmark.key=uuid();
+  bookmark.className="transclusion";
+  //TODO save target file generation 
+  return bookmark;
+}
+
+var bookmarkfrommarkup=function(mrk) {
+	var bookmark={};
+	var file=docfilestore.fileOf(mrk.markup.handle.doc);
+	var text="~"+highlight.getMarkupText(mrk.markup.handle.doc,mrk.markup.handle);
+	bookmark.target=[file, mrk.key, text];
+	bookmark.key=uuid();
+	bookmark.className="transclusion";
+	return bookmark;
+}
+
+var removeBookmarkAtCursor = function(doc) {
+	var cursor=doc.getCursor();
+	var removed=0;
+	var react=doc.getEditor().react;
+	var bookmarks=doc.findMarksAt(cursor);
+	bookmarks.forEach(function(bookmark){
+		if (bookmark.type==="bookmark") {
+			react.removeMarkup(bookmark.key);
+			bookmark.clear();
+			removed++;
+		}
+	});
+	return removed;
+}
+
+var transclude_onclick=function(e) {
+	var key=e.target.dataset.mid;
+	var m=this.getMarkup(key);
+	var highlight= m.target[1];
+	this.doc.setCursor(m.handle.find());
+	highlight.gotoRangeOrMarkupID(m.target[0],m.target[1],{below:this.props.wid,moveCursor:true});
+}	
+
+
+var transclude=function(bm,mrk) {
+	var doc=this.doc;
+	var removed=removeBookmarkAtCursor.call(this,doc);
+	if (removed) return;
+	if (mrk) {
+		bm=bookmarkfrommarkup(mrk);
+	} else if (!bm) {
+		bm=bookmarkfromrange(doc);
+	}
+	if (!bm) return;
+
+	var cursor=doc.getCursor();
+  var marker = document.createElement('span');
+  ReactDOM.render(  React.createElement(transclusion,
+  	{title:bm.target[0],mid:bm.key,text:bm.target[2],onClick:transclude_onclick.bind(this)})
+  ,marker);
+  var textmarker=doc.markText(cursor,cursor,{
+  	  //need codemirror after 5.7.1 https://github.com/codemirror/CodeMirror/commit/bc5a4939b2603f587c2358a8b13063862660bcdf
+  	replacedWith:marker,target:bm.target,className:bm.className,clearWhenEmpty: false,key:bm.key,type:"bookmark"}
+  );
+
+  //textmarker.type="bookmark"; //load from file will cause transclusion class apply till end-of-line
+  bm.handle=textmarker;
+  return bm;
+}
+
+
+module.exports=transclude;
+},{"../components/transclusion":"C:\\ksana2015\\pannaloka\\src\\components\\transclusion.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","../uuid":"C:\\ksana2015\\pannaloka\\src\\uuid.js","./highlight":"C:\\ksana2015\\pannaloka\\src\\textview\\highlight.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js","react":"react","react-dom":"react-dom"}],"C:\\ksana2015\\pannaloka\\src\\uuid.js":[function(require,module,exports){
+module.exports=function generateUUID(){
+    var d = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (d + Math.random()*16)%16 | 0;
+        d = Math.floor(d/16);
+        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+    });
+    return uuid;
+}
+},{}],"C:\\ksana2015\\pannaloka\\src\\views\\createmarkup.js":[function(require,module,exports){
+var React=require("react");
+var Component=React.Component;
+var PureRender=require('react-addons-pure-render-mixin');
+
+var selectionstore=require("../stores/selection");
+var markupstore=require("../stores/markup");
+var markupaction=require("../actions/markup");
+var markuptypedef=require("../markuptypedef");
+var getAvailableType=markuptypedef.getAvailableType;
+var types=markuptypedef.types;
+var DefaultMarkupAttrEditor=require("../markuptypedef/defmarkupattr");
+
+var UserPreference =function() {
+	this.preferences=[];
+	this.setPrefer=function(type, others) {
+		this.preferences=this.preferences.filter(function(pref){
+			return (others.indexOf(pref)===-1);
+		});
+		this.preferences.push(type);
+	} 
+
+	this.getPrefer=function(types) { //return first matching perference
+		for (var i=0;i<types.length;i++) {
+			if (this.preferences.indexOf(types[i])>-1) {
+				return i;
+			}
+		}
+		return 0;
+	}
+}
+
+var CreateMarkup = React.createClass({displayName: "CreateMarkup",
+	getInitialState:function() {
+		var selections=selectionstore.selections;
+		this.user=new UserPreference();
+		var T=getAvailableType(selections);
+		var selectedIndex=this.user.getPrefer(T);		
+		return {types:T,userselect:"",selectedIndex:0,selections:selectionstore.selections};
+	}
+
+	,onData :function(selections) {
+		var types=getAvailableType(selections);
+		var selectedIndex=this.user.getPrefer(types);
+		if (types.length) markupstore.cancelEdit();
+		this.setState({types,selectedIndex,selections});
+	}
+
+	,componentDidMount :function() {
+		this.unsubscribe = selectionstore.listen(this.onData);
+	}
+
+	,componentWillUnmount :function() {
+		this.unsubscribe();
+	}
+
+	,selecttype :function(e) {
+		var target=e.target;
+		while (target && typeof target.dataset.idx==="undefined") target=target.parentElement;
+		if (!target) return;
+		var idx=parseInt(target.dataset.idx);
+		var userselect=this.state.types[idx];
+		this.user.setPrefer(userselect,this.state.types);
+		this.setState({selectedIndex:idx});
+	}
+
+	,renderType :function(item,idx) {
+		return React.createElement("label", {className: "markuptype", key: idx, "data-idx": idx}, React.createElement("input", {checked: idx==this.state.selectedIndex, 
+				onChange: this.selecttype, 
+				type: "radio", name: "markuptype"}), types[item].label)
+	}
+
+	,onCreateMarkup :function (trait) {
+		var selections=this.state.selections;
+		var typename=this.state.types[this.state.selectedIndex];
+		var typedef=types[typename];
+		markupaction.createMarkup({selections,trait,typename,typedef});
+	}
+
+	,setHotkey :function (handler) {
+		markupaction.setHotkey(handler);
+	}
+
+	,renderAttributeEditor :function() {
+		if (this.state.types.length===0 || this.state.selectedIndex===-1) return;
+
+		var activetype=this.state.types[this.state.selectedIndex];
+		var attributeEditor=types[activetype].editor || DefaultMarkupAttrEditor;
+		return React.createElement( attributeEditor,
+			{selections:this.state.selections
+				,setHotkey:this.setHotkey
+				,onCreateMarkup:this.onCreateMarkup} );
+
+	}
+	,msg :function() {
+		var s="選取文字，按Ctrl選多段";
+		if (markupstore.getEditing()) s="";//Ctrl+L 嵌用此標記→";
+		return s;
+	}
+
+	,render :function() {//need 130% to prevent flickering when INPUT add to markup editor
+		if (!this.props.editing) {
+			markupaction.setHotkey(null);
+			return React.createElement("span", null)
+		}
+
+		if (!this.state.types.length) {
+			markupaction.setHotkey(null);
+		}
+
+		return React.createElement("span", null, 
+			this.state.types.length?
+			this.state.types.map(this.renderType):this.msg(), 
+			"|", 
+			this.renderAttributeEditor()
+		)
+	}
+});
+module.exports=CreateMarkup;
+},{"../actions/markup":"C:\\ksana2015\\pannaloka\\src\\actions\\markup.js","../markuptypedef":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\index.js","../markuptypedef/defmarkupattr":"C:\\ksana2015\\pannaloka\\src\\markuptypedef\\defmarkupattr.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","react":"react","react-addons-pure-render-mixin":"C:\\ksana2015\\node_modules\\react-addons-pure-render-mixin\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\filelist.js":[function(require,module,exports){
+var React=require("react");
+var Component=React.Component;
+var PureRender=require('react-addons-pure-render-mixin');
+
+
+var ktxfilestore=require("../stores/ktxfile");
+var FileItem=require("../components/fileitem");
+
+var stackwidgetaction=require("../actions/stackwidget");
+var NewFileButton = React.createClass({displayName: "NewFileButton",
+	newfile : function(){
+		var emptyfile={filename:ktxfilestore.newfilename() , title:"Untitled" , newfile:true};
+		stackwidgetaction.openWidget(emptyfile,"TextWidget");
+	}
+
+	,render :function() {
+		return React.createElement("button", {onClick: this.newfile}, "Create New File")
+	}
+});
+var FileList = React.createClass({displayName: "FileList",
+	getInitialState:function(){
+		return {files:[],selectedIndex:0};
+	}
+
+	,onData :function(files) {
+		this.setState({files});
+	}
+
+	,componentDidMount :function() {
+		this.unsubscribe = ktxfilestore.listen(this.onData);
+	}
+
+	,componentWillUnmount :function() {
+		this.unsubscribe();
+	}
+
+	,openfile :function(e) {
+		var fobj=this.state.files[this.state.selectedIndex];
+		var obj=ktxfilestore.findFile(fobj.filename);
+		if (obj) {
+			stackwidgetaction.openWidget(obj,"TextWidget");	
+		}
+	}
+
+	,renderItem :function(item,idx) {
+		return React.createElement("div", {key: idx, "data-idx": idx}, 
+			React.createElement(FileItem, React.__spread({onClick: this.openfile, 
+			selected: this.state.selectedIndex==idx},  item)))
+	}
+
+	,selectItem :function(e) {
+		var target=e.target;
+		while (target && target.dataset && !target.dataset.idx) {
+			target=target.parentElement;
+		}
+		if (!target || !target.dataset) return;
+		var selectedIndex=parseInt(target.dataset.idx);
+		if (!isNaN(selectedIndex)) this.setState({selectedIndex});
+	}
+
+	,render :function() {
+		return React.createElement("div", null, 
+				React.createElement(NewFileButton, null), 
+				React.createElement("div", {onClick: this.selectItem}, this.state.files.map(this.renderItem))
+		)
+	}
+});
+module.exports = FileList;
+},{"../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../components/fileitem":"C:\\ksana2015\\pannaloka\\src\\components\\fileitem.js","../stores/ktxfile":"C:\\ksana2015\\pannaloka\\src\\stores\\ktxfile.js","react":"react","react-addons-pure-render-mixin":"C:\\ksana2015\\node_modules\\react-addons-pure-render-mixin\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\inputmethod.js":[function(require,module,exports){
+var React=require("react");
+var Component=React.Component;
+var docfilestore=require("../stores/docfile");
+var IME=require("ksana-inputmethod")();
+
+var InputMethod=React.createClass({displayName: "InputMethod",
+	getInitialState:function() {
+		return {selected:this.props.ime-1,preview:""};
+	}
+	,input:function(val,e) {
+		var cm=docfilestore.getActiveEditor();
+		var output=IME[this.state.selected].ime.convert(val);
+		if (output) {
+			var pos=cm.getCursor();
+			cm.replaceRange(output,pos,pos);
+			cm.setCursor({line:pos.line,ch:pos.ch+output.length});
+		}
+		e.target.value="";
+	}
+	,componentWillUnmount:function() {
+		clearTimeout(this.timer);
+	}
+	,onChange:function(e) {
+		clearTimeout(this.timer);
+		var val=e.target.value;
+		this.timer=setTimeout(function(){
+			var preview=IME[this.state.selected].ime.convert(val);
+			this.setState({preview:preview});
+		}.bind(this),100);
+	}
+	,onKeyPress:function(e) {
+		if (e.key=="Enter") return this.input(e.target.value,e);
+	}
+	,componentWillReceiveProps : function(nextprops) {
+		this.setState({selected:nextprops.ime-1});
+	}
+	,renderIME:function(item,idx){
+		return React.createElement("option", {value: item.name, key: idx}, item.name)
+	}
+	,selectIME:function(e){
+		this.setState({selected:e.target.selectedIndex});
+		this.props.onSetIME&&this.props.onSetIME(e.target.selectedIndex+1);
+	}
+	,render:function(){
+		if (this.state.selected<0) return React.createElement("span", null)
+		return React.createElement("span", null, 
+			React.createElement("select", {value: IME[this.state.selected].name, 
+			onChange: this.selectIME}, IME.map(this.renderIME)), 
+			React.createElement("input", {onKeyPress: this.onKeyPress, onChange: this.onChange}), 
+			React.createElement("span", null, this.state.preview)
+		)
+	}
+});
+
+module.exports=InputMethod;
+},{"../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","ksana-inputmethod":"C:\\ksana2015\\node_modules\\ksana-inputmethod\\index.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\views\\markupnav.js":[function(require,module,exports){
+var React=require("react");
+var markupstore=require("../stores/markup");
+var markupNav = React.createClass({displayName: "markupNav",
+	next :function() {
+		var next=markupstore.getNext();
+		this.props.goMarkupByKey(next);
+	}
+	,prev :function() {
+		var prev=markupstore.getPrev();
+		this.props.goMarkupByKey(prev);
+	}
+	,render :function() {
+		var editing=markupstore.getEditing();
+		if (!editing) return React.createElement("span", null)
+		return React.createElement("span", null, 
+			React.createElement("button", {onClick: this.prev}, "Prev"), 
+			React.createElement("button", {onClick: this.next}, "Next")
+
+		)
+	}
+});
+module.exports=markupNav;
+},{"../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\views\\markuppanel.js":[function(require,module,exports){
+var React=require("react");
+var Component=React.Component;
+var PureRender=require('react-addons-pure-render-mixin');
+
+
+var markupstore=require("../stores/markup");
+var markupaction=require("../actions/markup");
+var selectionstore=require("../stores/selection");
+var docfilestore=require("../stores/docfile");
+var CreateMarkup=require("./createmarkup");
+var MarkupSelector=require("../components/markupselector");
+var MarkupNavigator=require("./markupnav");
+var highlight=require("../textview/highlight");
+
+var MarkupPanel = React.createClass({displayName: "MarkupPanel",
+	getInitialState() {
+		return {editing:null,markups:[],hasSelection:false,deletable:false,getOther:null};
+	}
+	,onClose : function()  {
+		stackwidgetaction.closeWidget(this.props.wid)
+	}
+
+	,onMarkup : function (markups,action)  {
+		if (action.cursor) {
+			var keys=Object.keys(markups);
+			var wid=null,cm=null,getOther=null;
+			if (keys.length) {
+				cm=markups[keys[0]].doc.getEditor();
+				wid=cm.react.getWid();
+				getOther=cm.react.getOther;
+			}
+			this.setState({markups,wid,cm,getOther});
+		}
+	}
+
+	,onDocfile : function()  {
+		this.forceUpdate();
+	}
+
+	,componentDidMount : function() {
+		this.unsubscribe1 = markupstore.listen(this.onMarkup);
+		this.unsubscribe2 = docfilestore.listen(this.onDocfile);
+	}
+
+	,componentWillUnmount : function() {
+		this.unsubscribe1();
+		this.unsubscribe2();
+	}
+
+	,onHyperlinkClick : function (file,mid,opts)  {
+		var o={};
+		for (var i in opts)	o[i]=opts[i];
+		o.below=this.state.wid;
+		o.autoopen=true;
+		highlight.gotoRangeOrMarkupID(file,mid,o);
+	}
+
+	,onHyperlinkEnter : function (file,mid)  {
+		highlight.gotoRangeOrMarkupID(file,mid,{noScroll:true});
+	}
+
+	,goMarkupByKey : function (mid)  {
+		var editing=markupstore.getEditing();
+		if (!editing)return;
+		var file=docfilestore.fileOf(editing.doc);
+		this.onHyperlinkClick(file,mid,{moveCursor:true});
+	}
+
+	,onChanged : function (doc)  {
+		doc.getEditor().react.setDirty();
+	}
+
+	,onDelete : function(m,typedef)  {
+		if (!m || !m.handle) {
+			throw "wrong markup"
+			return;
+		}
+		markupstore.remove(m);
+		var others=m.handle.doc.getEditor().react.getOther(m);
+		if (others) {
+			others.map(function(other){markupstore.remove(other)});
+		}
+		typedef.onDelete &&	typedef.onDelete(m);
+	}
+
+	,onEditing : function(m,handler)  {
+		markupstore.setEditing(m,handler);
+	}
+
+	,render : function () {		
+
+		var ranges=selectionstore.getRanges();
+
+		return (React.createElement("span", null, React.createElement("span", {style: {fontSize:"130%"}}, "|"), 
+			React.createElement(MarkupNavigator, {goMarkupByKey: this.goMarkupByKey}), 
+			React.createElement(CreateMarkup, {editing: !this.state.markups.length}), 
+			React.createElement(MarkupSelector, {
+			 onHyperlinkClick: this.onHyperlinkClick, 
+			 onHyperlinkEnter: this.onHyperlinkEnter, 
+			 getOther: this.state.getOther, 
+			 markups: this.state.markups, onChanged: this.onChanged, 
+			 onDelete: this.onDelete, 
+			 onEditing: this.onEditing, 
+			 ranges: ranges, 
+			 editing: this.state.editing, deletable: this.state.deletable})
+
+			 
+			)
+
+		)
+	}
+});
+module.exports=MarkupPanel;
+},{"../actions/markup":"C:\\ksana2015\\pannaloka\\src\\actions\\markup.js","../components/markupselector":"C:\\ksana2015\\pannaloka\\src\\components\\markupselector.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","../textview/highlight":"C:\\ksana2015\\pannaloka\\src\\textview\\highlight.js","./createmarkup":"C:\\ksana2015\\pannaloka\\src\\views\\createmarkup.js","./markupnav":"C:\\ksana2015\\pannaloka\\src\\views\\markupnav.js","react":"react","react-addons-pure-render-mixin":"C:\\ksana2015\\node_modules\\react-addons-pure-render-mixin\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\outlinepanel.js":[function(require,module,exports){
+var React=require("react");
+var E=React.createElement;
+var Component=React.Component;
+var PureRender=require('react-addons-pure-render-mixin');
+
+var docfilestore=require("../stores/docfile");
+var ktcfilestore=require("../stores/ktcfile");
+var ktcfileaction=require("../actions/ktcfile");
+var highlight=require("../textview/highlight");
+var TreeToc=require("ksana2015-treetoc").Component;
+var RangeHyperlink=require("../components/rangehyperlink");
+var SaveButton=require("../components/savebutton");
+var selectionstore=require("../stores/selection");
+var markupstore=require("../stores/markup");
+var docfilestore=require("../stores/docfile");
+var OutlinePanel = React.createClass({displayName: "OutlinePanel",
+	getInitialState:function() {		
+		return { toc:[{d:0,t:"test"},{d:1,t:"testchild"}] ,dirty:false};
+	}
+
+	,onToc :function( allfiles, toc) {
+		if (!toc) return;
+		this.setState({toc});
+	}
+
+	,componentDidMount :function() {
+		this.unsubscribe = ktcfilestore.listen(this.onToc);
+	}
+	,componentWillUnmount :function() {
+		this.unsubscribe();
+	}
+	,saveTree : function() {
+		ktcfileaction.writeTree(this.state.toc);
+		this.setState({dirty:false});
+	}
+	,onChanged : function() {
+		this.setState({dirty:true});
+	}
+
+	,setLink :function(node) {
+		var m=markupstore.getEditing();
+
+		if (m) {
+			var text=highlight.getMarkupText(m.doc,m.markup.handle);
+			node.links=[[docfilestore.fileOf(m.doc),m.key,text]];
+		} else { //try range
+			var ranges=selectionstore.getRanges({textLength:5,pack:true});
+			if (ranges.length) {
+				node.links=ranges;
+			} else delete node.links;
+		}
+		this.onChanged();
+		this.forceUpdate();
+
+	}
+
+	,onHyperlinkClick :function(file,range) {
+		highlight.gotoRangeOrMarkupID(file,range,{moveCursor:true,autoOpen:true});
+	}
+	,onNode :function(node,selected,n,editingcaption) {
+		if (n==editingcaption) {
+			var label="🔗";
+			if (node.links) label="reset "+label;
+			return E("button",{onClick:this.setLink.bind(this,node)},label);
+		} else {
+			return E(RangeHyperlink,{onHyperlinkClick:this.onHyperlinkClick,ranges:node.links||[]})
+		}
+	}
+
+	,render :function() {
+		return React.createElement("div", null, 
+		React.createElement(SaveButton, {dirty: this.state.dirty, onSave: this.saveTree}), 
+		React.createElement(TreeToc, {opts: {editable:true,onNode:this.onNode}, 
+			onChanged: this.onChanged, 
+			toc: this.state.toc})
+		)
+	}
+});
+module.exports = OutlinePanel;
+},{"../actions/ktcfile":"C:\\ksana2015\\pannaloka\\src\\actions\\ktcfile.js","../components/rangehyperlink":"C:\\ksana2015\\pannaloka\\src\\components\\rangehyperlink.js","../components/savebutton":"C:\\ksana2015\\pannaloka\\src\\components\\savebutton.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../stores/ktcfile":"C:\\ksana2015\\pannaloka\\src\\stores\\ktcfile.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","../textview/highlight":"C:\\ksana2015\\pannaloka\\src\\textview\\highlight.js","ksana2015-treetoc":"C:\\ksana2015\\node_modules\\ksana2015-treetoc\\index.js","react":"react","react-addons-pure-render-mixin":"C:\\ksana2015\\node_modules\\react-addons-pure-render-mixin\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\overlay.js":[function(require,module,exports){
+var React=require("react");
+var Component=React.Component;
+var E=React.createElement;
+var PureRender=require('react-addons-pure-render-mixin');
+
+var styles={svg:{width:"1920px",height:"1080px"},
+overlay:{position:"absolute",left:0,top:0,pointerEvents:"none"}};
+var overlaystore=require("../stores/overlay");
+var Overlay = React.createClass({displayName: "Overlay",
+  getInitialState:function() {
+    return {paths:[]};
+    //{stroke:"red",d:"M150 0 L75 200 L225 200Z"}
+  }
+  ,onPath :function(paths) {
+    this.setState({paths});
+  }
+  ,componentDidMount:function() {
+    this.unsubscribe = overlaystore.listen(this.onPath);
+  }
+  ,componentWillUnmount :function() {
+    this.unsubscribe();
+  }
+  ,renderPaths :function(path,idx) {
+    return E(path.cmd||"path",path);
+  }
+  ,render :function() {
+    return ( 
+        React.createElement("div", {id: "svgmarkups", style: styles.overlay}, 
+          React.createElement("svg", {xmlns: "http://www.w3.org/2000/svg", style: styles.svg}, 
+            this.state.paths.map(this.renderPaths), 
+           React.createElement("defs", null, 
+              React.createElement("marker", {id: "head", orient: "auto", markerWidth: "2", markerHeight: "4", refX: "0.1", 
+                refY: "2"}, React.createElement("path", {id: "headpoly", d: "M0,0 V4 L5,5 Z", fill: "black"}))
+           )
+        )
+      )
+    ); 
+  }
+});
+module.exports=Overlay;
+},{"../stores/overlay":"C:\\ksana2015\\pannaloka\\src\\stores\\overlay.js","react":"react","react-addons-pure-render-mixin":"C:\\ksana2015\\node_modules\\react-addons-pure-render-mixin\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\simpleview.js":[function(require,module,exports){
+var React=require("react");
+var Component=React.Component;
+var stackwidgetaction=require("../actions/stackwidget");
+var StackWidgetMenu=require("../components/stackwidgetmenu");
+
+var SimpleView = React.createClass({displayName: "SimpleView",
+	onClose:function(){
+		stackwidgetaction.closeWidget(this.props.wid);
+	}
+	,render :function() {
+		return React.createElement("div", null, 
+			React.createElement(StackWidgetMenu, {onClose: this.onClose}), 
+			"hello ", this.props.trait.text, " ", this.props.wid
+		)
+	}
+});
+module.exports=SimpleView;
+},{"../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../components/stackwidgetmenu":"C:\\ksana2015\\pannaloka\\src\\components\\stackwidgetmenu.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\views\\stackwidgetlist.js":[function(require,module,exports){
+var React=require("react");
+var Component=React.Component;
+
+var stackwidgetstore=require("../stores/stackwidget");
+var StackWidget=require("../containers/stackwidget");
+
+var MINWIDGETHEIGHT = 150;
+
+var StackWidgetList = React.createClass({displayName: "StackWidgetList",
+	getInitialState:function(){
+    
+    return  { widgets:[], widgetheights:[]};
+  }
+
+	,componentDidMount :function() {
+		this.unsubscribe = stackwidgetstore.listen(this.onData);
+	}
+
+	,componentWillUnmount :function() {
+		this.unsubscribe();
+	}
+
+	,totalFlex :function(widgets) {
+		return widgets.reduce(function(prev,w){ 
+			return (w.trait.flex||1)+prev } 
+		,0);
+	}
+	,setWidgetHeight :function(props,widgets) {
+		if (!props) props=this.props;
+		if (!widgets) widgets=this.state.widgets;
+		var totalheight=props.height;
+		var total=this.totalFlex(widgets);
+
+		var widgetheights=widgets.map(function(w){
+			var widgetheight=totalheight*((w.trait.flex||1)/total) - 4;
+			if (widgetheight<MINWIDGETHEIGHT) widgetheight=MINWIDGETHEIGHT;
+			return widgetheight;
+		}.bind(this));
+
+		this.setState({widgetheights});
+	}
+
+	,componentWillReceiveProps :function(nextProps) {
+		this.setWidgetHeight(nextProps,this.state.widgets);
+	}
+
+	,onData :function(widgets) {
+		this.setWidgetHeight(this.props,widgets);
+		this.setState({widgets});
+	}
+
+	,renderItem :function(item,idx) {
+		return React.createElement(StackWidget, {height: this.state.widgetheights[idx], key: item.wid, 
+		resize: this.setWidgetHeight, wid: item.wid, widgetClass: item.widgetClass, trait: item.trait})
+	}
+
+  ,render :function() {
+  	return React.createElement("div", null, 
+  		this.state.widgets.map(this.renderItem)
+  	)
+  }
+});
+module.exports=StackWidgetList;
+},{"../containers/stackwidget":"C:\\ksana2015\\pannaloka\\src\\containers\\stackwidget.js","../stores/stackwidget":"C:\\ksana2015\\pannaloka\\src\\stores\\stackwidget.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\views\\stackwidgetmainmenu.js":[function(require,module,exports){
+var React=require("react");
+var Component=React.Component;
+
+var stackwidgetaction=require("../actions/stackwidget");
+var selectionaction=require("../actions/selection");
+
+var StackWidgetMainMenu = React.createClass({displayName: "StackWidgetMainMenu",
+	newWidget :function () {
+		stackwidgetaction.newWidget({text:"widget"});
+	}
+
+  ,render : function() {
+  	return React.createElement("span", null, 
+  		React.createElement("button", {onClick: this.newWidget}, "New widget")
+  	)
+  }
+});
+module.exports=StackWidgetMainMenu;
+
+},{"../actions/selection":"C:\\ksana2015\\pannaloka\\src\\actions\\selection.js","../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\views\\statusview.js":[function(require,module,exports){
+var React=require("react");
+var Component=React.Component;
+var PureRender=require('react-addons-pure-render-mixin');
+
+var selectionstore=require("../stores/selection");
+var SelectionStatus=require("../components/selectionstatus");
+
+var StatusView = React.createClass({displayName: "StatusView",
+	getInitialState:function() {
+		return {selections:{},cursorch:""};
+	}
+
+	,onData :function(selections,cursorch) {
+		this.setState({selections,cursorch});
+	}
+
+	,componentDidMount :function() {
+		this.unsubscribe = selectionstore.listen(this.onData);
+	}
+
+	,componentWillUnmount :function() {
+		this.unsubscribe();
+	}
+
+	,render :function() {
+		return React.createElement("div", null, 
+			React.createElement(SelectionStatus, {selections: this.state.selections, cursorch: this.state.cursorch})
+		)
+	}
+});
+module.exports=StatusView;
+},{"../components/selectionstatus":"C:\\ksana2015\\pannaloka\\src\\components\\selectionstatus.js","../stores/selection":"C:\\ksana2015\\pannaloka\\src\\stores\\selection.js","react":"react","react-addons-pure-render-mixin":"C:\\ksana2015\\node_modules\\react-addons-pure-render-mixin\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\treelist.js":[function(require,module,exports){
+var React=require("react");
+var Component=React.Component;
+var PureRender=require('react-addons-pure-render-mixin');
+
+var ktcfilestore=require("../stores/ktcfile");
+var FileItem=require("../components/fileitem");
+
+var ktcfileaction=require("../actions/ktcfile");
+var NewFileButton =React.createClass({displayName: "NewFileButton",
+	newfile : function(){
+		ktcfileaction.newTree();
+		setTimeout(function(){
+			this.props.onOpenTree();
+		}.bind(this),100);
+		
+	}
+
+	,render :function() {
+		return React.createElement("button", {onClick: this.newfile}, "Create New Tree")
+	}
+});
+
+var TreeList = React.createClass({displayName: "TreeList",
+	getInitialState:function(){
+		return {files:[],selectedIndex:0};
+	}
+
+	, onData :function(files) {
+		this.setState({files});
+	}
+
+	,componentDidMount :function() {
+		this.unsubscribe = ktcfilestore.listen(this.onData);
+	}
+
+	,componentWillUnmount :function() {
+		this.unsubscribe();
+	}
+
+	,opentree :function(e) {
+		var file=this.state.files[this.state.selectedIndex];
+		ktcfileaction.openTree(file.filename);
+		this.props.onOpenTree && this.props.onOpenTree();
+	}
+
+	,renderItem :function(item,idx) {
+		return React.createElement("div", {key: idx, "data-idx": idx}, 
+			React.createElement(FileItem, React.__spread({onClick: this.opentree, selected: this.state.selectedIndex==idx},  item)))
+	}
+
+	,selectItem :function(e) {
+		var target=e.target;
+		while (target && !target.dataset.idx) {
+			target=target.parentElement;
+		}
+		var selectedIndex=parseInt(target.dataset.idx);
+		if (!isNaN(selectedIndex)) this.setState({selectedIndex});
+	}
+
+	,render :function() {
+		return React.createElement("div", null, 
+				React.createElement(NewFileButton, {onOpenTree: this.props.onOpenTree}), 
+				React.createElement("div", {onClick: this.selectItem}, this.state.files.map(this.renderItem))
+		)
+	}
+});
+
+module.exports = TreeList ;
+},{"../actions/ktcfile":"C:\\ksana2015\\pannaloka\\src\\actions\\ktcfile.js","../components/fileitem":"C:\\ksana2015\\pannaloka\\src\\components\\fileitem.js","../stores/ktcfile":"C:\\ksana2015\\pannaloka\\src\\stores\\ktcfile.js","react":"react","react-addons-pure-render-mixin":"C:\\ksana2015\\node_modules\\react-addons-pure-render-mixin\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\views\\widgetclasses.js":[function(require,module,exports){
+var DefaultTextView=require("../textview/defaulttextview");
 var SimpleView=require("./simpleview");
 
 module.exports = {
 	TextWidget:DefaultTextView
 	,SimpleWidget:SimpleView
 }
-},{"./defaulttextview":"C:\\ksana2015\\pannaloka\\src\\views\\defaulttextview.js","./simpleview":"C:\\ksana2015\\pannaloka\\src\\views\\simpleview.js"}]},{},["C:\\ksana2015\\pannaloka\\index.js"])
+},{"../textview/defaulttextview":"C:\\ksana2015\\pannaloka\\src\\textview\\defaulttextview.js","./simpleview":"C:\\ksana2015\\pannaloka\\src\\views\\simpleview.js"}]},{},["C:\\ksana2015\\pannaloka\\index.js"])
 //# sourceMappingURL=bundle.js.map
