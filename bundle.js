@@ -16449,6 +16449,7 @@ var React=require("react");
 var clientId=require("./clientid").clientId;
 var AppId=require("./clientid").AppId;
 var action=require("./realtimeaction");
+var store=require("./realtimestore");
 var LoggedIn=require("./loggedin");
 var styles={loginButton:{fontSize:"125%"}};
 var GoogleLogin=React.createClass({displayName: "GoogleLogin",
@@ -16458,6 +16459,7 @@ var GoogleLogin=React.createClass({displayName: "GoogleLogin",
 	,componentDidMount:function(){
 		window.gapi.load('auth:client,drive-realtime,drive-share', function(){
 			this.realtimeUtils = new utils.RealtimeUtils({ clientId: clientId });
+			action.setRealtimeUtils(this.realtimeUtils);
 	    this.authorize();
 		}.bind(this));
 	}
@@ -16488,42 +16490,38 @@ var GoogleLogin=React.createClass({displayName: "GoogleLogin",
 			if (!this.state.authorized) {
 				return React.createElement("button", {style: styles.loginButton, id: "auth_button"}, "Login")
 			} else {
-				return React.createElement(LoggedIn, {realtimeUtils: this.realtimeUtils})
+				return React.createElement(LoggedIn, null)
 			}
 	}
 })
 module.exports=GoogleLogin;
-},{"./clientid":"C:\\ksana2015\\pannaloka\\src\\google\\clientid.js","./loggedin":"C:\\ksana2015\\pannaloka\\src\\google\\loggedin.js","./realtimeaction":"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\google\\loggedin.js":[function(require,module,exports){
+},{"./clientid":"C:\\ksana2015\\pannaloka\\src\\google\\clientid.js","./loggedin":"C:\\ksana2015\\pannaloka\\src\\google\\loggedin.js","./realtimeaction":"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js","./realtimestore":"C:\\ksana2015\\pannaloka\\src\\google\\realtimestore.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\google\\loggedin.js":[function(require,module,exports){
 var React=require("react");
-var realtimestore=require("./realtimestore");
+var realtimeaction=require("./realtimeaction");
 var AppId=require("./clientid").AppId;
 var stackwidgetaction=require("../actions/stackwidget");
-
-var styles={openButton:{fontSize:"125%"},createButton:{fontSize:"125%"}};
+var googledrive=require("../textview/googledrive");
+var styles={openButton:{fontSize:"125%"},createButton:{fontSize:"125%"},openURL:{fontSize:"125%"}};
 var GooglePanel=React.createClass({displayName: "GooglePanel",
-	componentDidMount:function() {
-	  this.unsubscribe = realtimestore.listen(this.onLoggedIn);
-	}
-	,componentWillUnmount:function(docid){
-		this.unsubscribe();
-	}
-	,openFile:function(docid) {
+	openFile:function(docid,title,opts) {
 		this.docId=docid;
-		this.props.realtimeUtils.load(docid, this.onFileLoaded);
+		realtimeaction.openFile(docid, title, opts,this.onFileLoaded);
 	}
 	,openCallback:function(res){
 		if (res.action==="picked"){
 			this.title=res.docs[0].name;
-			this.openFile(res.docs[0].id);
+			this.openFile(res.docs[0].id, this.title);
 		}
 		if (res.action!=="loaded") {
 			this.refs.openbutton.disabled=false;
-			this.refs.createbutton.disabled=false;					
+			this.refs.createbutton.disabled=false;
+			this.refs.openurlbutton.disabled=false;
 		}
 	}
 	,pickFile:function() {
 		this.refs.openbutton.disabled=true;
 		this.refs.createbutton.disabled=true;
+		this.refs.openurlbutton.disabled=true;
 		google.load('picker', '1', {
         callback: function() {
           var picker, token, view;
@@ -16540,11 +16538,6 @@ var GooglePanel=React.createClass({displayName: "GooglePanel",
     });
 	}
 	,onFileLoaded:function(doc){
-    //var collaborativeString = doc.getModel().getRoot().get('text');
-    //wireTextBoxes(collaborativeString);
-    var obj={filename:this.docId,host:"google",doc:doc,title:this.title};
-    stackwidgetaction.openWidget(obj,"TextWidget");
-
 		this.refs.openbutton.disabled=false;
 		this.refs.createbutton.disabled=false;    
 	}
@@ -16556,39 +16549,62 @@ var GooglePanel=React.createClass({displayName: "GooglePanel",
     model.getRoot().set('text', string);
     model.getRoot().set('markups',markups);
 	}
+	,openURL:function(){
+		var url=prompt("url").replace("https://drive.google.com/open?id=","");
+		googledrive.openFile(url);
+	}
 	,createFile:function() {
 		this.refs.openbutton.disabled=true;
 		this.refs.createbutton.disabled=true;
-		this.title='New File(click to change)';
-		this.props.realtimeUtils.createRealtimeFile(this.title, function(createResponse) {
+		this.refs.openurlbutton.disabled=true;
+		var title='New File(click to change)';
+		this.title=title;
+
+		realtimeaction.createFile(title, function(createResponse) {
          //window.history.pushState(null, null, '?id=' + createResponse.id);
          this.docId=createResponse.id;
-         this.props.realtimeUtils.load(createResponse.id, this.onFileLoaded, this.onFileInitialize);
+         realtimeaction.openFile(createResponse.id, title, {},this.onFileLoaded, this.onFileInitialize);
     }.bind(this));
 	}
 	,render:function() {
 		return React.createElement("span", null, 
 		React.createElement("button", {style: styles.openButton, ref: "openbutton", onClick: this.pickFile}, "Open"), 
-		React.createElement("button", {style: styles.createButton, ref: "createbutton", onClick: this.createFile}, "Create")
+		React.createElement("button", {style: styles.createButton, ref: "createbutton", onClick: this.createFile}, "Create"), 
+		React.createElement("button", {style: styles.openURL, ref: "openurlbutton", onClick: this.openURL}, "Open File Id")
 		)
 	}
 });
 module.exports=GooglePanel;
-},{"../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","./clientid":"C:\\ksana2015\\pannaloka\\src\\google\\clientid.js","./realtimestore":"C:\\ksana2015\\pannaloka\\src\\google\\realtimestore.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js":[function(require,module,exports){
-module.exports=require("reflux").createActions(["loggedIn"]);
+},{"../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../textview/googledrive":"C:\\ksana2015\\pannaloka\\src\\textview\\googledrive.js","./clientid":"C:\\ksana2015\\pannaloka\\src\\google\\clientid.js","./realtimeaction":"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js":[function(require,module,exports){
+module.exports=require("reflux").createActions(["loggedIn","openFile","createFile","setRealtimeUtils"]);
 },{"reflux":"C:\\ksana2015\\node_modules\\reflux\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\google\\realtimestore.js":[function(require,module,exports){
 var Reflux=require("reflux");
-
+var stackwidgetaction=require("../actions/stackwidget");
 var realtimestore=Reflux.createStore({
 	listenables:[require("./realtimeaction")]
 	,onLoggedIn:function(response) {
 		this.response=response;
-		console.log(response);
-		//this.trigger(this.response);
+		//console.log(response);
+	}
+	,onSetRealtimeUtils:function(realtimeUtils) {
+		this.realtimeUtils=realtimeUtils;
+	}
+	,getRealtimeUtils:function(){
+		return this.realtimeUtils;
+	}
+	,onCreateFile:function(title,cb){
+		this.realtimeUtils.createRealtimeFile(title,cb);
+	}
+	,onOpenFile:function(docid,title,opts,cb,onFileInitialized){
+		this.realtimeUtils.load(docid, function(doc){
+    	var obj={filename:docid,host:"google",doc:doc,title:title};
+    	stackwidgetaction.openWidget(obj,"TextWidget",opts);
+    	if (cb) cb();
+    },onFileInitialized);
 	}
 });
 module.exports=realtimestore;
-},{"./realtimeaction":"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js","reflux":"C:\\ksana2015\\node_modules\\reflux\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\index.js":[function(require,module,exports){
+},{"../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","./realtimeaction":"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js","reflux":"C:\\ksana2015\\node_modules\\reflux\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\index.js":[function(require,module,exports){
 var React=require('react');
 var ReactDOM=require('react-dom');
 var Main=require('./containers/main');
@@ -18707,6 +18723,8 @@ module.exports={load:load,loaded:loaded,save:save,close:close};
 },{"../actions/docfile":"C:\\ksana2015\\pannaloka\\src\\actions\\docfile.js","../actions/ktxfile":"C:\\ksana2015\\pannaloka\\src\\actions\\ktxfile.js","../actions/markup":"C:\\ksana2015\\pannaloka\\src\\actions\\markup.js","../actions/selection":"C:\\ksana2015\\pannaloka\\src\\actions\\selection.js","../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../cmfileio":"C:\\ksana2015\\pannaloka\\src\\cmfileio.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","./googledrive":"C:\\ksana2015\\pannaloka\\src\\textview\\googledrive.js","./highlight":"C:\\ksana2015\\pannaloka\\src\\textview\\highlight.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\googledrive.js":[function(require,module,exports){
 var textMarker2json=require("ksana-codemirror").textMarker2json;
 var json2textMarker=require("ksana-codemirror").json2textMarker;
+var realtimeaction=require("../google/realtimeaction");
+
 var TEXT_DELETED,TEXT_INSERTED,VALUES_ADDED,VALUES_REMOVED,VALUE_CHANGED;
 var load=function(doc,title){
 		this._changes=[];
@@ -18730,8 +18748,8 @@ var load=function(doc,title){
 }
 
 var loadMarkupFromGoogleDrive=function(markups) {
-	var keys=markups.keys(),values=markups.values();
 	var out={};
+	var keys=markups.keys(),values=markups.values();
 	for (var i=0;i<keys.length;i++) {
 		var k=keys[i]
 		var v=values[i];
@@ -18742,7 +18760,17 @@ var loadMarkupFromGoogleDrive=function(markups) {
 	}
 	return out;
 }
-
+var setTitle=function(fileid,title,cb){
+	gapi.client.load('drive', 'v2', function() {  
+		var renameRequest = gapi.client.drive.files.patch({
+            fileId: fileid,
+            resource: { title: title }
+    });
+		renameRequest.execute(function(resp) {
+			cb(0,resp.title);
+    });
+	});
+}
 var inserttext=function(e) {
 	if (e.isLocal) return;
   var from  = this.cm.posFromIndex(e.index);
@@ -18832,7 +18860,7 @@ var findTouchedMarkup=function(){
 
 var unmount = function() {
 	if (this.state._text) this.state._text.removeAllEventListeners();
-	if (this.state._markups) this.state.markups.removeAllEventListeners();
+	if (this.state._markups) this.state._markups.removeAllEventListeners();
 }
 
 var update=function(){
@@ -18864,16 +18892,43 @@ var update=function(){
 		}
 	}.bind(this),500);//must smaller than 	
 }
-
+function printPermission(fileId, permissionId) {
+  var request = gapi.client.drive.permissions.get({
+    'fileId': fileId,
+    'permissionId': permissionId
+  });
+  request.execute(function(resp) {
+    console.log('Name: ' + resp.name);
+    console.log('Role: ' + resp.role);
+    for (role in resp.additionalRoles) {
+      console.log('Additional role: ' + resp.additionalRoles[role]);
+    }
+  });
+}
+var openFile=function(fileid,opts) {
+	gapi.client.load('drive', 'v2', function() {  
+		var request = gapi.client.drive.files.get({
+  	  'fileId': fileid
+  	});
+  	request.execute(function(resp){
+  		if (resp.error) {
+  			printPermission(fileid,"get");
+  		} else {
+  			realtimeaction.openFile(fileid,resp.title,opts);	
+  		}
+	  })
+  });
+}
 module.exports={load:load,update:update,markupchanged:markupchanged,inserttext:inserttext,deletetext:deletetext
-,beforeChange:beforeChange,unmount:unmount};
-},{"ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\highlight.js":[function(require,module,exports){
+,beforeChange:beforeChange,unmount:unmount,openFile:openFile,setTitle:setTitle};
+},{"../google/realtimeaction":"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\highlight.js":[function(require,module,exports){
 var docfilestore=require("../stores/docfile");
 var stackwidgetaction=require("../actions/stackwidget");
 var overlayaction=require("../actions/overlay");
 var milestones=require("ksana-codemirror").milestones;
 var ktxfilestore=require("../stores/ktxfile");
 var markupstore=require("../stores/markup");
+var googledrive=require("./googledrive");
 var gotoRangeOrMarkupID=function(file,range_mid,opts) {
 	opts=opts||{};
 	if (opts.below && !opts.autoOpen) opts.autoOpen=true;
@@ -18896,6 +18951,8 @@ var gotoRangeOrMarkupID=function(file,range_mid,opts) {
 		if (target) {
 			target.scrollTo=range_mid;
 			stackwidgetaction.openWidget(target,"TextWidget",{below:opts.below});	
+		} else if (file.indexOf("/")===-1){
+			googledrive.openFile.call(this,file,{below:opts.below,scrollTo:range_mid});
 		}
 	}
 }
@@ -19059,6 +19116,9 @@ var highlightRelatedMarkup=function(m) { //highlight markup and all related
 var	autoGoMarkup = function(m) {
 	var others=m.source||m.by||m.target;
 	if (!others)return;
+	if (others[0] instanceof Array) {
+		others=others[0];
+	}
 	if (typeof others[0]==="string"){
 		var wid=m.handle.doc.getEditor().react.getWid();
 		gotoRangeOrMarkupID.call(this,others[0],others[1],{below:wid});
@@ -19068,7 +19128,7 @@ var	autoGoMarkup = function(m) {
 module.exports={gotoRangeOrMarkupID:gotoRangeOrMarkupID,highlightDoc:highlightDoc
 ,getMarkupText:getMarkupText,posInRange:posInRange,getMarkupsInRange:getMarkupsInRange
 ,highlightRelatedMarkup:highlightRelatedMarkup,autoGoMarkup:autoGoMarkup};
-},{"../actions/overlay":"C:\\ksana2015\\pannaloka\\src\\actions\\overlay.js","../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../stores/ktxfile":"C:\\ksana2015\\pannaloka\\src\\stores\\ktxfile.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\listmarkup.js":[function(require,module,exports){
+},{"../actions/overlay":"C:\\ksana2015\\pannaloka\\src\\actions\\overlay.js","../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../stores/ktxfile":"C:\\ksana2015\\pannaloka\\src\\stores\\ktxfile.js","../stores/markup":"C:\\ksana2015\\pannaloka\\src\\stores\\markup.js","./googledrive":"C:\\ksana2015\\pannaloka\\src\\textview\\googledrive.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\listmarkup.js":[function(require,module,exports){
 var React=require("react");
 var selectionstore=require("../stores/selection");
 var findmarkup=require("../markup/find");
@@ -19261,25 +19321,16 @@ module.exports={onMarkup:onMarkup,createMilestones:createMilestones,markupReady:
 	getOther:getOther,removeMarkup:removeMarkup,rebuildMilestone:rebuildMilestone}
 },{"../actions/selection":"C:\\ksana2015\\pannaloka\\src\\actions\\selection.js","../markup/nav":"C:\\ksana2015\\pannaloka\\src\\markup\\nav.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","./createmilestones":"C:\\ksana2015\\pannaloka\\src\\textview\\createmilestones.js","./highlight":"C:\\ksana2015\\pannaloka\\src\\textview\\highlight.js","ksana-codemirror":"C:\\ksana2015\\node_modules\\ksana-codemirror\\src\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\traitmethod.js":[function(require,module,exports){
 var docfileaction=require("../actions/docfile");
+var googledrive=require("./googledrive");
 var setFlexHeight=function(flex) {
 	this.props.trait.flex=flex; //bad practice
 	this.props.resize();
 }
 
-var setGoogleDriveTitle=function(fileid,title,cb){
-	gapi.client.load('drive', 'v2', function() {  
-		var renameRequest = gapi.client.drive.files.patch({
-            fileId: fileid,
-            resource: { title: title }
-    });
-		renameRequest.execute(function(resp) {
-			cb(0,resp.title);
-    });
-	});
-}
+
 var setTitle=function(title){
 	if (this.props.trait.host==="google") {
-		setGoogleDriveTitle(this.props.trait.filename,title,function(err,title){
+		googledrive.setTitle(this.props.trait.filename,title,function(err,title){
 			this.props.trait.title=title; //bad practice
 			this.setState({dirty:true,titlechanged:true});
 		}.bind(this));
@@ -19291,7 +19342,7 @@ var setTitle=function(title){
 }	
 
 module.exports={setFlexHeight:setFlexHeight,setTitle:setTitle};
-},{"../actions/docfile":"C:\\ksana2015\\pannaloka\\src\\actions\\docfile.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\transclude.js":[function(require,module,exports){
+},{"../actions/docfile":"C:\\ksana2015\\pannaloka\\src\\actions\\docfile.js","./googledrive":"C:\\ksana2015\\pannaloka\\src\\textview\\googledrive.js"}],"C:\\ksana2015\\pannaloka\\src\\textview\\transclude.js":[function(require,module,exports){
 var MAX_TRANSCLUSION_LENGTH = 30;
 
 var React=require("react");

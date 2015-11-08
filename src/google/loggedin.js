@@ -2,8 +2,8 @@ var React=require("react");
 var realtimeaction=require("./realtimeaction");
 var AppId=require("./clientid").AppId;
 var stackwidgetaction=require("../actions/stackwidget");
-
-var styles={openButton:{fontSize:"125%"},createButton:{fontSize:"125%"}};
+var googledrive=require("../textview/googledrive");
+var styles={openButton:{fontSize:"125%"},createButton:{fontSize:"125%"},openURL:{fontSize:"125%"}};
 var GooglePanel=React.createClass({
 	openFile:function(docid,title,opts) {
 		this.docId=docid;
@@ -16,12 +16,14 @@ var GooglePanel=React.createClass({
 		}
 		if (res.action!=="loaded") {
 			this.refs.openbutton.disabled=false;
-			this.refs.createbutton.disabled=false;					
+			this.refs.createbutton.disabled=false;
+			this.refs.openurlbutton.disabled=false;
 		}
 	}
 	,pickFile:function() {
 		this.refs.openbutton.disabled=true;
 		this.refs.createbutton.disabled=true;
+		this.refs.openurlbutton.disabled=true;
 		google.load('picker', '1', {
         callback: function() {
           var picker, token, view;
@@ -49,9 +51,14 @@ var GooglePanel=React.createClass({
     model.getRoot().set('text', string);
     model.getRoot().set('markups',markups);
 	}
+	,openURL:function(){
+		var url=prompt("url").replace("https://drive.google.com/open?id=","");
+		googledrive.openFile(url);
+	}
 	,createFile:function() {
 		this.refs.openbutton.disabled=true;
 		this.refs.createbutton.disabled=true;
+		this.refs.openurlbutton.disabled=true;
 		var title='New File(click to change)';
 		this.title=title;
 
@@ -65,6 +72,7 @@ var GooglePanel=React.createClass({
 		return <span>
 		<button style={styles.openButton} ref="openbutton" onClick={this.pickFile}>Open</button>
 		<button style={styles.createButton} ref="createbutton" onClick={this.createFile}>Create</button>
+		<button style={styles.openURL} ref="openurlbutton" onClick={this.openURL}>Open File Id</button>
 		</span>
 	}
 });
