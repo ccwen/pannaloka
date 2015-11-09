@@ -169,29 +169,16 @@ var update=function(){
 		}
 	}.bind(this),500);//must smaller than 	
 }
-function printPermission(fileId, permissionId) {
-  var request = gapi.client.drive.permissions.get({
-    'fileId': fileId,
-    'permissionId': permissionId
-  });
-  request.execute(function(resp) {
-    console.log('Name: ' + resp.name);
-    console.log('Role: ' + resp.role);
-    for (role in resp.additionalRoles) {
-      console.log('Additional role: ' + resp.additionalRoles[role]);
-    }
-  });
-}
-var openFile=function(fileid,opts) {
+var openFile=function(fileid,opts,cb) {
 	gapi.client.load('drive', 'v2', function() {  
 		var request = gapi.client.drive.files.get({
   	  'fileId': fileid
   	});
   	request.execute(function(resp){
   		if (resp.error) {
-  			printPermission(fileid,"get");
+  			alert(resp.error.message);
   		} else {
-  			realtimeaction.openFile(fileid,resp.title,opts);	
+  			realtimeaction.openFile(fileid,resp.title,opts,cb);	
   		}
 	  })
   });

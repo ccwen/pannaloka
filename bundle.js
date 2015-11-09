@@ -15720,7 +15720,15 @@ var DocumentTitle = React.createClass({displayName: "DocumentTitle",
 	,cancelEdit :function() {
 		this.setState({editing:false});
 	}
-
+	,onFileIdFocus:function(e) {
+		e.target.select();
+	}
+	,renderFileId:function() {
+		if (this.props.filename.indexOf("/")==-1){
+			return React.createElement("span", null, "fileId:", React.createElement("input", {readOnly: true, style: styles.input, 
+			defaultValue: this.props.filename, onFocus: this.onFileIdFocus}))	
+		}		
+	}
   ,render :function() {
   	if (this.state.editing) {
   		return React.createElement("span", {style: styles.container}, React.createElement("input", {ref: "titleinput", style: styles.input, 
@@ -15728,6 +15736,7 @@ var DocumentTitle = React.createClass({displayName: "DocumentTitle",
   									onBlur: this.onBlur, 
   									onChange: this.onChange, value: this.state.title}), 
   									React.createElement("button", {style: styles.cancelbutton, title: "ESC", onClick: this.cancelEdit}, "cancel"), 
+  								this.renderFileId(), 
   								React.createElement(FlexHeight, {flex: this.state.flex, setValue: this.setFlexHeight})
   						)
   	} else {
@@ -16113,7 +16122,9 @@ TextViewMenu = React.createClass({displayName: "TextViewMenu",
   	return React.createElement("span", {style: styles.menu}, 
   		
   		React.createElement(DocumentTitle, {title: this.props.trait.title, onSetTitle: this.props.onSetTitle, 
-  		onSetFlexHeight: this.props.onSetFlexHeight, flex: this.props.trait.flex}), 
+  		filename: this.props.trait.filename, 
+      onSetFlexHeight: this.props.onSetFlexHeight, flex: this.props.trait.flex}), 
+
   		 this.props.readOnly?"(fixed text)":"", 
 
   			React.createElement(SaveButton, React.__spread({},  this.props))
@@ -16463,11 +16474,6 @@ var GoogleLogin=React.createClass({displayName: "GoogleLogin",
 	    this.authorize();
 		}.bind(this));
 	}
-	,onLoggedIn:function() {
-		//this.setState({})
-		console.log("loggin");
-	}
-
 	,authorize:function(){
  		this.realtimeUtils.authorize(function(response){
  			if (response.error) {
@@ -16497,31 +16503,50 @@ var GoogleLogin=React.createClass({displayName: "GoogleLogin",
 module.exports=GoogleLogin;
 },{"./clientid":"C:\\ksana2015\\pannaloka\\src\\google\\clientid.js","./loggedin":"C:\\ksana2015\\pannaloka\\src\\google\\loggedin.js","./realtimeaction":"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js","./realtimestore":"C:\\ksana2015\\pannaloka\\src\\google\\realtimestore.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\google\\loggedin.js":[function(require,module,exports){
 var React=require("react");
+var Reflux=require("reflux");
 var realtimeaction=require("./realtimeaction");
+
+var realtimestore=require("./realtimestore");
 var AppId=require("./clientid").AppId;
 var stackwidgetaction=require("../actions/stackwidget");
 var googledrive=require("../textview/googledrive");
 var styles={openButton:{fontSize:"125%"},createButton:{fontSize:"125%"},openURL:{fontSize:"125%"}};
+var RecentFiles=require("./recentfiles");
+var docOf=require("../stores/docfile").docOf;
 var GooglePanel=React.createClass({displayName: "GooglePanel",
-	openFile:function(docid,title,opts) {
-		this.docId=docid;
-		realtimeaction.openFile(docid, title, opts,this.onFileLoaded);
+	mixins:[Reflux.listenTo(realtimestore,"onRecentFiles")]
+	,getInitialState:function(){
+		return {recentfiles:realtimestore.getRecentFiles(),opening:null};
+	}
+	,componentDidMount:function(){
+		var m=decodeURI(location.search).match(/"ids":(\[.*?\])/);
+		if (m) {
+			try {
+				var fileIds=JSON.parse(m[1]);	
+				fileIds.map(function(fileid){googledrive.openFile(fileid)});				
+			} catch(e) {
+				console.log(m[1])
+				console.error(e);
+			}
+		}
+	}
+	,onRecentFiles:function(files) {
+		this.setState({recentfiles:files});
+	}
+	,openFile:function(fileid,title,opts) {
+		this.setState({opening:fileid});
+		realtimeaction.openFile(fileid, title, opts,this.onFileLoaded);
 	}
 	,openCallback:function(res){
 		if (res.action==="picked"){
-			this.title=res.docs[0].name;
-			this.openFile(res.docs[0].id, this.title);
+			for (var i in res.docs) this.openFile(res.docs[i].id, res.docs[i].name);
 		}
 		if (res.action!=="loaded") {
-			this.refs.openbutton.disabled=false;
-			this.refs.createbutton.disabled=false;
-			this.refs.openurlbutton.disabled=false;
+			this.enableButtons();
 		}
 	}
 	,pickFile:function() {
-		this.refs.openbutton.disabled=true;
-		this.refs.createbutton.disabled=true;
-		this.refs.openurlbutton.disabled=true;
+		this.disableButtons();
 		google.load('picker', '1', {
         callback: function() {
           var picker, token, view;
@@ -16529,17 +16554,18 @@ var GooglePanel=React.createClass({displayName: "GooglePanel",
           view = new google.picker.View(google.picker.ViewId.DOCS);
           view.setMimeTypes("application/vnd.google-apps.drive-sdk." + AppId);
           //view.setMimeTypes("text/plain");
-          picker = new google.picker.PickerBuilder().enableFeature(google.picker.Feature.NAV_HIDDEN)
+          picker = new google.picker.PickerBuilder()
+          .enableFeature(google.picker.Feature.NAV_HIDDEN)
+          .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
           .setAppId(AppId).setOAuthToken(token).addView(view)
-          .addView(new google.picker.DocsUploadView())
-          .setCallback(this.openCallback.bind(this)).build();
+          //.addView(new google.picker.DocsUploadView())
+          .setCallback(this.openCallback).build();
           return picker.setVisible(true);
         }.bind(this)
     });
 	}
 	,onFileLoaded:function(doc){
-		this.refs.openbutton.disabled=false;
-		this.refs.createbutton.disabled=false;    
+		this.enableButtons();
 	}
 	,onFileInitialize:function(model) {
   	var string = model.createString();
@@ -16551,18 +16577,33 @@ var GooglePanel=React.createClass({displayName: "GooglePanel",
 	}
 	,openURL:function(){
 		var url=prompt("url").replace("https://drive.google.com/open?id=","");
+		this.setState({opening:url});
 		googledrive.openFile(url);
 	}
-	,createFile:function() {
+	,disableButtons:function(){
 		this.refs.openbutton.disabled=true;
 		this.refs.createbutton.disabled=true;
 		this.refs.openurlbutton.disabled=true;
+	}
+	,enableButtons:function(){
+		this.refs.openbutton.disabled=false;
+		this.refs.createbutton.disabled=false;
+		this.refs.openurlbutton.disabled=false;
+		this.setState({opening:null});
+	}
+	,recentClick:function(fileid){
+		if (docOf(fileid))return;
+		this.disableButtons();
+		this.setState({opening:fileid});
+		googledrive.openFile(fileid,{},this.onFileLoaded);
+	}
+	,createFile:function() {
+		this.disableButtons();
 		var title='New File(click to change)';
 		this.title=title;
 
 		realtimeaction.createFile(title, function(createResponse) {
          //window.history.pushState(null, null, '?id=' + createResponse.id);
-         this.docId=createResponse.id;
          realtimeaction.openFile(createResponse.id, title, {},this.onFileLoaded, this.onFileInitialize);
     }.bind(this));
 	}
@@ -16570,18 +16611,24 @@ var GooglePanel=React.createClass({displayName: "GooglePanel",
 		return React.createElement("span", null, 
 		React.createElement("button", {style: styles.openButton, ref: "openbutton", onClick: this.pickFile}, "Open"), 
 		React.createElement("button", {style: styles.createButton, ref: "createbutton", onClick: this.createFile}, "Create"), 
-		React.createElement("button", {style: styles.openURL, ref: "openurlbutton", onClick: this.openURL}, "Open File Id")
+		React.createElement("button", {style: styles.openURL, ref: "openurlbutton", onClick: this.openURL}, "Open File Id"), 
+		React.createElement(RecentFiles, {opening: this.state.opening, files: this.state.recentfiles, onOpenFile: this.recentClick})
 		)
 	}
 });
 module.exports=GooglePanel;
-},{"../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../textview/googledrive":"C:\\ksana2015\\pannaloka\\src\\textview\\googledrive.js","./clientid":"C:\\ksana2015\\pannaloka\\src\\google\\clientid.js","./realtimeaction":"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js","react":"react"}],"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js":[function(require,module,exports){
+},{"../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","../textview/googledrive":"C:\\ksana2015\\pannaloka\\src\\textview\\googledrive.js","./clientid":"C:\\ksana2015\\pannaloka\\src\\google\\clientid.js","./realtimeaction":"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js","./realtimestore":"C:\\ksana2015\\pannaloka\\src\\google\\realtimestore.js","./recentfiles":"C:\\ksana2015\\pannaloka\\src\\google\\recentfiles.js","react":"react","reflux":"C:\\ksana2015\\node_modules\\reflux\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js":[function(require,module,exports){
 module.exports=require("reflux").createActions(["loggedIn","openFile","createFile","setRealtimeUtils"]);
 },{"reflux":"C:\\ksana2015\\node_modules\\reflux\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\google\\realtimestore.js":[function(require,module,exports){
 var Reflux=require("reflux");
 var stackwidgetaction=require("../actions/stackwidget");
+var docOf=require("../stores/docfile").docOf;
+
 var realtimestore=Reflux.createStore({
 	listenables:[require("./realtimeaction")]
+	,init:function() {
+		this.recentFiles=JSON.parse(localStorage.getItem("recentfiles")||"[]");
+	}
 	,onLoggedIn:function(response) {
 		this.response=response;
 		//console.log(response);
@@ -16595,16 +16642,58 @@ var realtimestore=Reflux.createStore({
 	,onCreateFile:function(title,cb){
 		this.realtimeUtils.createRealtimeFile(title,cb);
 	}
+	,addRecentFile:function(fileid,title){
+		this.recentFiles=this.recentFiles.filter(function(recent){return recent[0]!==fileid});
+		this.recentFiles.unshift([fileid,title]);
+		this.trigger(this.recentFiles);
+		localStorage.setItem("recentfiles",JSON.stringify(this.recentFiles));
+	}
+	,getRecentFiles:function(){
+		return this.recentFiles;
+	}
 	,onOpenFile:function(docid,title,opts,cb,onFileInitialized){
+		if (docOf(docid))return;
 		this.realtimeUtils.load(docid, function(doc){
     	var obj={filename:docid,host:"google",doc:doc,title:title};
     	stackwidgetaction.openWidget(obj,"TextWidget",opts);
+    	this.addRecentFile(docid,title);
     	if (cb) cb();
-    },onFileInitialized);
+    }.bind(this),onFileInitialized);
 	}
 });
 module.exports=realtimestore;
-},{"../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","./realtimeaction":"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js","reflux":"C:\\ksana2015\\node_modules\\reflux\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\index.js":[function(require,module,exports){
+},{"../actions/stackwidget":"C:\\ksana2015\\pannaloka\\src\\actions\\stackwidget.js","../stores/docfile":"C:\\ksana2015\\pannaloka\\src\\stores\\docfile.js","./realtimeaction":"C:\\ksana2015\\pannaloka\\src\\google\\realtimeaction.js","reflux":"C:\\ksana2015\\node_modules\\reflux\\index.js"}],"C:\\ksana2015\\pannaloka\\src\\google\\recentfiles.js":[function(require,module,exports){
+var React=require("react");
+var styles={normal:{},hovered:{color:"blue",textDecoration:"underline",cursor:"pointer"}};
+
+var RecentFiles=React.createClass({displayName: "RecentFiles",
+	onClick:function(e){
+		this.props.onOpenFile&&this.props.onOpenFile(e.target.dataset.fileid);
+	}
+	,getInitialState:function(){
+		return {hovering:-1};
+	}
+	,onMouseEnter:function(e) {
+		this.setState({hovering:parseInt(e.target.dataset.idx)});
+	}
+	,onMouseLeave:function(e) {
+		this.setState({hovering:-1});
+	}
+	,renderItem:function(item,idx){
+		return React.createElement("div", {style: idx==this.state.hovering?styles.hovered:styles.normal, 
+		"data-idx": idx, key: idx, onMouseEnter: this.onMouseEnter, onMouseLeave: this.onMouseLeave, 
+		title: item[0], "data-fileid": item[0], onClick: this.onClick}, item[1])
+	}
+	,render:function(){
+		if (this.props.opening) {
+			return React.createElement("div", null, "Opening file ", this.props.opening)
+		} else {
+			return React.createElement("div", null, this.props.files.map(this.renderItem))	
+		}
+	}
+});
+module.exports=RecentFiles;
+},{"react":"react"}],"C:\\ksana2015\\pannaloka\\src\\index.js":[function(require,module,exports){
 var React=require('react');
 var ReactDOM=require('react-dom');
 var Main=require('./containers/main');
@@ -18892,29 +18981,16 @@ var update=function(){
 		}
 	}.bind(this),500);//must smaller than 	
 }
-function printPermission(fileId, permissionId) {
-  var request = gapi.client.drive.permissions.get({
-    'fileId': fileId,
-    'permissionId': permissionId
-  });
-  request.execute(function(resp) {
-    console.log('Name: ' + resp.name);
-    console.log('Role: ' + resp.role);
-    for (role in resp.additionalRoles) {
-      console.log('Additional role: ' + resp.additionalRoles[role]);
-    }
-  });
-}
-var openFile=function(fileid,opts) {
+var openFile=function(fileid,opts,cb) {
 	gapi.client.load('drive', 'v2', function() {  
 		var request = gapi.client.drive.files.get({
   	  'fileId': fileid
   	});
   	request.execute(function(resp){
   		if (resp.error) {
-  			printPermission(fileid,"get");
+  			alert(resp.error.message);
   		} else {
-  			realtimeaction.openFile(fileid,resp.title,opts);	
+  			realtimeaction.openFile(fileid,resp.title,opts,cb);	
   		}
 	  })
   });
@@ -19092,7 +19168,7 @@ var highlightRelatedMarkup=function(m) { //highlight markup and all related
 
 	var hilights={};//group by filename
 	hilights[filename]=[];
-	hilights[filename].push(m.key);
+	hilights[filename].push(m.handle.key);
 
 	if (m.master) hilights[filename].push(m.master);
 
@@ -19648,6 +19724,7 @@ var InputMethod=React.createClass({displayName: "InputMethod",
 			var pos=cm.getCursor();
 			cm.replaceRange(output,pos,pos);
 			cm.setCursor({line:pos.line,ch:pos.ch+output.length});
+			this.setState({preview:""});
 		}
 		e.target.value="";
 	}
