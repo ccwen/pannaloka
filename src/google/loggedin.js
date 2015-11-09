@@ -5,7 +5,19 @@ var stackwidgetaction=require("../actions/stackwidget");
 var googledrive=require("../textview/googledrive");
 var styles={openButton:{fontSize:"125%"},createButton:{fontSize:"125%"},openURL:{fontSize:"125%"}};
 var GooglePanel=React.createClass({
-	openFile:function(docid,title,opts) {
+	componentDidMount:function(){
+		var m=decodeURI(location.search).match(/"ids":(\[.*?\])/);
+		if (m) {
+			try {
+				var fileIds=JSON.parse(m[1]);	
+				fileIds.map(function(fileid){googledrive.openFile(fileid)});				
+			} catch(e) {
+				console.log(m[1])
+				console.error(e);
+			}
+		}
+	}
+	,openFile:function(docid,title,opts) {
 		realtimeaction.openFile(docid, title, opts,this.onFileLoaded);
 	}
 	,openCallback:function(res){

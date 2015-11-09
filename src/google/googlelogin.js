@@ -16,11 +16,6 @@ var GoogleLogin=React.createClass({
 	    this.authorize();
 		}.bind(this));
 	}
-	,onLoggedIn:function() {
-		//this.setState({})
-		console.log("loggin");
-	}
-
 	,authorize:function(){
  		this.realtimeUtils.authorize(function(response){
  			if (response.error) {
