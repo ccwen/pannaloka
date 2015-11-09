@@ -93,6 +93,9 @@ var GooglePanel=React.createClass({
 		this.setState({opening:fileid});
 		googledrive.openFile(fileid,{},this.onFileLoaded);
 	}
+	,clearRecent:function(){
+		realtimeaction.clearRecent();
+	}
 	,createFile:function() {
 		this.disableButtons();
 		var title='New File(click to change)';
@@ -108,7 +111,8 @@ var GooglePanel=React.createClass({
 		<button style={styles.openButton} ref="openbutton" onClick={this.pickFile}>Open</button>
 		<button style={styles.createButton} ref="createbutton" onClick={this.createFile}>Create</button>
 		<button style={styles.openURL} ref="openurlbutton" onClick={this.openURL}>Open File Id</button>
-		<RecentFiles opening={this.state.opening} files={this.state.recentfiles} onOpenFile={this.recentClick}/>
+		<RecentFiles opening={this.state.opening} files={this.state.recentfiles} 
+		onOpenFile={this.recentClick} onClearRecent={this.clearRecent}/>
 		</span>
 	}
 });

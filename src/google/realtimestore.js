@@ -26,6 +26,11 @@ var realtimestore=Reflux.createStore({
 		this.trigger(this.recentFiles);
 		localStorage.setItem("recentfiles",JSON.stringify(this.recentFiles));
 	}
+	,onClearRecent:function(){
+		if (this.recentFiles.length>20) this.recentFiles.length=20;
+		localStorage.setItem("recentfiles",JSON.stringify(this.recentFiles));
+		this.trigger(this.recentFiles);
+	}
 	,getRecentFiles:function(){
 		return this.recentFiles;
 	}
