@@ -168,7 +168,7 @@ var highlightRelatedMarkup=function(m) { //highlight markup and all related
 
 	var hilights={};//group by filename
 	hilights[filename]=[];
-	hilights[filename].push(m.key);
+	hilights[filename].push(m.handle.key);
 
 	if (m.master) hilights[filename].push(m.master);
 

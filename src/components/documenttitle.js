@@ -52,10 +52,13 @@ var DocumentTitle = React.createClass({
 	,cancelEdit :function() {
 		this.setState({editing:false});
 	}
+	,onFileIdFocus:function(e) {
+		e.target.select();
+	}
 	,renderFileId:function() {
 		if (this.props.filename.indexOf("/")==-1){
 			return <span>fileId:<input readOnly={true} style={styles.input} 
-			defaultValue={this.props.filename} onFocus="this.select();"/></span>	
+			defaultValue={this.props.filename} onFocus={this.onFileIdFocus}/></span>	
 		}		
 	}
   ,render :function() {

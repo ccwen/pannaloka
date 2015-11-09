@@ -14,6 +14,7 @@ var InputMethod=React.createClass({
 			var pos=cm.getCursor();
 			cm.replaceRange(output,pos,pos);
 			cm.setCursor({line:pos.line,ch:pos.ch+output.length});
+			this.setState({preview:""});
 		}
 		e.target.value="";
 	}

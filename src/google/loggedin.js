@@ -34,7 +34,7 @@ var GooglePanel=React.createClass({
           .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
           .setAppId(AppId).setOAuthToken(token).addView(view)
           //.addView(new google.picker.DocsUploadView())
-          .setCallback(this.openCallback.bind(this)).build();
+          .setCallback(this.openCallback).build();
           return picker.setVisible(true);
         }.bind(this)
     });
