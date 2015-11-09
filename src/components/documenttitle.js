@@ -52,7 +52,12 @@ var DocumentTitle = React.createClass({
 	,cancelEdit :function() {
 		this.setState({editing:false});
 	}
-
+	,renderFileId:function() {
+		if (this.props.filename.indexOf("/")==-1){
+			return <span>fileId:<input readOnly={true} style={styles.input} 
+			defaultValue={this.props.filename} onFocus="this.select();"/></span>	
+		}		
+	}
   ,render :function() {
   	if (this.state.editing) {
   		return <span style={styles.container}><input ref="titleinput" style={styles.input} 
@@ -60,6 +65,7 @@ var DocumentTitle = React.createClass({
   									onBlur={this.onBlur} 
   									onChange={this.onChange}  value={this.state.title}/>
   									<button style={styles.cancelbutton} title="ESC" onClick={this.cancelEdit}>cancel</button>
+  								{this.renderFileId()}
   								<FlexHeight flex={this.state.flex} setValue={this.setFlexHeight}/>
   						</span>
   	} else {

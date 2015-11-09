@@ -12,7 +12,9 @@ TextViewMenu = React.createClass({
   	return <span style={styles.menu}>
   		
   		<DocumentTitle title={this.props.trait.title} onSetTitle={this.props.onSetTitle}
-  		onSetFlexHeight={this.props.onSetFlexHeight} flex={this.props.trait.flex}/>
+  		filename={this.props.trait.filename}
+      onSetFlexHeight={this.props.onSetFlexHeight} flex={this.props.trait.flex}/>
+
   		 {this.props.readOnly?"(fixed text)":""}
 
   			<SaveButton {...this.props} />

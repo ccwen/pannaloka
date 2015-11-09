@@ -6,13 +6,11 @@ var googledrive=require("../textview/googledrive");
 var styles={openButton:{fontSize:"125%"},createButton:{fontSize:"125%"},openURL:{fontSize:"125%"}};
 var GooglePanel=React.createClass({
 	openFile:function(docid,title,opts) {
-		this.docId=docid;
 		realtimeaction.openFile(docid, title, opts,this.onFileLoaded);
 	}
 	,openCallback:function(res){
 		if (res.action==="picked"){
-			this.title=res.docs[0].name;
-			this.openFile(res.docs[0].id, this.title);
+			for (var i in res.docs) this.openFile(res.docs[i].id, res.docs[i].name);
 		}
 		if (res.action!=="loaded") {
 			this.refs.openbutton.disabled=false;
@@ -31,9 +29,11 @@ var GooglePanel=React.createClass({
           view = new google.picker.View(google.picker.ViewId.DOCS);
           view.setMimeTypes("application/vnd.google-apps.drive-sdk." + AppId);
           //view.setMimeTypes("text/plain");
-          picker = new google.picker.PickerBuilder().enableFeature(google.picker.Feature.NAV_HIDDEN)
+          picker = new google.picker.PickerBuilder()
+          .enableFeature(google.picker.Feature.NAV_HIDDEN)
+          .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
           .setAppId(AppId).setOAuthToken(token).addView(view)
-          .addView(new google.picker.DocsUploadView())
+          //.addView(new google.picker.DocsUploadView())
           .setCallback(this.openCallback.bind(this)).build();
           return picker.setVisible(true);
         }.bind(this)
@@ -64,7 +64,6 @@ var GooglePanel=React.createClass({
 
 		realtimeaction.createFile(title, function(createResponse) {
          //window.history.pushState(null, null, '?id=' + createResponse.id);
-         this.docId=createResponse.id;
          realtimeaction.openFile(createResponse.id, title, {},this.onFileLoaded, this.onFileInitialize);
     }.bind(this));
 	}
