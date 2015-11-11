@@ -3,13 +3,19 @@ var json2textMarker=require("ksana-codemirror").json2textMarker;
 var realtimeaction=require("../google/realtimeaction");
 
 var TEXT_DELETED,TEXT_INSERTED,VALUES_ADDED,VALUES_REMOVED,VALUE_CHANGED;
-var load=function(doc,title){
+var load=function(doc,title,cb){
 		this._changes=[];
 		var _markups=doc.getModel().getRoot().get('markups');
 		var markups=loadMarkupFromGoogleDrive.call(this,_markups);
+		var _toc=doc.getModel().getRoot().get('toc'); 
+		if (!_toc) {
+			_toc=doc.getModel().createList()
+			doc.getModel().getRoot().set('toc',_toc);
+		}
+		var toc=loadTOCFromGoogleDrive.call(this,_toc,title);
 		var _text=doc.getModel().getRoot().get('text'); 
 		var data={value:_text.text, meta:{title:title}, markups:markups
-		, _markups:_markups, _text:_text ,_doc:doc };
+		, _markups:_markups, _text:_text ,_doc:doc , _toc:_toc, toc:toc};
 
 		TEXT_INSERTED=gapi.drive.realtime.EventType.TEXT_INSERTED;
 		TEXT_DELETED=gapi.drive.realtime.EventType.TEXT_DELETED;
@@ -21,9 +27,19 @@ var load=function(doc,title){
 		_text.addEventListener(TEXT_DELETED,deletetext.bind(this));
 
 		_markups.addEventListener(VALUE_CHANGED,markupchanged.bind(this));
-		this.setState(data,this.loaded);
+		this.setState(data,function(){
+			this.loaded();
+			if (cb) cb.call(this);
+		}.bind(this));
 }
-
+var loadTOCFromGoogleDrive=function(model,title) {
+	var toc=model.asArray();
+	if (toc.length===0) {
+		toc.push({d:1,t:"first item"});
+	}
+	toc.unshift({d:0,t:title});
+	return toc;
+}
 var loadMarkupFromGoogleDrive=function(markups) {
 	var out={};
 	var keys=markups.keys(),values=markups.values();
@@ -102,6 +118,7 @@ var markupchanged=function(e){
 	else if (e.newValue===null && e.oldValue) markupdelete.call(this,e);
 	else markupmodified.call(this,e);
 }
+
 var beforeChange=function(cm,changeObj) {
 	if (!this.isGoogleDriveFile())return;
 	if (this.ignore_change) return;
@@ -139,7 +156,9 @@ var unmount = function() {
 	if (this.state._text) this.state._text.removeAllEventListeners();
 	if (this.state._markups) this.state._markups.removeAllEventListeners();
 }
-
+/*
+	check if full rebuild needed ( add or remove lines)
+*/
 var update=function(){
 	var coString=this.state._text, coMarkups=this.state._markups;
 	var model=this.state._doc.getModel();
@@ -169,6 +188,12 @@ var update=function(){
 		}
 	}.bind(this),500);//must smaller than 	
 }
+var setToc=function(toc,model) {
+	console.log(toc,model)
+	model.clear();
+	toc.shift();
+	model.pushAll(toc);
+}
 var openFile=function(fileid,opts,cb) {
 	gapi.client.load('drive', 'v2', function() {  
 		var request = gapi.client.drive.files.get({
@@ -184,4 +209,4 @@ var openFile=function(fileid,opts,cb) {
   });
 }
 module.exports={load:load,update:update,markupchanged:markupchanged,inserttext:inserttext,deletetext:deletetext
-,beforeChange:beforeChange,unmount:unmount,openFile:openFile,setTitle:setTitle};
+,beforeChange:beforeChange,unmount:unmount,openFile:openFile,setTitle:setTitle,setToc:setToc};

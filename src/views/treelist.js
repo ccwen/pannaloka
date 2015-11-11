@@ -25,7 +25,7 @@ var TreeList = React.createClass({
 		return {files:[],selectedIndex:0};
 	}
 
-	, onData :function(files) {
+	, onData :function(toc,files) {
 		this.setState({files});
 	}
 

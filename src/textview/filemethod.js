@@ -1,6 +1,7 @@
 var highlight=require("./highlight");
 var docfileaction=require("../actions/docfile");
 var ktxfileaction=require("../actions/ktxfile");
+var ktcfileaction=require("../actions/ktcfile");
 var selectionaction=require("../actions/selection");
 var cmfileio=require("../cmfileio");
 var stackwidgetaction=require("../actions/stackwidget");
@@ -24,6 +25,9 @@ var	loaded = function() {
 		setTimeout(function(){
 			highlight.highlightDoc(this.doc,this.props.trait.scrollTo);
 		}.bind(this),300);//wait for markup to load
+	}
+	if (this.props.trait.openToc) {
+		ktcfileaction.openTree(this.state.toc,this.state._toc);
 	}
 }
 
@@ -67,7 +71,9 @@ var save = function(fn) {
     }
   }.bind(this));
 }
-
+var openToc=function() {
+	ktcfileaction.openTree(this.state.toc,this.state_toc);
+}
 var close = function() {
 		stackwidgetaction.closeWidget(this.props.wid);
 		selectionaction.clearSelectionOf(this.props.trait.filename);
@@ -80,4 +86,4 @@ var close = function() {
 		}
 
 }
-module.exports={load:load,loaded:loaded,save:save,close:close};
+module.exports={load:load,loaded:loaded,save:save,close:close,openToc:openToc};

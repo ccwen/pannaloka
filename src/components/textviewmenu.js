@@ -13,7 +13,7 @@ TextViewMenu = React.createClass({
   		
   		<DocumentTitle title={this.props.trait.title} onSetTitle={this.props.onSetTitle}
   		filename={this.props.trait.filename}
-      onSetFlexHeight={this.props.onSetFlexHeight} flex={this.props.trait.flex}/>
+      onSetFlexHeight={this.props.onSetFlexHeight} flex={this.props.trait.flex} onOpenToc={this.props.onOpenToc}/>
 
   		 {this.props.readOnly?"(fixed text)":""}
 

@@ -1,5 +1,6 @@
 var Reflux=require("reflux");
 var socketfs=require("../socketfs");
+var googledrive=require("../textview/googledrive");
 var KTXFileStore=Reflux.createStore({
 	listenables:[require("../actions/ktcfile")]
 	,files:[]
@@ -36,16 +37,19 @@ var KTXFileStore=Reflux.createStore({
 		}.bind(this));
 	}
 	,init:function() {
-		this.loaddir();
+		if (socketfs.ready()) this.loaddir();
 	}
 	,onReload:function() {
-		this.loaddir();
+		if (socketfs.ready()) this.loaddir();
 	}
 	,newfilename:function() {
 		return "ktc/"+Math.random().toString().substr(2,8)+".ktc";
 	}
-
 	,onWriteTree:function(toc,cb){
+		if (typeof this.fn!=="string") {
+			googledrive.setToc(toc,this.fn);
+			return;
+		}
 		var tocstring="";
 		toc.map(function(item,idx){
 			if (idx) tocstring+="\n"
@@ -57,12 +61,17 @@ var KTXFileStore=Reflux.createStore({
 	    cb&&cb(err);
 	  }.bind(this));
 	}
-	,onOpenTree:function(fn){
-		this.openTree(fn,function(err2,toc){
-			this.toc=toc;
-			this.fn=fn;
-			this.trigger(this.files,toc);
-		}.bind(this));
+	,onOpenTree:function(fn_array,googledoc){
+		if (socketfs.ready()&& typeof fn_array==="string"){
+			this.openTree(fn_array,function(err2,toc){
+				this.toc=toc;
+				this.fn=fn_array;
+				this.trigger(toc,this.files);
+			}.bind(this));
+		}else {
+			this.fn=googledoc;
+			this.trigger(fn_array,this.files);
+		}
 	}
 	,onNewTree:function() {
 		var filename=this.newfilename();

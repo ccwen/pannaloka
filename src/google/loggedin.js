@@ -15,7 +15,7 @@ var GooglePanel=React.createClass({
 		return {recentfiles:realtimestore.getRecentFiles(),opening:null};
 	}
 	,componentDidMount:function(){
-		var m=decodeURI(location.search).match(/id:(.*?)/);
+		var m=decodeURI(location.search).match(/id=(.*)/);
 		var openfromdrive=false;
 
 		if (!m) {
@@ -29,14 +29,16 @@ var GooglePanel=React.createClass({
 			
 		if (m) {
 			try {
-				var fileIds=JSON.parse(m[1]);	
-				var newlocation=location.pathname+"?ids=" +m[1];
-				if (typeof fileIds==="string") {
-					fileIds=[fileIds];
+				if (m[1][0]==='[') {
+					var fileIds=JSON.parse(m[1]);		
+				} else {
+					fileIds=[m[1]];
 				}
+				var newlocation=location.pathname+"?ids=" +m[1];
+				
 				if (fileIds.length===1) newlocation=location.pathname+"?id="+fileIds[0];
 				if (openfromdrive) history.replaceState({}, "Pannaloka" , newlocation  );
-				fileIds.map(function(fileid){googledrive.openFile(fileid)});
+				fileIds.map(function(fileid,idx){googledrive.openFile(fileid,{openToc:idx===0})});
 			} catch(e) {
 				console.log(m[1])
 				console.error(e);

@@ -4,7 +4,6 @@ var Component=React.Component;
 var PureRender=require('react-addons-pure-render-mixin');
 var FlexHeight=require("./flexheight");
 
-
 var styles={
 	container:{cursor:"pointer"}
 	,input:{fontSize:"75%",border:"0px solid",outline:0}
@@ -70,6 +69,7 @@ var DocumentTitle = React.createClass({
   									<button style={styles.cancelbutton} title="ESC" onClick={this.cancelEdit}>cancel</button>
   								{this.renderFileId()}
   								<FlexHeight flex={this.state.flex} setValue={this.setFlexHeight}/>
+  								<button onClick={this.props.onOpenToc}>Toc</button>
   						</span>
   	} else {
   		return <span style={styles.container} onClick={this.edit}>{this.props.title}</span>

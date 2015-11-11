@@ -193,7 +193,6 @@ var DefaultTextView = React.createClass({
 	,onBeforeChange :function(cm,changeObj) {
 		googledrive.beforeChange.call(this,cm,changeObj);
 	}
-
 	,render:function () {
 		if (!this.state.value) return <div>loading {this.props.trait.filename}</div>
 
@@ -203,6 +202,7 @@ var DefaultTextView = React.createClass({
 				readOnly={this.props.trait.readOnly}
 				onClose={this.onClose} onSave={this.onSave}
 				onSetTitle={this.onSetTitle}
+				onOpenToc={filemethod.openToc.bind(this)}
 				onSetFlexHeight={this.onSetFlexHeight}/>
 			<ListMarkup markups={this.state.markups} filename={this.props.trait.filename} doc={this.doc}/>
 			

@@ -13,12 +13,13 @@ var SaveButton=require("../components/savebutton");
 var selectionstore=require("../stores/selection");
 var markupstore=require("../stores/markup");
 var docfilestore=require("../stores/docfile");
+
 var OutlinePanel = React.createClass({
 	getInitialState:function() {		
 		return { toc:[{d:0,t:"test"},{d:1,t:"testchild"}] ,dirty:false};
 	}
 
-	,onToc :function( allfiles, toc) {
+	,onToc :function(toc) {
 		if (!toc) return;
 		this.setState({toc});
 	}
@@ -34,9 +35,8 @@ var OutlinePanel = React.createClass({
 		this.setState({dirty:false});
 	}
 	,onChanged : function() {
-		this.setState({dirty:true});
+		this.setState({dirty:true});	
 	}
-
 	,setLink :function(node) {
 		var m=markupstore.getEditing();
 
@@ -51,9 +51,7 @@ var OutlinePanel = React.createClass({
 		}
 		this.onChanged();
 		this.forceUpdate();
-
 	}
-
 	,onHyperlinkClick :function(file,range) {
 		highlight.gotoRangeOrMarkupID(file,range,{moveCursor:true,autoOpen:true});
 	}
@@ -66,7 +64,6 @@ var OutlinePanel = React.createClass({
 			return E(RangeHyperlink,{onHyperlinkClick:this.onHyperlinkClick,ranges:node.links||[]})
 		}
 	}
-
 	,render :function() {
 		return <div>
 		<SaveButton dirty={this.state.dirty} onSave={this.saveTree}/>

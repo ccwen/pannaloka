@@ -77,7 +77,7 @@ var LeftPanel = React.createClass({
 
       <TabPanel>
 	      <div style={this.panelstyle}>
-        <h2><OutlinePanel/></h2>
+        <h2><OutlinePanel localfilesystem={this.props.localfilesystem}/></h2>
 	  		</div>
 
       </TabPanel>
