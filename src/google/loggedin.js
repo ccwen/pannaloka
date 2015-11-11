@@ -15,15 +15,32 @@ var GooglePanel=React.createClass({
 		return {recentfiles:realtimestore.getRecentFiles(),opening:null};
 	}
 	,componentDidMount:function(){
-		var m=decodeURI(location.search).match(/"ids":(\[.*?\])/);
+		var m=decodeURI(location.search).match(/id:(.*?)/);
+		var openfromdrive=false;
+
+		if (!m) {
+			m=decodeURI(location.search).match(/ids:(\[.*?\])/);	
+		}
+		
+		if (!m) {
+			m=decodeURI(location.search).match(/"ids":(\[.*?\])/);
+			openfromdrive=true;
+		}
+			
 		if (m) {
 			try {
 				var fileIds=JSON.parse(m[1]);	
-				fileIds.map(function(fileid){googledrive.openFile(fileid)});				
+				var newlocation=location.pathname+"?ids=" +m[1];
+				if (typeof fileIds==="string") {
+					fileIds=[fileIds];
+				}
+				if (fileIds.length===1) newlocation=location.pathname+"?id="+fileIds[0];
+				if (openfromdrive) history.replaceState({}, "Pannaloka" , newlocation  );
+				fileIds.map(function(fileid){googledrive.openFile(fileid)});
 			} catch(e) {
 				console.log(m[1])
 				console.error(e);
-			}
+			}		
 		}
 	}
 	,onRecentFiles:function(files) {
@@ -35,7 +52,7 @@ var GooglePanel=React.createClass({
 	}
 	,openCallback:function(res){
 		if (res.action==="picked"){
-			for (var i in res.docs) this.openFile(res.docs[i].id, res.docs[i].name);
+			for (var i in res.docs) this.openFile(res.docs[i].id, res.docs[i].name, {openToc:true});
 		}
 		if (res.action!=="loaded") {
 			this.enableButtons();
@@ -70,6 +87,8 @@ var GooglePanel=React.createClass({
     var markups= model.createMap();
     model.getRoot().set('text', string);
     model.getRoot().set('markups',markups);
+    var toc=model.createList();
+    model.getRoot().set('toc',toc);
 	}
 	,openURL:function(){
 		var url=prompt("url").replace("https://drive.google.com/open?id=","");
@@ -91,7 +110,7 @@ var GooglePanel=React.createClass({
 		if (docOf(fileid))return;
 		this.disableButtons();
 		this.setState({opening:fileid});
-		googledrive.openFile(fileid,{},this.onFileLoaded);
+		googledrive.openFile(fileid,{openToc:true},this.onFileLoaded);
 	}
 	,clearRecent:function(){
 		realtimeaction.clearRecent();
