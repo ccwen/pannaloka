@@ -133,10 +133,36 @@ var setAffectedRange=function(co,linecount) {
 		this._touchedEnd=linecount+1;
 	}
 }
+var clearMarkups=function(keys) {
+
+}
+var getMarkupInRange=function(from,to) {
+	var markups=this.state.markups,out=[];
+	for (var key in markups) {
+		var m=markups[key];
+		var fromch=m.from[0],fromline=m.from[1],toch=m.to[0],toline=m.to[1];
+		if (!(m.to instanceof Array)) toch=m.to,toline=fromline;
+		if (!(fromline>=from.line && toline<=to.line)) continue;
+
+		if (toline===from.line && toch<=from.ch) continue;
+		if (to.line===fromline && fromch>=to.ch) continue;
+
+		out.push(key);
+	}
+	return out;
+}
 var beforeChange=function(cm,changeObj) {
 	if (!this.isGoogleDriveFile())return;
 	if (this.ignore_change) return;
 
+	if (changeObj.origin==="+delete") {
+		var mrks=getMarkupInRange.call(this,changeObj.from,changeObj.to);
+		if (mrks.length) {
+			alert("cannot remove text with markups");
+			changeObj.cancel();
+			return;
+		}
+	}
 	var coString=this.state._text;
 	setAffectedRange.call(this,changeObj,cm.lineCount());
 
@@ -152,12 +178,13 @@ var beforeChange=function(cm,changeObj) {
   }.bind(this),1000);
 
 }
-var getTouchedMarkup=function(start,end){
+var getPosChangedMarkup=function(start,end){
 	var markups=this.state.markups;
 	var out=[];
 	for (var key in markups) {
 		var m=markups[key];
 		var fromch=m.from[0],fromline=m.from[1],toch=m.to[0],toline=m.to[1];
+		if (!(m.to instanceof Array)) toch=m.to,toline=fromline;
 		if (!(fromline>=start && end>=fromline)) continue;
 		var pos=m.handle.find();
 		if (pos.from.line!==fromline || pos.from.ch!==fromch ||
@@ -186,7 +213,7 @@ var update=function(){
 		if (to - from > 0)    coString.removeRange(from, to);
   	if (text.length > 0)  coString.insertString(from, text);
 	}
-	var touchedMarkups=getTouchedMarkup.call(this,this._touchedStart,this._touchedEnd);
+	var touchedMarkups=getPosChangedMarkup.call(this,this._touchedStart,this._touchedEnd);
 	for (var i=0;i<touchedMarkups.length;i++) {
 		var m=touchedMarkups[i];
 		coMarkups.set(m[0],m[1]);
