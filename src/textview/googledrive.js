@@ -3,8 +3,13 @@ var json2textMarker=require("ksana-codemirror").json2textMarker;
 var realtimeaction=require("../google/realtimeaction");
 
 var TEXT_DELETED,TEXT_INSERTED,VALUES_ADDED,VALUES_REMOVED,VALUE_CHANGED;
-var load=function(doc,title,cb){
+var resetChanges=function(){
 		this._changes=[];
+		this._touchedStart=2147483647;
+		this._touchedEnd=0;
+}
+var load=function(doc,title,cb){
+		resetChanges.call(this);
 		var _markups=doc.getModel().getRoot().get('markups');
 		var markups=loadMarkupFromGoogleDrive.call(this,_markups);
 		var _toc=doc.getModel().getRoot().get('toc'); 
@@ -119,11 +124,21 @@ var markupchanged=function(e){
 	else markupmodified.call(this,e);
 }
 
+var setAffectedRange=function(co,linecount) {
+	//_touchedStart , _touchedEnd
+	if (co.from.line<this._touchedStart) this._touchedStart=co.from.line;
+	if (co.to.line>this._touchedEnd) this._touchedEnd=co.to.line;
+
+	if (co.from.line!==co.to.line || co.text.length>1) {
+		this._touchedEnd=linecount+1;
+	}
+}
 var beforeChange=function(cm,changeObj) {
 	if (!this.isGoogleDriveFile())return;
 	if (this.ignore_change) return;
 
 	var coString=this.state._text;
+	setAffectedRange.call(this,changeObj,cm.lineCount());
 
   var from  = this.cm.indexFromPos(changeObj.from);
   var to    = this.cm.indexFromPos(changeObj.to);
@@ -137,14 +152,16 @@ var beforeChange=function(cm,changeObj) {
   }.bind(this),1000);
 
 }
-var findTouchedMarkup=function(){
+var getTouchedMarkup=function(start,end){
 	var markups=this.state.markups;
 	var out=[];
 	for (var key in markups) {
 		var m=markups[key];
+		var fromch=m.from[0],fromline=m.from[1],toch=m.to[0],toline=m.to[1];
+		if (!(fromline>=start && end>=fromline)) continue;
 		var pos=m.handle.find();
-		if (pos.from.line!==m.from[1] || pos.from.ch!==m.from[0] ||
-			  pos.to.line!==m.to[1] || pos.to.ch!==m.to[0] ) {
+		if (pos.from.line!==fromline || pos.from.ch!==fromch ||
+			  pos.to.line!==toline || pos.to.ch!==toch ) {
 			var newm=textMarker2json(m.handle);
 			out.push([key,newm]);
 		}
@@ -169,8 +186,7 @@ var update=function(){
 		if (to - from > 0)    coString.removeRange(from, to);
   	if (text.length > 0)  coString.insertString(from, text);
 	}
-	this._changes=[];
-	var touchedMarkups=findTouchedMarkup.call(this);
+	var touchedMarkups=getTouchedMarkup.call(this,this._touchedStart,this._touchedEnd);
 	for (var i=0;i<touchedMarkups.length;i++) {
 		var m=touchedMarkups[i];
 		coMarkups.set(m[0],m[1]);
@@ -187,6 +203,8 @@ var update=function(){
 			this.state.markups[m[0]]=m[1];
 		}
 	}.bind(this),500);//must smaller than 	
+
+	resetChanges.call(this);
 }
 var setToc=function(toc,model) {
 	console.log(toc,model)
