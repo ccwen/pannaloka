@@ -38,7 +38,7 @@ var load=function(doc,title,cb){
 		}.bind(this));
 }
 var loadTOCFromGoogleDrive=function(model,title) {
-	var toc=model.asArray();
+	var toc=JSON.parse(JSON.stringify(model.asArray()));
 	if (toc.length===0) {
 		toc.push({d:1,t:"first item"});
 	}
