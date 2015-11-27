@@ -95,6 +95,8 @@ var onMarkup = function(M,action) {
 		for (var i in M) out[i]=M[i];
 		return out;
 	}
+	if (this.props.trait.role==="reader" || this.props.trait.role==="commenter") return;
+
 	if (!action || !action.newly || !M.length) return;
 	var touched=null;
 	var markups=null;

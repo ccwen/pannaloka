@@ -130,6 +130,7 @@ var DefaultTextView = React.createClass({
 	}
 
 	,onChange :function (doc,change) {
+
 		this.setState({dirty:!this.doc.isClean(this.generation)});
 
 		if (doc.lineCount()!==this.state.lineCount) {
@@ -184,7 +185,6 @@ var DefaultTextView = React.createClass({
 	,onMouseMove :function(e) {
 		cursormethod.mouseMove.call(this,this.cm,e);
 	}
-
 
 	,getTheme :function() {
 		return localStorage.getItem("lighttheme")=="true"?"":"ambiance";

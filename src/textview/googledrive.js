@@ -152,6 +152,11 @@ var getMarkupInRange=function(from,to) {
 	return out;
 }
 var beforeChange=function(cm,changeObj) {
+	if (this.props.trait.role==="reader" || this.props.trait.role==="commenter") {
+		changeObj.cancel();
+		return false;
+	}
+	
 	if (!this.isGoogleDriveFile())return;
 	if (this.ignore_change) return;
 
@@ -239,7 +244,14 @@ var setToc=function(toc,model) {
 	toc.shift();
 	model.pushAll(toc);
 }
+var getRole=function(userPermission) {
+	if (userPermission.additionalRoles && userPermission.additionalRoles.indexOf("commenter")) {
+		return commenter;
+	}
+	return userPermission.role;
+}
 var openFile=function(fileid,opts,cb) {
+	opts=opts||{};
 	gapi.client.load('drive', 'v2', function() {  
 		var request = gapi.client.drive.files.get({
   	  'fileId': fileid
@@ -248,6 +260,7 @@ var openFile=function(fileid,opts,cb) {
   		if (resp.error) {
   			alert(resp.error.message);
   		} else {
+  			opts.role=getRole(resp.userPermission);
   			realtimeaction.openFile(fileid,resp.title,opts,cb);	
   		}
 	  })

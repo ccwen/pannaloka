@@ -38,7 +38,7 @@ var realtimestore=Reflux.createStore({
 		if (docOf(docid))return;
 		opts=opts||{};
 		this.realtimeUtils.load(docid, function(doc){
-    	var obj={filename:docid,host:"google",doc:doc,title:title,openToc:opts.openToc};
+    	var obj={filename:docid,host:"google",doc:doc,title:title,openToc:opts.openToc,role:opts.role};
     	stackwidgetaction.openWidget(obj,"TextWidget",opts);
     	this.addRecentFile(docid,title);
     	if (cb) cb();

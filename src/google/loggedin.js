@@ -50,7 +50,7 @@ var GooglePanel=React.createClass({
 	}
 	,openFile:function(fileid,title,opts) {
 		this.setState({opening:fileid});
-		realtimeaction.openFile(fileid, title, opts,this.onFileLoaded);
+		googledrive.openFile(fileid,{},this.onFileLoaded); //role user might be "reader" or "commenter"
 	}
 	,openCallback:function(res){
 		if (res.action==="picked"){
