@@ -84,6 +84,7 @@ var makeHighlights=function(doc,highlights,opts){
 	if (!opts.noClear) clearHighlights();
 	for (var i=0;i<highlights.length;i++) {
 		var from=highlights[i][0],to=highlights[i][1];
+		if (from[0]===to[0] && from[1]===to[1]) continue;
 		highlights_handles.push(doc.markText(from,to,{className:"highlight",clearOnEnter:true}));
 		////var by=getLinkedBy(markup);
 		//if (by) drawLink(markup,by);

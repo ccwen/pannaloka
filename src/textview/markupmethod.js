@@ -28,19 +28,31 @@ var addremotemarkup=function(key,markup){//not in textview yet
 var removeremotemarkup=function(markup) {
 	this.state._markups.delete(markup.key);
 }
-/*
+
+var addGoogleMarkup=function(markup) {
+	if (!this.isGoogleDriveFile())return;
+	if (!markup.handle)return;
+	var pos=markup.handle.find();
+	var obj={};
+	for (var i in markup) {
+		if (i=="key" || i=="handle")continue;
+		obj[i]=markup[i];
+	}
+	obj.from=[pos.from.ch,pos.from.line];
+
+	addremotemarkup.call(this,markup.key,obj);
+}
 //just for lookup , not trigger redraw as markup.handle already exists.
 var	addMarkup = function (markup) {
 	if (!markup  || !markup.key) return;
 	this.state.markups[markup.key]=markup;
-
-	if (this.isGoogleDriveFile()) addremotemarkup(markup);
+	addGoogleMarkup.call(this,markup);
 	if (markup.className==="milestone") this.rebuildMilestone(this.state.markups);
 	var file=docfilestore.fileOf(markup.handle.doc);
 	markupNav.rebuild(file,markup.className);
 	this.setState({dirty:true});
 }
-*/
+
 
 var	getOther = function(markup,opts) {
 	var out=[],markups=this.state.markups;
@@ -134,4 +146,4 @@ var rebuildMilestone = function (markups) {
 }
 
 module.exports={onMarkup:onMarkup,createMilestones:createMilestones,markupReady:markupReady,
-	getOther:getOther,removeMarkup:removeMarkup,rebuildMilestone:rebuildMilestone}
+	getOther:getOther,removeMarkup:removeMarkup,rebuildMilestone:rebuildMilestone,addMarkup:addMarkup}

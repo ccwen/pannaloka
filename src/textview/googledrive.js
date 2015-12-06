@@ -5,7 +5,7 @@ var realtimeaction=require("../google/realtimeaction");
 var TEXT_DELETED,TEXT_INSERTED,VALUES_ADDED,VALUES_REMOVED,VALUE_CHANGED;
 var resetChanges=function(){
 		this._changes=[];
-		this._touchedStart=2147483647;
+		this._touchedStart=2147483647; 
 		this._touchedEnd=0;
 }
 var load=function(doc,title,cb){
@@ -188,7 +188,13 @@ var getPosChangedMarkup=function(start,end){
 	var out=[];
 	for (var key in markups) {
 		var m=markups[key];
-		var fromch=m.from[0],fromline=m.from[1],toch=m.to[0],toline=m.to[1];
+		var fromch=m.from[0],fromline=m.from[1]
+		if (!m.to) {
+			var toch=fromch,toline=fromline;
+		} else {
+			var toch=m.to[0],toline=m.to[1];	
+		}
+
 		if (!(m.to instanceof Array)) toch=m.to,toline=fromline;
 		if (!(fromline>=start && end>=fromline)) continue;
 		var pos=m.handle.find();

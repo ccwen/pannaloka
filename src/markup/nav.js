@@ -29,7 +29,7 @@ var rebuild=function(file,type) {
 
 		if (!byType[M.className]) byType[M.className]=[];
 		var pos=M.handle.find();
-		if (!pos.from) continue;//bookmark
+		if (!pos || !pos.from) continue;//bookmark
 
 		var posarr=[key, pos.from.line, pos.from.ch];
 
